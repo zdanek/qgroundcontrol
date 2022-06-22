@@ -17,6 +17,7 @@ add_library(QtLocationPlugin
 	QGeoServiceProviderPluginQGC.cpp
 	QGeoTiledMappingManagerEngineQGC.cpp
 	QGeoTileFetcherQGC.cpp
+	WmsMapProvider.cpp
 
 	QMLControl/QGCMapEngineManager.cc
 

@@ -182,7 +182,7 @@ void QGCMapPolylineTest::_testVertexManipulation(void)
     QCOMPARE(_pathModel->count(), 0);
 }
 
-#if 0
+
 void QGCMapPolylineTest::_testKMLLoad(void)
 {
     QVERIFY(_mapPolyline->loadKMLFile(QStringLiteral(":/unittest/PolygonGood.kml")));
@@ -199,7 +199,7 @@ void QGCMapPolylineTest::_testKMLLoad(void)
     QVERIFY(!_mapPolyline->loadKMLFile(QStringLiteral(":/unittest/BadCoordinatesNode.kml")));
     checkExpectedMessageBox();
 }
-#endif
+
 
 void QGCMapPolylineTest::_testSelectVertex(void)
 {
