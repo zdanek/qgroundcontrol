@@ -7347,7 +7347,7 @@ Clique em Ok para inciar o processo de auto-ajuste.</translation>
     </message>
     <message>
       <location filename="../src/ui/preferences/GeneralSettings.qml" line="296"/>
-      <source>File Format</source>
+      <source>Record File Format</source>
       <translation>Formato do arquivo</translation>
     </message>
     <message>

@@ -7341,7 +7341,7 @@ Click Ok to start the auto-tuning process.
     </message>
     <message>
       <location filename="../src/ui/preferences/GeneralSettings.qml" line="296"/>
-      <source>File Format</source>
+      <source>Record File Format</source>
       <translation>ファイル形式</translation>
     </message>
     <message>
