@@ -46,6 +46,13 @@ jobs:
         run: |
           git fetch --all --tags -f
 
+      - name: Setup JDK 11 Zulu
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+          java-package: jdk
+
       - name: Install Qt
         uses: jurplel/install-qt-action@v2
         with:
