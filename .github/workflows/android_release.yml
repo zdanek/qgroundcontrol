@@ -60,7 +60,7 @@ jobs:
         uses: nttld/setup-ndk@v1
         id: setup-ndk
         with:
-          ndk-version: r22b
+          ndk-version: r21e
           add-to-path: false
 
       - name: Install ccache
