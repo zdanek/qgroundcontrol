@@ -35,8 +35,66 @@ message(STATUS "Qt version: ${QT_VERSION}")
 message(STATUS "Qt spec: ${QT_MKSPEC}")
 
 set(COMPANY "Mavlink")
-set(COPYRIGHT "Copyright (c) 2018 QGroundControl. All rights reserved.")
+set(COPYRIGHT "Copyright (c) 2023 QGroundControl. All rights reserved.")
 set(IDENTIFIER "io.mavlink.qgroundcontrol")
+
+option(QGC_DISABLE_CUSTOM_BUILD "Disable custom build override" OFF)
+
+if (NOT QGC_DISABLE_CUSTOM_BUILD)
+	if (EXISTS ${CMAKE_SOURCE_DIR}/custom/custom.cmake)
+		list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/custom)
+		include(custom)
+		add_definitions(-DQGC_CUSTOM_BUILD)
+		message(STATUS "Custom entry plugin is ${CUSTOMCLASS}")
+		add_definitions(-DCUSTOMCLASS=${CUSTOMCLASS})
+		add_definitions(-DCUSTOMHEADER=${CUSTOMHEADER})
+		include_directories(${CMAKE_SOURCE_DIR}/custom/src)
+
+	endif()
+endif()
+
+if (NOT QGC_DISABLE_CUSTOM_BUILD)
+	message(STATUS "Custom build is enabled")
+	else()
+	message(STATUS "Custom build is disabled")
+endif()
+
+if (QGC_DISABLE_APM_PLUGIN)
+	message(STATUS "Project MESSAGE: Disable APM Plugin")
+endif()
+
+if (QGC_DISABLE_PX4_PLUGIN)
+	message(STATUS "Project MESSAGE: Disable PX4 Plugin")
+endif()
+
+if (QGC_DISABLE_UVC)
+	message(STATUS "Project MESSAGE: Disable UVC")
+	add_definitions(-DQGC_DISABLE_UVC)
+endif()
+
+option(DISABLE_AIRMAP "Disable Airmap" ON)
+
+if (DISABLE_AIRMAP)
+	message(STATUS "Project MESSAGE: Disable Airmap")
+	set(QGC_AIRMAP OFF)
+else()
+	set(QGC_AIRMAP ON)
+	add_definitions(-DQGC_AIRMAP_ENABLED)
+endif()
+
+if (QGC_DISABLE_MAVLINK_INSPECTOR)
+	message(STATUS "Disable mavlink inspector")
+	add_definitions(-DQGC_DISABLE_MAVLINK_INSPECTOR)
+endif()
+
+if (QGC_DISABLE_APM_MAVLINK)
+	message(STATUS "Disable APM MAVLink support")
+	add_definitions(-DNO_ARDUPILOT_DIALECT)
+endif()
+
+if (QGC_DISABLE_APM_PLUGIN)
+	message(STATUS "Disable APM Plugin")
+endif()
 
 add_definitions(
 	-DQGC_APPLICATION_NAME="QGroundControl"
@@ -104,7 +162,7 @@ else()
 		)
 endif()
 
-if (GST_FOUND)
+if (GST_FOUND AND NOT DISABLE_VIDEOSTREAMING)
     add_definitions(
         -DQGC_GST_STREAMING
     )
@@ -173,17 +231,57 @@ include_directories(
 add_subdirectory(libs)
 add_subdirectory(src)
 
-set(QGC_RESOURCES
-	${CMAKE_CURRENT_SOURCE_DIR}/qgcimages.qrc
-	${CMAKE_CURRENT_SOURCE_DIR}/qgcresources.qrc
-	${CMAKE_CURRENT_SOURCE_DIR}/qgroundcontrol.qrc
-	${CMAKE_CURRENT_SOURCE_DIR}/resources/InstrumentValueIcons/InstrumentValueIcons.qrc
-	${CMAKE_CURRENT_SOURCE_DIR}/src/Airmap/airmap.qrc
-	${CMAKE_CURRENT_SOURCE_DIR}/src/Airmap/dummy/airmap_dummy.qrc
-	${CMAKE_CURRENT_SOURCE_DIR}/src/FirmwarePlugin/APM/APMResources.qrc
-	${CMAKE_CURRENT_SOURCE_DIR}/src/FirmwarePlugin/PX4/PX4Resources.qrc
-	${CMAKE_CURRENT_SOURCE_DIR}/VideoReceiverApp/qml.qrc
-	)
+if (NOT QGC_DISABLE_CUSTOM_BUILD)
+	if (EXISTS ${CMAKE_SOURCE_DIR}/custom/qgroundcontrol.qrc)
+		message(STATUS "Using custom qgroundcontrol.qrc")
+		set(QGC_RESOURCES ${CMAKE_SOURCE_DIR}/custom/qgroundcontrol.qrc)
+	else()
+		set(QGC_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/qgroundcontrol.qrc)
+	endif()
+
+	if (EXISTS ${CMAKE_SOURCE_DIR}/custom/qgcresources.qrc)
+		message(STATUS "Using custom qgcresources.qrc")
+		list(APPEND QGC_RESOURCES ${CMAKE_SOURCE_DIR}/custom/qgcresources.qrc)
+	else()
+		list(APPEND QGC_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/qgcresources.qrc)
+	endif()
+
+	if (EXISTS ${CMAKE_SOURCE_DIR}/custom/qgcimages.qrc)
+		message(STATUS "Using custom qgcimages.qrc")
+		list(APPEND QGC_RESOURCES ${CMAKE_SOURCE_DIR}/custom/qgcimages.qrc)
+	else()
+		list(APPEND QGC_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/qgcimages.qrc)
+	endif()
+
+	if (EXISTS ${CMAKE_SOURCE_DIR}/custom/InstrumentValueIcons.qrc)
+		message(STATUS "Using custom InstrumentValueIcons.qrc")
+		list(APPEND QGC_RESOURCES ${CMAKE_SOURCE_DIR}/custom/InstrumentValueIcons.qrc)
+	else()
+		list(APPEND QGC_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/resources/InstrumentValueIcons/InstrumentValueIcons.qrc)
+	endif()
+
+	list(APPEND QGC_RESOURCES ${CUSTOM_RESOURCES})
+else()
+	set(QGC_RESOURCES
+			${CMAKE_CURRENT_SOURCE_DIR}/qgcimages.qrc
+			${CMAKE_CURRENT_SOURCE_DIR}/qgcresources.qrc
+			${CMAKE_CURRENT_SOURCE_DIR}/qgroundcontrol.qrc
+			${CMAKE_CURRENT_SOURCE_DIR}/resources/InstrumentValueIcons/InstrumentValueIcons.qrc)
+endif()
+
+if (NOT AIRMAP_DISABLE)
+	list(APPEND QGC_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/Airmap/airmap.qrc)
+else()
+	list(APPEND QGC_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/Airmap/dummy/airmap_dummy.qrc)
+endif()
+
+if (NOT QGC_DISABLE_APM_PLUGIN)
+	list(APPEND QGC_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/FirmwarePlugin/APM/APMResources.qrc)
+endif()
+
+if (NOT QGC_DISABLE_PX4_PLUGIN)
+	list(APPEND QGC_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/FirmwarePlugin/PX4/PX4Resources.qrc)
+endif()
 
 if (WIN32)
 	# append application icon resource for Windows
@@ -197,6 +295,13 @@ if(BUILD_TESTING)
 		UnitTest.qrc
 	)
 endif()
+
+if (NOT QGC_DISABLE_CUSTOM_BUILD)
+	if (EXISTS ${CMAKE_SOURCE_DIR}/custom/CMakeLists.txt)
+		add_subdirectory(custom)
+	endif()
+endif()
+
 
 if(ANDROID)
 	add_library(QGroundControl SHARED ${QGC_RESOURCES})

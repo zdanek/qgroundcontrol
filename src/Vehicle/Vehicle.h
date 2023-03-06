@@ -994,7 +994,9 @@ private:
     void _handleGlobalPositionInt       (mavlink_message_t& message);
     void _handleAltitude                (mavlink_message_t& message);
     void _handleVfrHud                  (mavlink_message_t& message);
+#if !defined(NO_ARDUPILOT_DIALECT)
     void _handleRangefinder             (mavlink_message_t& message);
+#endif
     void _handleNavControllerOutput     (mavlink_message_t& message);
     void _handleHighLatency             (mavlink_message_t& message);
     void _handleHighLatency2            (mavlink_message_t& message);
