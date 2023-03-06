@@ -69,6 +69,7 @@ endif()
 add_library(qgc
 
 	${EXTRA_SRC}
+	${CUSTOM_SRC}
 
 	CmdLineOptParser.cc
 	CmdLineOptParser.h
@@ -152,7 +153,28 @@ add_subdirectory(uas)
 add_subdirectory(Vehicle)
 add_subdirectory(VehicleSetup)
 add_subdirectory(VideoManager)
-add_subdirectory(VideoReceiver)
+if (NOT DISABLE_VIDEOSTREAMING)
+	add_subdirectory(VideoReceiver)
+endif()
+
+if (NOT VideoEnabled)
+#	add_subdirectory(VideoStreaming)
+	message(STATUS "Video Streaming disabled")
+
+	add_library(VideoReceiver
+		VideoReceiver/VideoReceiver.h
+		VideoManager/GLVideoItemStub.cc
+		)
+
+	target_link_libraries(VideoReceiver
+		PUBLIC
+		Qt5::Multimedia
+		)
+
+	target_include_directories(VideoManager PUBLIC
+		VideoReceiver)
+
+endif()
 
 target_link_libraries(qgc
 	PRIVATE
