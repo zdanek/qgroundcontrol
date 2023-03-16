@@ -22,7 +22,6 @@
 #include "UAS.h"
 #include "JoystickManager.h"
 #include "MissionManager.h"
-#include "MissionController.h"
 #include "PlanMasterController.h"
 #include "GeoFenceManager.h"
 #include "RallyPointManager.h"
@@ -61,10 +60,6 @@
 #endif
 
 QGC_LOGGING_CATEGORY(VehicleLog, "VehicleLog")
-
-#define UPDATE_TIMER 50
-#define DEFAULT_LAT  38.965767f
-#define DEFAULT_LON -120.083923f
 
 const QString guided_mode_not_supported_by_vehicle = QObject::tr("Guided mode not supported by Vehicle.");
 
@@ -723,9 +718,11 @@ void Vehicle::_mavlinkMessageReceived(LinkInterface* link, mavlink_message_t mes
     case MAVLINK_MSG_ID_VFR_HUD:
         _handleVfrHud(message);
         break;
+#if !defined(NO_ARDUPILOT_DIALECT)
     case MAVLINK_MSG_ID_RANGEFINDER:
         _handleRangefinder(message);
         break;
+#endif
     case MAVLINK_MSG_ID_NAV_CONTROLLER_OUTPUT:
         _handleNavControllerOutput(message);
         break;
@@ -1008,13 +1005,14 @@ void Vehicle::_handleVfrHud(mavlink_message_t& message)
     _altitudeTuningFact.setRawValue(vfrHud.alt - _altitudeTuningOffset);
 }
 
+#if !defined(NO_ARDUPILOT_DIALECT)
 void Vehicle::_handleRangefinder(mavlink_message_t& message)
 {
     mavlink_rangefinder_t rangefinder;
     mavlink_msg_rangefinder_decode(&message, &rangefinder);
     _rangeFinderDistFact.setRawValue(qIsNaN(rangefinder.distance) ? 0 : rangefinder.distance);
 }
-
+#endif
 
 void Vehicle::_handleNavControllerOutput(mavlink_message_t& message)
 {
@@ -2239,7 +2237,8 @@ void Vehicle::requestDataStream(MAV_DATA_STREAM stream, uint16_t rate, bool send
 void Vehicle::_sendMessageMultipleNext()
 {
     if (_nextSendMessageMultipleIndex < _sendMessageMultipleList.count()) {
-        qCDebug(VehicleLog) << "_sendMessageMultipleNext:" << _sendMessageMultipleList[_nextSendMessageMultipleIndex].message.msgid;
+//bzd to be enabled but it spams too much
+         //qCDebug(VehicleLog) << "_sendMessageMultipleNext: " << _nextSendMessageMultipleIndex << ", mesg id: " << _sendMessageMultipleList[_nextSendMessageMultipleIndex].message.msgid;
 
         SharedLinkInterfacePtr sharedLink = vehicleLinkManager()->primaryLink().lock();
         if (sharedLink) {
@@ -2496,6 +2495,11 @@ bool Vehicle::supportsMotorInterference() const
 bool Vehicle::supportsTerrainFrame() const
 {
     return !px4Firmware();
+}
+
+bool Vehicle::supportsRcChannelOverride() const
+{
+    return _firmwarePlugin->supportsRcChannelOverride();
 }
 
 QString Vehicle::vehicleTypeName() const {
@@ -4202,4 +4206,77 @@ void Vehicle::setGripperAction(GRIPPER_ACTIONS gripperAction)
             0,                                   // Param1: Gripper ID (Always set to 0)
             gripperAction,                       // Param2: Gripper Action
             0, 0, 0, 0, 0);                      // Param 3 ~ 7 : unused
+}
+
+void Vehicle::rcChannelOverride(uint8_t rcChannel, uint16_t pwmValue)
+{
+    // TODO(bzd) take from joystick settings or from RC settings
+    const int maxRcChannels = 16;
+    if (rcChannel > maxRcChannels) {
+        qCWarning(VehicleLog) << "Unsupported rc channel " << rcChannel << " to override";
+        return;
+    }
+    if (pwmValue > 2000 || pwmValue < 1000) {
+        qCWarning(VehicleLog) << "Bad PWM override value " << pwmValue << " for channel " << rcChannel;
+        return;
+    }
+
+    qCDebug(VehicleLog) << "Sending RC channel " << rcChannel << " PWM override to " << pwmValue;
+
+    uint16_t override_data[18] = {};
+    for (int i = 0; i < 18; i++) {
+        override_data[i] = UINT16_MAX;
+    }
+    override_data[rcChannel - 1] = pwmValue;
+
+    rcChannelsOverride(override_data);
+}
+
+void Vehicle::rcChannelsOverride(uint16_t *override_data) {
+    SharedLinkInterfacePtr sharedLink = vehicleLinkManager()->primaryLink().lock();
+    if (!sharedLink) {
+        qCDebug(VehicleLog)<< "rcChannelOverride: primary link gone!";
+        return;
+    }
+
+    if (sharedLink->linkConfiguration()->isHighLatency()) {
+        return;
+    }
+
+    if (VehicleLog().isDebugEnabled()) {
+        for (int i = 0; i < 18; i++) {
+            if (override_data[i] > 0 && override_data[i] < UINT16_MAX - 1) {
+                qCDebug(VehicleLog) << "RC Override ch " << i << " => " << override_data[i];
+            }
+        }
+    }
+
+    mavlink_message_t message;
+
+    mavlink_msg_rc_channels_override_pack_chan(
+        static_cast<uint8_t>(_mavlink->getSystemId()),
+        static_cast<uint8_t>(_mavlink->getComponentId()),
+        sharedLink->mavlinkChannel(),
+        &message,
+        static_cast<uint8_t>(_id),
+        0,
+        override_data[0],
+        override_data[1],
+        override_data[2],
+        override_data[3],
+        override_data[4],
+        override_data[5],
+        override_data[6],
+        override_data[7],
+        override_data[8],
+        override_data[9],
+        override_data[10],
+        override_data[11],
+        override_data[12],
+        override_data[13],
+        override_data[14],
+        override_data[15],
+        override_data[16],
+        override_data[17]);
+    sendMessageOnLinkThreadSafe(sharedLink.get(), message);
 }

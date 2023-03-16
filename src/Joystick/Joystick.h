@@ -16,23 +16,57 @@
 #include <QThread>
 #include <atomic>
 
+#include "JoystickMavCommand.h"
+#include "MultiVehicleManager.h"
 #include "QGCLoggingCategory.h"
 #include "Vehicle.h"
-#include "MultiVehicleManager.h"
-#include "JoystickMavCommand.h"
 
 Q_DECLARE_LOGGING_CATEGORY(JoystickLog)
 Q_DECLARE_LOGGING_CATEGORY(JoystickValuesLog)
 Q_DECLARE_METATYPE(GRIPPER_ACTIONS)
 
+static const int MAX_RC_CHANNELS = 16;
+
 /// Action assigned to button
 class AssignedButtonAction : public QObject {
     Q_OBJECT
+
 public:
-    AssignedButtonAction(QObject* parent, const QString name);
-    QString action;
-    QElapsedTimer buttonTime;
-    bool    repeat = false;
+    AssignedButtonAction(QObject* parent, const QString action);
+
+    AssignedButtonAction(QObject* parent, const QString action,
+                                      const uint16_t loPwmValue,
+                                      const uint16_t hiPwmValue,
+                                      bool latch);
+    QString action() const { return _action; }
+    void action(const QString& action) { _action = action; }
+    QElapsedTimer buttonTime() const { return _buttonTime; }
+    bool repeat() const { return _repeat; }
+    void repeat(bool repeat) { _repeat = repeat; }
+
+    uint16_t lowPwm() const { return _loPwmValue; }
+    uint16_t highPwm() const { return _hiPwmValue; }
+    void lowPwm(uint16_t value) { _loPwmValue = value; }
+    void highPwm(uint16_t value) { _hiPwmValue = value; }
+    void pwmLatchMode(bool latch) { _pwmLatchMode = latch; }
+    bool pwmLatchMode() const { return _pwmLatchMode; }
+    bool isPwmOverrideAction() const { return _isPwmOverrideAction; }
+    int16_t calculatePwm(bool buttonDown);
+    uint8_t rcChannel() const { return _pwmRcChannel; }
+
+private:
+    static uint8_t getRcChannelFromAction(const QString action);
+
+    QString _action;
+    QElapsedTimer _buttonTime;
+    bool    _repeat = false;
+/// PWM override related fields
+    const bool _isPwmOverrideAction;
+    uint16_t _loPwmValue;
+    uint16_t _hiPwmValue;
+    bool _pwmLatchMode;
+    const uint8_t _pwmRcChannel;
+    bool _pwmLatchButtonDown = false;
 };
 
 /// Assignable Button Action
@@ -101,6 +135,7 @@ public:
     Q_PROPERTY(QmlObjectListModel* assignableActions    READ assignableActions          NOTIFY      assignableActionsChanged)
     Q_PROPERTY(QStringList assignableActionTitles       READ assignableActionTitles     NOTIFY      assignableActionsChanged)
     Q_PROPERTY(QString  disabledActionName              READ disabledActionName         CONSTANT)
+    Q_PROPERTY(QList<bool> pwmVisibilities             READ pwmVisibilities            NOTIFY      pwmVisibilitiesChanged)
 
     Q_PROPERTY(int      throttleMode            READ throttleMode           WRITE setThrottleMode       NOTIFY throttleModeChanged)
     Q_PROPERTY(float    axisFrequencyHz         READ axisFrequencyHz        WRITE setAxisFrequency      NOTIFY axisFrequencyHzChanged)
@@ -116,11 +151,16 @@ public:
 
     Q_INVOKABLE void    setButtonRepeat     (int button, bool repeat);
     Q_INVOKABLE bool    getButtonRepeat     (int button);
+    Q_INVOKABLE void    setButtonPwmLatch   (int button, bool latch);
+    Q_INVOKABLE bool    getButtonPwmLatch   (int button);
     Q_INVOKABLE void    setButtonAction     (int button, const QString& action);
     Q_INVOKABLE QString getButtonAction     (int button);
+    Q_INVOKABLE bool 	assignableButtonActionIsPwm	(int button);
+    Q_INVOKABLE bool    assignableActionIsPwm   	(QString action);
+    Q_INVOKABLE int     setButtonPwm        (int button, bool lowPwm, int value);
+    Q_INVOKABLE int     getButtonPwm        (int button, bool lowPwm);
 
     // Property accessors
-
     QString     name                () { return _name; }
     int         totalButtonCount    () const{ return _totalButtonCount; }
     int         axisCount           () const{ return _axisCount; }
@@ -129,6 +169,7 @@ public:
     QmlObjectListModel* assignableActions   () { return &_assignableButtonActions; }
     QStringList assignableActionTitles      () { return _availableActionTitles; }
     QString     disabledActionName          () { return _buttonActionNone; }
+    QList<bool> pwmVisibilities             () { return _pwmSettingsVisibilities; }
 
     /// Start the polling thread which will in turn emit joystick signals
     void startPolling(Vehicle* vehicle);
@@ -142,12 +183,6 @@ public:
 
     void stop();
 
-/*
-    // Joystick index used by sdl library
-    // Settable because sdl library remaps indices after certain events
-    virtual int index(void) = 0;
-    virtual void setIndex(int index) = 0;
-*/
 	virtual bool requiresCalibration(void) { return true; }
 
     int   throttleMode      ();
@@ -191,6 +226,7 @@ signals:
     void calibratedChanged          (bool calibrated);
     void buttonActionsChanged       ();
     void assignableActionsChanged   ();
+    void pwmVisibilitiesChanged     ();
     void throttleModeChanged        (int mode);
     void negativeThrustChanged      (bool allowNegative);
     void exponentialChanged         (float exponential);
@@ -231,12 +267,13 @@ protected:
     void    _saveButtonSettings     ();
     void    _loadSettings           ();
     float   _adjustRange            (int value, Calibration_t calibration, bool withDeadbands);
-    void    _executeButtonAction    (const QString& action, bool buttonDown);
+    void    _executeButtonAction    (const QString &action, int buttonIndex, bool buttonDown);
     int     _findAssignableButtonAction(const QString& action);
     bool    _validAxis              (int axis) const;
     bool    _validButton            (int button) const;
     void    _handleAxis             ();
     void    _handleButtons          ();
+    void    _handleRcOverride       ();
     void    _buildActionList        (Vehicle* activeVehicle);
 
     void    _pitchStep              (int direction);
@@ -256,6 +293,27 @@ private:
     void _updateTXModeSettingsKey(Vehicle* activeVehicle);
     int _mapFunctionMode(int mode, int function);
     void _remapAxes(int currentMode, int newMode, int (&newMapping)[maxFunction]);
+
+    void _removeButtonSettings(int button);
+    void _saveButtonSettings(int button);
+    /// if repeat is available for action under button, sets passed repeat flag
+    /// otherwise sets false as safe value
+    void _setButtonRepeatIfAvailable(int button, bool repeat);
+    bool _executeRcOverrideButtonAction(int buttonIndex, bool buttonDown);
+    void _clearRcOverrideButtonActions();
+    uint16_t _mapRcOverrideToRelease(uint8_t rcChannel, uint16_t value);
+//    bool _isButtonOfMultiButtonPWMOverride(int button);
+    /**
+     * @brief Checks if the button is a multi-button PWM override, returns any other button if it is
+     *
+     * Searches for other buttons that are part of the same multi-button PWM override Action and returns the first one found that is different from the passed button.
+     * If the passed button is not part of a multi-button PWM override, returns -1.
+     *
+     * @param button
+     * @return
+     */
+    int _getOtherMultiButtonPWMOverrideButtonIndex(int button);
+    bool _isActionMultiButtonPWMOverride(const QString& action);
 
     // Override from QThread
     virtual void run();
@@ -286,6 +344,7 @@ protected:
     float   _axisFrequencyHz        = _defaultAxisFrequencyHz;
     float   _buttonFrequencyHz      = _defaultButtonFrequencyHz;
     Vehicle* _activeVehicle         = nullptr;
+    int16_t _rcOverride[MAX_RC_CHANNELS];
 
     bool    _pollingStartedForCalibration = false;
 
@@ -300,18 +359,22 @@ protected:
     static int          _transmitterMode;
     int                 _rgFunctionAxis[maxFunction] = {};
     QElapsedTimer       _axisTime;
+    QElapsedTimer       _rcOverrideTimer;
+    bool _rcOverrideActive = false;
 
     QmlObjectListModel              _assignableButtonActions;
     QList<AssignedButtonAction*>    _buttonActionArray;
     QStringList                     _availableActionTitles;
+    QList<bool>                     _pwmSettingsVisibilities;
     MultiVehicleManager*            _multiVehicleManager = nullptr;
 
-    QList<JoystickMavCommand> _customMavCommands;
+    QList<JoystickMavCommand>  _customMavCommands;
 
     static const float  _minAxisFrequencyHz;
     static const float  _maxAxisFrequencyHz;
     static const float  _minButtonFrequencyHz;
     static const float  _maxButtonFrequencyHz;
+    static const float  _rcOverrideFrequencyHz;
 
 private:
     static const char*  _rgFunctionSettingsKey[maxFunction];
@@ -320,6 +383,9 @@ private:
     static const char* _calibratedSettingsKey;
     static const char* _buttonActionNameKey;
     static const char* _buttonActionRepeatKey;
+    static const char* _buttonActionLowPwmValueKey;
+    static const char* _buttonActionHighPwmValueKey;
+    static const char* _buttonActionLatchPwmValueKey;
     static const char* _throttleModeSettingsKey;
     static const char* _negativeThrustSettingsKey;
     static const char* _exponentialSettingsKey;
@@ -365,4 +431,5 @@ private:
 
 private slots:
     void _activeVehicleChanged(Vehicle* activeVehicle);
+
 };
