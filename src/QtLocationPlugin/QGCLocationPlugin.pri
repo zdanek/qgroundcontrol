@@ -27,6 +27,8 @@ HEADERS += \
     $$PWD/ElevationMapProvider.h \
     $$PWD/GoogleMapProvider.h \
     $$PWD/BingMapProvider.h \
+    $$PWD/WmsMapProvider.h \
+    $$PWD/WmsServerService.h \
     $$PWD/GenericMapProvider.h \
     $$PWD/EsriMapProvider.h \
     $$PWD/MapboxMapProvider.h \
@@ -48,6 +50,8 @@ SOURCES += \
     $$PWD/ElevationMapProvider.cpp \
     $$PWD/GoogleMapProvider.cpp \
     $$PWD/BingMapProvider.cpp \
+    $$PWD/WmsMapProvider.cpp \
+    $$PWD/WmsServerService.cpp \
     $$PWD/GenericMapProvider.cpp \
     $$PWD/EsriMapProvider.cpp \
     $$PWD/MapboxMapProvider.cpp \
