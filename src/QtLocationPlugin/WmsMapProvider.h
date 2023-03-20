@@ -22,12 +22,17 @@ namespace {
     const float maxWebMerkator = 20037508.342789f;
 }
 
+enum class Projection {
+    EPSG_3857,
+    EPSG_4326,
+    unknown
+};
+
 class WmsMapProvider : public MapProvider {
     Q_OBJECT
 
 public:
     WmsMapProvider(QObject *parent);
-
     ~WmsMapProvider() = default;
 
 protected:
@@ -43,16 +48,25 @@ private:
      * If conversion is not possible, due to unknown projection or arguments out of range
      * false is returned.
      */
-    bool TileToBBox(const int x,
+    bool _tileToBBox(const int x,
                     const int y,
                     const int zoom,
                     float *bbox_min_x,float *bbox_min_y, float *bbox_max_x, float *bbox_max_y);
+    float _tileXToLon(const int x, const int zoom);
+    float _tileYToLat(const int y, const int zoom);
+    void _loadConfig();
 
-//    QString layer_ = "klokantech-basic";
-//    QString layer_ = "osm-bright";
-    QString layer_ = "Polska";
-//    QString query_srs_ = "EPSG:3857";
-    QString query_srs_ = "EPSG:4326";
-    float TileXToLon(const int x, const int zoom, QString q_string);
-    float TileYToLat(const int y, const int zoom, QString q_string);
+    Projection projection_ = Projection::unknown;
+
+    QString wmsServiceUrl_ = "http://localhost:8080/services/wms";
+    QString layer_ = "klokantech-basic";    //klokantech-basic-2
+    QString style_ = "default";
+    QString query_srs_ = "EPSG:3857";
+
+    // Kenbit
+//    QString wmsServiceUrl_ = "http://192.168.10.25:8080/geoserver/wms";
+//    QString layer_ = "Polska";
+//    QString style_ = "";
+//    QString query_srs_ = "EPSG:4326";
+    void _saveConfig();
 };
