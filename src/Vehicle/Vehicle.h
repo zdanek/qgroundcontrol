@@ -438,6 +438,9 @@ public:
     Q_INVOKABLE void flashBootloader();
 #endif
 
+    /// Save the joystick enable setting to the settings group
+    Q_INVOKABLE void saveJoystickSettings(void);
+
     bool    isInitialConnectComplete() const;
     bool    guidedModeSupported     () const;
     bool    pauseVehicleSupported   () const;
@@ -985,11 +988,9 @@ private slots:
     void _gotProgressUpdate                 (float progressValue);
 
 private:
-    void _loadSettings                  ();
-    void _activeVehicleAvailableChanged (bool isActiveVehicleAvailable);
+    void _loadJoystickSettings          ();
     void _activeVehicleChanged          (Vehicle* newActiveVehicle);
-    void _saveSettings                  ();
-    void _startJoystick                 (bool start);
+    void _captureJoystick               ();
     void _handlePing                    (LinkInterface* link, mavlink_message_t& message);
     void _handleHomePosition            (mavlink_message_t& message);
     void _handleHeartbeat               (mavlink_message_t& message);
