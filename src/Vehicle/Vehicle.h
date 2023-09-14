@@ -460,6 +460,15 @@ public:
     void setJoystickEnabled         (bool enabled);
     void sendJoystickDataThreadSafe (float roll, float pitch, float yaw, float thrust, quint16 buttons);
 
+    /// Sends Channel override value
+    ///     @param rcChannel channel number 1-16
+    ///     @param pwmValue direct value 1000 - 2000
+    void rcChannelOverride(uint8_t rcChannel, uint16_t pwmValue);
+    void rcChannelsOverride(uint16_t* rcChannels);
+    /// Sends disabling of channel override
+    ///     @param rcChannel channel number 1-16
+    void disableChannelOverride(uint8_t rcChannel);
+
     // Property accesors
     int id() const{ return _id; }
     MAV_AUTOPILOT firmwareType() const { return _firmwareType; }
@@ -518,6 +527,7 @@ public:
     bool supportsJSButton               () const;
     bool supportsMotorInterference      () const;
     bool supportsTerrainFrame           () const;
+    bool supportsRcChannelOverride      () const;
 
     void setGuidedMode(bool guidedMode);
 

@@ -655,3 +655,8 @@ QString PX4FirmwarePlugin::getHobbsMeter(Vehicle* vehicle)
     qCDebug(VehicleLog) << "Hobbs Meter string:" << timeStr;
     return timeStr;
 } 
+
+bool PX4FirmwarePlugin::supportsRcChannelOverride(void)
+{
+    return false;
+}
