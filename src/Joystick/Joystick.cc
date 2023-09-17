@@ -1039,7 +1039,7 @@ bool Joystick::assignableActionIsPwm(QString action) {
 }
 
 int Joystick::setButtonPwm(int button, bool lowPwm, int value) {
-    qDebug(JoystickLog) << "setButtonPwm: " << button << (lowPwm ? "LOW " : "HIGH ") << value;
+    qCDebug(JoystickLog) << "setButtonPwm: " << button << (lowPwm ? "LOW " : "HIGH ") << value;
     if (assignableButtonActionIsPwm(button)) {
         QSettings settings;
         settings.beginGroup(_settingsGroup);
@@ -1067,6 +1067,7 @@ int Joystick::setButtonPwm(int button, bool lowPwm, int value) {
 }
 
 int Joystick::getButtonPwm(int button, bool lowPwm) {
+    qCDebug(JoystickLog) << "getButtonPwm: " << button << (lowPwm ? "LOW " : "HIGH ");
     if (_validButton(button) && assignableButtonActionIsPwm(button)) {
         QSettings settings;
         settings.beginGroup(_settingsGroup);
@@ -1083,10 +1084,11 @@ int Joystick::getButtonPwm(int button, bool lowPwm) {
 
 void Joystick::setButtonPwmLatch(int button, bool latch)
 {
+    qCDebug(JoystickLog) << "PWM Latch mode for button " << button << (latch ? " enabled" : " disabled");
+
     if (!_validButton(button) || !_buttonActionArray[button]) {
         return;
     }
-    qCDebug(JoystickLog) << "PWM Latch mode for button " << button << (latch ? " enabled" : " disabled");
     auto action = _buttonActionArray[button];
     action->pwmLatchMode(latch);
 
@@ -1097,6 +1099,7 @@ void Joystick::setButtonPwmLatch(int button, bool latch)
 }
 
 bool Joystick::getButtonPwmLatch(int button) {
+    qCDebug(JoystickLog) << "getButtonPwmLatch: " << button;
     if (!_validButton(button) || !_buttonActionArray[button]) {
         return false;
     }
