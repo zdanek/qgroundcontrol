@@ -118,7 +118,6 @@ add_custom_target(QmlControlsQml
 		QGCToolBarButton.qml
 		QGCToolInsets.qml
 		QGCViewDialogContainer.qml
-		QGCViewDialog.qml
 		QGCViewMessage.qml
 		QmlTest.qml
 		RCChannelMonitor.qml

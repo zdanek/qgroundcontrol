@@ -38,6 +38,12 @@ set(COMPANY "Mavlink")
 set(COPYRIGHT "Copyright (c) 2023 QGroundControl. All rights reserved.")
 set(IDENTIFIER "io.mavlink.qgroundcontrol")
 
+add_definitions(
+		-DQGC_APPLICATION_NAME="QGroundControl"
+		-DQGC_ORG_NAME="QGroundControl.org"
+		-DQGC_ORG_DOMAIN="org.qgroundcontrol"
+)
+
 option(QGC_DISABLE_CUSTOM_BUILD "Disable custom build override" OFF)
 
 if (NOT QGC_DISABLE_CUSTOM_BUILD)
@@ -59,14 +65,56 @@ if (NOT QGC_DISABLE_CUSTOM_BUILD)
 	message(STATUS "Custom build is disabled")
 endif()
 
+#
+# Plugin configuration
+#
+# This allows you to build custom versions of QGC which only includes your
+# specific vehicle plugin. To remove support for a firmware type completely,
+# disable both the Plugin and PluginFactory entries. To include custom support
+# for an existing plugin type disable PluginFactory only. Then provide you own
+# implementation of FirmwarePluginFactory and use the FirmwarePlugin and
+# AutoPilotPlugin classes as the base class for your derived plugin
+# implementation.
+
+
 if (QGC_DISABLE_APM_PLUGIN)
 	message(STATUS "Project MESSAGE: Disable APM Plugin")
 endif()
+
+if (QGC_DISABLE_APM_PLUGIN_FACTORY)
+	message("Disable APM Plugin Factory")
+endif ()
 
 if (QGC_DISABLE_PX4_PLUGIN)
 	message(STATUS "Project MESSAGE: Disable PX4 Plugin")
 endif()
 
+if (QGC_DISABLE_PX4_PLUGIN_FACTORY)
+	message("Disable PX4 Plugin Factory")
+endif ()
+
+# Bluetooth
+option(QGC_ENABLE_BLUETOOTH "Enable Bluetooth support" OFF)
+if (QGC_ENABLE_BLUETOOTH)
+	message(STATUS "Bluetooth support enabled (manual override from command line)")
+	add_definitions(-DQGC_ENABLE_BLUETOOTH)
+else()
+	message(STATUS "Bluetooth support disabled")
+	remove_definitions(-DQGC_ENABLE_BLUETOOTH)
+endif()
+
+# QTNFC
+option(QGC_ENABLE_QTNFC "Enable QTNFC support" OFF)
+if (QGC_ENABLE_QTNFC)
+	message(STATUS "Including support for QTNFC (manual override from command line)")
+	add_definitions(-DQGC_ENABLE_QTNFC)
+else()
+	message(STATUS "Skipping support for QTNFC")
+	remove_definitions(-DQGC_ENABLE_QTNFC)
+endif()
+
+# USB Camera and UVC Video Sources
+option(QGC_DISABLE_UVC "Disable UVC support" OFF)
 if (QGC_DISABLE_UVC)
 	message(STATUS "Project MESSAGE: Disable UVC")
 	add_definitions(-DQGC_DISABLE_UVC)
@@ -85,12 +133,6 @@ endif()
 if (QGC_DISABLE_APM_PLUGIN)
 	message(STATUS "Disable APM Plugin")
 endif()
-
-add_definitions(
-	-DQGC_APPLICATION_NAME="QGroundControl"
-	-DQGC_ORG_NAME="QGroundControl.org"
-	-DQGC_ORG_DOMAIN="org.qgroundcontrol"
-	)
 
 include(Git)
 message(STATUS "QGroundControl version: ${APP_VERSION_STR}")
@@ -221,16 +263,6 @@ include_directories(
 add_subdirectory(libs)
 add_subdirectory(src)
 
-set(QGC_RESOURCES
-	${CMAKE_CURRENT_SOURCE_DIR}/qgcimages.qrc
-	${CMAKE_CURRENT_SOURCE_DIR}/qgcresources.qrc
-	${CMAKE_CURRENT_SOURCE_DIR}/qgroundcontrol.qrc
-	${CMAKE_CURRENT_SOURCE_DIR}/resources/InstrumentValueIcons/InstrumentValueIcons.qrc
-	${CMAKE_CURRENT_SOURCE_DIR}/src/FirmwarePlugin/APM/APMResources.qrc
-	${CMAKE_CURRENT_SOURCE_DIR}/src/FirmwarePlugin/PX4/PX4Resources.qrc
-	${CMAKE_CURRENT_SOURCE_DIR}/VideoReceiverApp/qml.qrc
-	)
-
 if (NOT QGC_DISABLE_CUSTOM_BUILD)
 	if (EXISTS ${CMAKE_SOURCE_DIR}/custom/qgroundcontrol.qrc)
 		message(STATUS "Using custom qgroundcontrol.qrc")
@@ -266,7 +298,10 @@ else()
 			${CMAKE_CURRENT_SOURCE_DIR}/qgcimages.qrc
 			${CMAKE_CURRENT_SOURCE_DIR}/qgcresources.qrc
 			${CMAKE_CURRENT_SOURCE_DIR}/qgroundcontrol.qrc
-			${CMAKE_CURRENT_SOURCE_DIR}/resources/InstrumentValueIcons/InstrumentValueIcons.qrc)
+			${CMAKE_CURRENT_SOURCE_DIR}/resources/InstrumentValueIcons/InstrumentValueIcons.qrc
+#bzd check if works	as this is defined in VideoReceiverApp/Cmake
+#			${CMAKE_CURRENT_SOURCE_DIR}/VideoReceiverApp/qml.qrc
+	)
 endif()
 
 if (NOT QGC_DISABLE_APM_PLUGIN)

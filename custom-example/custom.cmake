@@ -5,11 +5,8 @@ set(QGC_DISABLE_UVC OFF)
 
 # disable video streaming
 set(DISABLE_VIDEOSTREAMING OFF)
-# disable video streaming
+# disable mavlink inspector
 set(QGC_DISABLE_MAVLINK_INSPECTOR OFF )
-
-# disable airmap
-set(DISABLE_AIRMAP OFF)
 
 # disable Ardupilot mavlink dialect
 set(QGC_DISABLE_APM_MAVLINK ON)

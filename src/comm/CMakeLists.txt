@@ -11,9 +11,23 @@ if(BUILD_TESTING)
 	)
 endif()
 
+if (NOT NO_SERIAL_LINK)
+	list(APPEND EXTRA_SRC
+		QGCSerialPortInfo.cc
+		QGCSerialPortInfo.h
+		SerialLink.cc
+		SerialLink.h
+	)
+endif ()
+
+if (QGC_ENABLE_BLUETOOTH)
+	list(APPEND EXTRA_SRC
+		BluetoothLink.cc
+		BluetoothLink.h
+	)
+endif()
+
 add_library(comm
-	#BluetoothLink.cc
-	#BluetoothLink.h
 	LinkConfiguration.cc
 	LinkConfiguration.h
 	LinkInterface.cc
@@ -28,10 +42,6 @@ add_library(comm
 	MAVLinkProtocol.h
 	QGCMAVLink.cc
 	QGCMAVLink.h
-	QGCSerialPortInfo.cc
-	QGCSerialPortInfo.h
-	SerialLink.cc
-	SerialLink.h
 	TCPLink.cc
 	TCPLink.h
 	UdpIODevice.cc
