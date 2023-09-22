@@ -35,7 +35,7 @@ ColumnLayout {
         id:                         valueIcon
         Layout.alignment:           _verticalOrientation ? Qt.AlignHCenter : Qt.AlignVCenter
         height:                     _tightHeight * 0.75
-        width:                      height
+        width:                      _tightHeight * 0.85
         sourceSize.height:          height
         fillMode:                   Image.PreserveAspectFit
         mipmap:                     true
@@ -49,9 +49,9 @@ ColumnLayout {
 
         function updateIcon() {
             if (instrumentValueData.rangeType === InstrumentValueData.IconSelectRange) {
-                valueIcon.source = iconPrefix + instrumentValueData.currentIcon
+                valueIcon.source = instrumentValueData.currentIcon != "" ? iconPrefix + instrumentValueData.currentIcon : "";
             } else if (instrumentValueData.icon) {
-                valueIcon.source = iconPrefix + instrumentValueData.icon
+                valueIcon.source = instrumentValueData.icon != "" ? iconPrefix + instrumentValueData.icon : "";
             } else {
                 valueIcon.source = ""
             }
@@ -77,6 +77,7 @@ ColumnLayout {
         height:             _tightHeight
         font.pointSize:     ScreenTools.smallFontPointSize
         text:               instrumentValueData.text
+        color:              instrumentValueData.isValidColor(instrumentValueData.currentColor) ? instrumentValueData.currentColor : qgcPal.text
         visible:            !_iconVisible
     }
 }
