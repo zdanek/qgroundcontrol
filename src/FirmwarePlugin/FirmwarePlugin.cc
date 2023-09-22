@@ -939,6 +939,7 @@ bool FirmwarePlugin::_armVehicleAndValidate(Vehicle* vehicle)
 bool FirmwarePlugin::_setFlightModeAndValidate(Vehicle* vehicle, const QString& flightMode)
 {
     if (vehicle->flightMode() == flightMode) {
+        qCDebug(FirmwarePluginLog) << "_setFlightModeAndValidate already in flight mode" << flightMode;
         return true;
     }
 
@@ -946,6 +947,7 @@ bool FirmwarePlugin::_setFlightModeAndValidate(Vehicle* vehicle, const QString& 
 
     // We try 3 times
     for (int retries=0; retries<3; retries++) {
+        qCDebug(FirmwarePluginLog) << "_setFlightModeAndValidate try " << retries;
         vehicle->setFlightMode(flightMode);
 
         // Wait for vehicle to return flight mode
@@ -962,6 +964,7 @@ bool FirmwarePlugin::_setFlightModeAndValidate(Vehicle* vehicle, const QString& 
         }
     }
 
+    qCDebug(FirmwarePluginLog) << "_setFlightModeAndValidate " << flightMode << " flightModeChanged"  << flightModeChanged;
     return flightModeChanged;
 }
 
