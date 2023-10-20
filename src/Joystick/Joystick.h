@@ -159,6 +159,8 @@ public:
     Q_INVOKABLE bool    assignableActionIsPwm   (QString action);
     Q_INVOKABLE int     setButtonPwm        (int button, bool lowPwm, int value);
     Q_INVOKABLE int     getButtonPwm        (int button, bool lowPwm);
+    Q_INVOKABLE int     validateButtonPwm   (int button, bool lowPwm, int value);
+    Q_INVOKABLE bool    enablePwmLatch      (int button);
 
     // Property accessors
 
@@ -321,6 +323,7 @@ private:
      */
     int _getOtherMultiButtonPWMOverrideButtonIndex(int button);
     bool _isActionMultiButtonPWMOverride(const QString& action);
+    int _safePwmValue(int value);
 
     // Override from QThread
     virtual void run();
