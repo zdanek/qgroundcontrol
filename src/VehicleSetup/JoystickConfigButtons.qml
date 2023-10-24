@@ -49,6 +49,10 @@ ColumnLayout {
             Layout.preferredWidth:  parent.width
             spacing:                ScreenTools.defaultFontPixelWidth
             visible:                !globals.activeVehicle.supportsJSButton
+
+
+
+
             Repeater {
                 id:             buttonActionRepeater
                 model:          _activeJoystick ? Math.min(_activeJoystick.totalButtonCount, _maxButtons) : []
@@ -180,42 +184,36 @@ ColumnLayout {
                             visible:                true
                             validator: IntValidator { bottom:1000; top: 2000}
 
+                            function validateLowPwm() {
+                                var valid = pwmSettings._validateButtonPwm(modelData, true, lowPwmValue.text);
+                                textColor = pwmSettings._mapValidColor(valid);
+                            }
+
                             Connections {
-                                target: buttonActionCombo
-                                onCurrentIndexChanged: {
-                                    if (_activeJoystick) {
-                                        console.log("combo idx, ", buttonActionCombo.currentIndex)
-                                        console.log("button number, ", modelData)
-                                        var pwm = pwmSettings._getButtonPwm(modelData, true)
-                                        console.log("low pwm value ", pwm)
-                                        //lowPwmValue.text = pwmSettings._safePwmValue(pwm, 1000);
-                                    }
+                                target: _activeJoystick
+                                onButtonActionsChanged: {
+                                    lowPwmValue.text = pwmSettings._getButtonPwm(modelData, true)
+                                }
+                            }
+                            Connections {
+                                target: _activeJoystick
+                                onRevalidateLowPwmFields: {
+                                    lowPwmValue.validateLowPwm();
                                 }
                             }
 
                             Component.onCompleted: {
                                 if(_activeJoystick) {
-                                    console.log("low, completed")
                                     text = pwmSettings._getButtonPwm(modelData, true)
                                 }
                             }
                             onEditingFinished: {
-                                // setButtonPwm calculates proper value and we set it back
-                                console.log("low, editing finished")
-                                var pwm = pwmSettings._setButtonPwm(modelData, true, text)
-//                                lowPwmValue.text = pwmSettings._safePwmValue(pwm, 1000);
+                                var safeValue = pwmSettings._setButtonPwm(modelData, true, text)
+                                text = safeValue;
                             }
-                            // support other events
                             onTextChanged: {
-                                console.log("low, text changed")
-                                var valid = pwmSettings._validateButtonPwm(modelData, true, text);
-                                lowPwmValue.textColor = pwmSettings._mapValidColor(valid);
+                                validateLowPwm();
                             }
-                            onAccepted: {
-                                // this is called only after editing finished and enter pressed
-                                console.log("low, accepted")
-                            }
-
                         }
                         QGCLabel {
                             id:         highPwmLabel
@@ -230,13 +228,11 @@ ColumnLayout {
                             validator: IntValidator { bottom:1000; top: 2000}
 
                             Connections {
-                                target: buttonActionCombo
-                                function onCurrentIndexChanged(index) {
-                                    if(_activeJoystick) {
-                                        var pwm = pwmSettings._getButtonPwm(modelData, false)
-                                        console.log("high pwm ", pwm)
-                                        highPwmValue.text = pwmSettings._safePwmValue(pwm, 2000);
-                                    }
+                                target: _activeJoystick
+                                onButtonActionsChanged: {
+                                    var pwm = pwmSettings._getButtonPwm(modelData, false)
+                                    console.log("onButtonActionsChanged: high pwm value ", pwm)
+                                    highPwmValue.text = pwm;
                                 }
                             }
 
@@ -246,9 +242,8 @@ ColumnLayout {
                                 }
                             }
                             onEditingFinished: {
-                                // setButtonPwm calculates proper value and we set it back
-                                var pwm = pwmSettings._setButtonPwm(modelData, false, text)
-                                highPwmValue.text = pwmSettings._safePwmValue(pwm, 2000);
+                                var safeValue = pwmSettings._setButtonPwm(modelData, false, text)
+                                text = safeValue;
                             }
                         }
 
@@ -256,7 +251,7 @@ ColumnLayout {
                             id:                         latchCheck
                             text:                       qsTr("Latch")
                             anchors.verticalCenter:     parent.verticalCenter
-                            enabled:                    _activeJoystick.enablePwmLatch(modelData)
+                            enabled:                    _activeJoystick.pwmLatchEnabled(modelData)
 
                             onClicked: {
                                 _activeJoystick.setButtonPwmLatch(modelData, checked)
@@ -266,6 +261,13 @@ ColumnLayout {
                                     checked = _activeJoystick.getButtonPwmLatch(modelData)
                                 }
                             }
+                            Connections {
+                                target: _activeJoystick
+                                onButtonActionsChanged: {
+                                    latchCheck.enabled = _activeJoystick.pwmLatchEnabled(modelData)
+                                }
+                            }
+
                         }
                     }
                 }

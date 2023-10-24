@@ -160,7 +160,7 @@ public:
     Q_INVOKABLE int     setButtonPwm        (int button, bool lowPwm, int value);
     Q_INVOKABLE int     getButtonPwm        (int button, bool lowPwm);
     Q_INVOKABLE int     validateButtonPwm   (int button, bool lowPwm, int value);
-    Q_INVOKABLE bool    enablePwmLatch      (int button);
+    Q_INVOKABLE bool    pwmLatchEnabled     (int button);
 
     // Property accessors
 
@@ -269,6 +269,7 @@ signals:
      * @param gripperAction (Open / Close) Gripper action to command
      */
     void gripperAction              (GRIPPER_ACTIONS gripperAction);
+    void revalidateLowPwmFields     ();
 
 protected:
     void    _setDefaultCalibration  ();
