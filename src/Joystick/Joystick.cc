@@ -957,7 +957,7 @@ void Joystick::setButtonAction(int button, const QString& action)
             if (isPwmAction) {
                 // PWM Actions are not reusable
                 _buttonActionArray[button]->deleteLater();
-                _buttonActionArray[button] = new AssignedButtonAction(this, action, 0, 0, false);
+                _buttonActionArray[button] = new AssignedButtonAction(this, action, 1500, 1500, false);
             } else {
                 if (_buttonActionArray[button]->isPwmOverrideAction()) {
                     _buttonActionArray[button]->deleteLater();
@@ -974,6 +974,7 @@ void Joystick::setButtonAction(int button, const QString& action)
     }
     emit pwmVisibilitiesChanged();
     emit buttonActionsChanged();
+    emit revalidateLowPwmFields();
 }
 
 void Joystick::_setButtonRepeatIfAvailable(int button, bool repeat)
@@ -1046,6 +1047,7 @@ int Joystick::setButtonPwm(int button, bool lowPwm, int value) {
         if (lowPwm) {
             _buttonActionArray[button]->lowPwm(value);
             settings.setValue(QString(_buttonActionLowPwmValueKey).arg(button), value);
+            emit revalidateLowPwmFields();
         } else {
             _buttonActionArray[button]->highPwm(value);
             settings.setValue(QString(_buttonActionHighPwmValueKey).arg(button), value);
@@ -1070,6 +1072,7 @@ int Joystick::getButtonPwm(int button, bool lowPwm) {
         }
     }
 
+    qCDebug(JoystickLog) << "getButtonPwm: " << button << (lowPwm ? "LOW " : "HIGH ") << " value after set: " << value;
     return _safePwmValue(value);
 }
 
@@ -1082,7 +1085,7 @@ int Joystick::getButtonPwm(int button, bool lowPwm) {
  * 4. return 3 - valid and same value
  */
 int Joystick::validateButtonPwm(int button, bool lowPwm, int value) {
-    qCDebug(JoystickLog) << "checkButtonPwm: " << button << (lowPwm ? "LOW " : "HIGH ") << value;
+//    qCDebug(JoystickLog) << "checkButtonPwm: " << button << (lowPwm ? "LOW " : "HIGH ") << value;
     if (assignableButtonActionIsPwm(button)) {
         if (value < 1000 || value > 2000) {
             return 1;
@@ -1092,7 +1095,7 @@ int Joystick::validateButtonPwm(int button, bool lowPwm, int value) {
         }
         int anyOtherButtonWithSameAction = _getOtherMultiButtonPWMOverrideButtonIndex(button);
         if (anyOtherButtonWithSameAction != -1) {
-            qCDebug(JoystickLog) << "checkButtonPwm: " << button << " has same action as " << anyOtherButtonWithSameAction;
+//            qCDebug(JoystickLog) << "checkButtonPwm: " << button << " has same action as " << anyOtherButtonWithSameAction;
             if (value != _buttonActionArray[anyOtherButtonWithSameAction]->lowPwm()) {
                 return 2;
             }
@@ -1129,9 +1132,9 @@ bool Joystick::getButtonPwmLatch(int button)
     return _buttonActionArray[button]->isPwmOverrideAction() ? action->pwmLatchMode() : false;
 }
 
-bool Joystick::enablePwmLatch(int button)
+bool Joystick::pwmLatchEnabled(int button)
 {
-    qCDebug(JoystickLog) << "enablePwmLatch: " << button;
+    qCDebug(JoystickLog) << "pwmLatchEnabled: " << button;
     if (!_validButton(button) || !_buttonActionArray[button]) {
         return false;
     }
