@@ -57,7 +57,7 @@ WindowsBuild {
 # Branding
 #
 
-QGC_APP_NAME        = "QGroundControl"
+QGC_APPLICATION_NAME        = "QGroundControl"
 QGC_ORG_NAME        = "QGroundControl.org"
 QGC_ORG_DOMAIN      = "org.qgroundcontrol"
 QGC_APP_DESCRIPTION = "Open source ground control app provided by QGroundControl dev team"
@@ -89,7 +89,6 @@ exists(user_config.pri):infile(user_config.pri, CONFIG) {
 # This allows you to ignore the custom build even if the custom build
 # is present. It's useful to run "regular" builds to make sure you didn't
 # break anything.
-
 contains (CONFIG, QGC_DISABLE_CUSTOM_BUILD) {
     message("Disable custom build override")
 } else {
@@ -109,7 +108,7 @@ WindowsBuild {
     QMAKE_TARGET_COMPANY        = "$${QGC_ORG_NAME}"
     QMAKE_TARGET_DESCRIPTION    = "$${QGC_APP_DESCRIPTION}"
     QMAKE_TARGET_COPYRIGHT      = "$${QGC_APP_COPYRIGHT}"
-    QMAKE_TARGET_PRODUCT        = "$${QGC_APP_NAME}"
+    QMAKE_TARGET_PRODUCT        = "$${QGC_APPLICATION_NAME}"
 }
 
 #-------------------------------------------------------------------------------------
@@ -354,15 +353,16 @@ CustomBuild {
         RESOURCES += $$PWD/resources/InstrumentValueIcons/InstrumentValueIcons.qrc
     }
 } else {
-    DEFINES += QGC_APPLICATION_NAME=\"\\\"QGroundControl\\\"\"
-    DEFINES += QGC_ORG_NAME=\"\\\"QGroundControl.org\\\"\"
-    DEFINES += QGC_ORG_DOMAIN=\"\\\"org.qgroundcontrol\\\"\"
     RESOURCES += \
         $$PWD/qgroundcontrol.qrc \
         $$PWD/qgcresources.qrc \
         $$PWD/qgcimages.qrc \
         $$PWD/resources/InstrumentValueIcons/InstrumentValueIcons.qrc \
 }
+
+DEFINES += QGC_APPLICATION_NAME=\"\\\"$$QGC_APPLICATION_NAME\\\"\"
+DEFINES += QGC_ORG_NAME=\"\\\"$$QGC_ORG_NAME\\\"\"
+DEFINES += QGC_ORG_DOMAIN=\"\\\"$$QGC_ORG_DOMAIN\\\"\"
 
 #
 # Main QGroundControl portion of project file

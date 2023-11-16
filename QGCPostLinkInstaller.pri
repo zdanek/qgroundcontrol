@@ -39,7 +39,9 @@ installer {
         QMAKE_POST_LINK += && rm /tmp/tmp.dmg
     }
     WindowsBuild {
-        QMAKE_POST_LINK += $$escape_expand(\\n) $$quote("\"C:\\Program Files \(x86\)\\NSIS\\makensis.exe\"" $$(QGC_NSIS_INSTALLER_PARAMETERS) /DDRIVER_MSI="\"$${QGC_INSTALLER_DRIVER_MSI}\"" /DINSTALLER_ICON="\"$${QGC_INSTALLER_ICON}\"" /DHEADER_BITMAP="\"$${QGC_INSTALLER_HEADER_BITMAP}\"" /DAPPNAME="\"$${QGC_APP_NAME}\"" /DEXENAME="\"$${TARGET}\"" /DORGNAME="\"$${QGC_ORG_NAME}\"" /DDESTDIR=$${DESTDIR} /NOCD "\"/XOutFile $${DESTDIR}\\$${TARGET}-installer.exe\"" "\"$${QGC_INSTALLER_SCRIPT}\"")
+        QMAKE_POST_LINK += $$escape_expand(\\n) if exist "$${DESTDIR}\\$${TARGET}-installer.exe" del "$${DESTDIR}\\$${TARGET}-installer.exe"
+        QMAKE_POST_LINK += $$escape_expand(\\n) $$quote("\"C:\\Program Files \(x86\)\\NSIS\\makensis.exe\"" $$(QGC_NSIS_INSTALLER_PARAMETERS) /DDRIVER_MSI="\"$${QGC_INSTALLER_DRIVER_MSI}\"" /DINSTALLER_ICON="\"$${QGC_INSTALLER_ICON}\"" /DHEADER_BITMAP="\"$${QGC_INSTALLER_HEADER_BITMAP}\"" /DAPPNAME="\"$${QGC_APPLICATION_NAME}\"" /DEXENAME="\"$${TARGET}\"" /DORGNAME="\"$${QGC_ORG_NAME}\"" /DDESTDIR=$${DESTDIR} /NOCD "\"/XOutFile $${DESTDIR}\\$${TARGET}-installer.exe\"" "\"$${QGC_INSTALLER_SCRIPT}\"")
+        QMAKE_POST_LINK += $$escape_expand(\\n) echo Created Windows installer: "$${DESTDIR}\\$${TARGET}-installer.exe"
         OTHER_FILES += $${QGC_INSTALLER_SCRIPT}
     }
     LinuxBuild {
