@@ -4,6 +4,7 @@ AnalyzePage                             1.0 AnalyzePage.qml
 AppMessages                             1.0 AppMessages.qml
 AltModeDialog                           1.0 AltModeDialog.qml
 AxisMonitor                             1.0 AxisMonitor.qml
+BatteryStatus                           1.0 BatteryStatus.qml
 CameraCalcCamera                        1.0 CameraCalcCamera.qml
 CameraCalcGrid                          1.0 CameraCalcGrid.qml
 ContentAreaCalc                         1.0 ContentAreaCalc.qml

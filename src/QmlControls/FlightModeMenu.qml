@@ -19,8 +19,12 @@ QGCLabel {
     id:     _root
     text:   currentVehicle ? currentVehicle.flightMode : qsTr("N/A", "No data to display")
 
+    property var    desiredFontPointSize:   ScreenTools.largeFontPointSize
     property var    currentVehicle:         QGroundControl.multiVehicleManager.activeVehicle
     property real   mouseAreaLeftMargin:    0
+    property var    fontSizeScalingNumerator: 10
+
+    font.pointSize: Math.min(desiredFontPointSize * (fontSizeScalingNumerator / text.length), desiredFontPointSize)
 
     Menu {
         id: flightModesMenu

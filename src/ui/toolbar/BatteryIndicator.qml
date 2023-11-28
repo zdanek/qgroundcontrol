@@ -23,17 +23,17 @@ Item {
     id:             _root
     anchors.top:    parent.top
     anchors.bottom: parent.bottom
-    width:          batteryIndicatorRow.width
+
+    implicitWidth:  batteryIndicatorRow.implicitWidth
+
 
     property bool showIndicator: true
-
     property var _activeVehicle: QGroundControl.multiVehicleManager.activeVehicle
 
     Row {
         id:             batteryIndicatorRow
         anchors.top:    parent.top
         anchors.bottom: parent.bottom
-        anchors.verticalCenter: parent.verticalCenter
 
         Repeater {
             model: _activeVehicle ? _activeVehicle.batteries : 0
@@ -42,11 +42,11 @@ Item {
                 anchors.top:        parent.top
                 anchors.bottom:     parent.bottom
                 sourceComponent:    batteryVisual
-
-                property var battery: object
+                property var availableBattery: object
             }
         }
     }
+
     MouseArea {
         anchors.fill:   parent
         onClicked: {
@@ -57,96 +57,8 @@ Item {
     Component {
         id: batteryVisual
 
-        Row {
-            anchors.top:    parent.top
-            anchors.bottom: parent.bottom
-
-            function getBatteryColor() {
-                switch (battery.chargeState.rawValue) {
-                case MAVLink.MAV_BATTERY_CHARGE_STATE_OK:
-                    return qgcPal.text
-                case MAVLink.MAV_BATTERY_CHARGE_STATE_LOW:
-                    return qgcPal.colorOrange
-                case MAVLink.MAV_BATTERY_CHARGE_STATE_CRITICAL:
-                case MAVLink.MAV_BATTERY_CHARGE_STATE_EMERGENCY:
-                case MAVLink.MAV_BATTERY_CHARGE_STATE_FAILED:
-                case MAVLink.MAV_BATTERY_CHARGE_STATE_UNHEALTHY:
-                    return qgcPal.colorRed
-                default:
-                    return qgcPal.text
-                }
-            }
-
-            function getBatteryPercentageText() {
-                if (!isNaN(battery.percentRemaining.rawValue)) {
-                    if (battery.percentRemaining.rawValue > 98.9) {
-                        return qsTr("100%")
-                    } else {
-                        return battery.percentRemaining.valueString + battery.percentRemaining.units
-                    }
-                } else if (!isNaN(battery.voltage.rawValue)) {
-                    return battery.voltage.valueString + battery.voltage.units
-                } else if (battery.chargeState.rawValue !== MAVLink.MAV_BATTERY_CHARGE_STATE_UNDEFINED) {
-                    return battery.chargeState.enumStringValue
-                }
-                return ""
-            }
-
-            function getBatteryVoltageText() {
-                if (!isNaN(battery.voltage.rawValue)) {
-                    return battery.voltage.valueString + battery.voltage.units
-                } else if (battery.chargeState.rawValue !== MAVLink.MAV_BATTERY_CHARGE_STATE_UNDEFINED) {
-                    return battery.chargeState.enumStringValue
-                }
-                return "?"
-            }
-
-            QGCColoredImage {
-                id:                 battIcon
-                anchors.top:        parent.top
-                anchors.bottom:     parent.bottom
-                width:              height
-                sourceSize.height:   height
-                source:             "/qmlimages/Battery.svg"
-                fillMode:           Image.PreserveAspectFit
-                color:              getBatteryColor()
-            }
-            Column {
-                id:                     batteryInfoColumn
-                anchors.top:            parent.top
-                anchors.bottom:         parent.bottom
-                anchors.leftMargin:     ScreenTools.defaultFontPixelWidth / 2
-
-                QGCLabel {
-                    verticalAlignment:      Text.AlignVCenter
-                    color:                  getBatteryColor()
-                    text:                   getBatteryPercentageText()
-                    font.pointSize:         ScreenTools.defaultFontPointSize
-                }
-
-                QGCLabel {
-                    id:                     voltValue
-                    verticalAlignment:      Text.AlignVCenter
-                    font.pointSize:         ScreenTools.defaultFontPointSize
-                    color:                  getBatteryColor()
-                    text:                   getBatteryVoltageText()
-                }
-            }
-
-
-        }
-    }
-
-    Component {
-        id: batteryValuesAvailableComponent
-
-        QtObject {
-            property bool functionAvailable:        battery.function.rawValue !== MAVLink.MAV_BATTERY_FUNCTION_UNKNOWN
-            property bool temperatureAvailable:     !isNaN(battery.temperature.rawValue)
-            property bool currentAvailable:         !isNaN(battery.current.rawValue)
-            property bool mahConsumedAvailable:     !isNaN(battery.mahConsumed.rawValue)
-            property bool timeRemainingAvailable:   !isNaN(battery.timeRemaining.rawValue)
-            property bool chargeStateAvailable:     battery.chargeState.rawValue !== MAVLink.MAV_BATTERY_CHARGE_STATE_UNDEFINED
+        BatteryStatus {
+            battery: availableBattery
         }
     }
 

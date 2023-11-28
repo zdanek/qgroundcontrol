@@ -43,6 +43,7 @@ add_custom_target(QmlControlsQml
 		APMSubMotorDisplay.qml
 		AppMessages.qml
 		AxisMonitor.qml
+		BatteryStatus.qml
 		ClickableColor.qml
 		DeadMouseArea.qml
 		DropButton.qml
