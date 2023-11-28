@@ -102,35 +102,40 @@ Item {
                 anchors.margins:    _margin
                 anchors.top:        parent.top
                 anchors.left:       parent.left
-                anchors.right:      parent.left
+                anchors.right:      parent.right
                 spacing:            _margin
 
                 RowLayout {
                     Layout.fillWidth:       true
 
+                    spacing:            _margin
+
                     QGCLabel {
                         Layout.alignment:   Qt.AlignTop
                         text:               _vehicle ? _vehicle.id : ""
                         color:              _textColor
+                        font.pointSize:     ScreenTools.largeFontPointSize
                     }
 
-                    ColumnLayout {
-                        Layout.alignment:   Qt.AlignCenter
-                        spacing:            _margin
-
-                        FlightModeMenu {
-                            Layout.alignment:           Qt.AlignHCenter
-                            font.pointSize:             ScreenTools.largeFontPointSize
-                            color:                      _textColor
-                            currentVehicle:             _vehicle
-                        }
-
-                        QGCLabel {
-                            Layout.alignment:           Qt.AlignHCenter
-                            text:                       _vehicle && _vehicle.armed ? qsTr("Armed") : qsTr("Disarmed")
-                            color:                      _textColor
-                        }
+                    FlightModeMenu {
+                        Layout.alignment:           Qt.AlignHCenter
+                        desiredFontPointSize:       ScreenTools.largeFontPointSize
+                        fontSizeScalingNumerator:   12
+                        color:                      _textColor
+                        currentVehicle:             _vehicle
                     }
+
+                    QGCLabel {
+                        Layout.alignment:           Qt.AlignRight
+                        text:                       _vehicle && _vehicle.armed ? qsTr("Armed") : qsTr("Disarmed")
+                        color:                      _textColor
+
+                    }
+                }
+
+                RowLayout {
+                    Layout.fillWidth:       true
+                    spacing:            _margin
 
                     QGCCompassWidget {
                         size:       _widgetHeight
@@ -141,6 +146,17 @@ Item {
                     QGCAttitudeWidget {
                         size:       _widgetHeight
                         vehicle:    _vehicle
+                    }
+
+                    Column {
+                        spacing:    _margin
+                        Repeater {
+                            model: _vehicle.batteries
+                            delegate: BatteryStatus {
+                                height: _widgetHeight * 0.5
+                                battery: object
+                            }
+                        }
                     }
                 } // RowLayout
 
