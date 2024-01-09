@@ -102,6 +102,8 @@
 #include "QGCMAVLink.h"
 #include "VehicleLinkManager.h"
 #include "Autotune.h"
+#include "PoiLayerController.h"
+#include "PoiLayer.h"
 
 #if defined(QGC_ENABLE_PAIRING)
 #include "PairingManager.h"
@@ -282,7 +284,7 @@ QGCApplication::QGCApplication(int &argc, char* argv[], bool unitTesting)
 
 #ifdef UNITTEST_BUILD
     if (!settings.isWritable()) {
-        qWarning() << "Setings location is not writable";
+        qWarning() << "Settings location is not writable";
     }
 #endif
     // The setting will delete all settings on this boot
@@ -494,6 +496,7 @@ void QGCApplication::_initCommon()
     qmlRegisterUncreatableType<QGCMapPolygon>       ("QGroundControl.FlightMap",            1, 0, "QGCMapPolygon",              kRefOnly);
     qmlRegisterUncreatableType<QGCGeoBoundingCube>  ("QGroundControl.FlightMap",            1, 0, "QGCGeoBoundingCube",         kRefOnly);
     qmlRegisterUncreatableType<TrajectoryPoints>    ("QGroundControl.FlightMap",            1, 0, "TrajectoryPoints",           kRefOnly);
+    qmlRegisterUncreatableType<PoiLayer>            ("QGroundControl.FlightMap",            1, 0, "PoiLayer",                   kRefOnly);
 
     qmlRegisterUncreatableType<FactValueGrid>       (kQGCTemplates,                         1, 0, "FactValueGrid",              kRefOnly);
     qmlRegisterType<HorizontalFactValueGrid>        (kQGCTemplates,                         1, 0, "HorizontalFactValueGrid");
@@ -511,6 +514,7 @@ void QGCApplication::_initCommon()
     qmlRegisterType<SyslinkComponentController>     (kQGCControllers,                       1, 0, "SyslinkComponentController");
     qmlRegisterType<EditPositionDialogController>   (kQGCControllers,                       1, 0, "EditPositionDialogController");
     qmlRegisterType<RCToParamDialogController>      (kQGCControllers,                       1, 0, "RCToParamDialogController");
+    qmlRegisterType<PoiLayerController>             (kQGCControllers,                       1, 0, "PoiLayerController");
 
     qmlRegisterType<TerrainProfile>                 ("QGroundControl.Controls",             1, 0, "TerrainProfile");
     qmlRegisterType<ToolStripAction>                ("QGroundControl.Controls",             1, 0, "ToolStripAction");

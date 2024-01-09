@@ -1,4 +1,4 @@
-add_custom_target(FligthMapItemsQml
+add_custom_target(FlightMapItemsQml
 	SOURCES
 		CameraTriggerIndicator.qml
 		CustomMapItems.qml

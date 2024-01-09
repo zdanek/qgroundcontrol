@@ -14,8 +14,9 @@
 #include <QVariantList>
 
 #include "QmlObjectListModel.h"
+#include "QGCMapGeom.h"
 
-class QGCMapPolyline : public QObject
+class QGCMapPolyline : public QObject, public QGCMapGeom
 {
     Q_OBJECT
 
@@ -64,6 +65,8 @@ public:
 
     /// Returns the QGeoCoordinate for the vertex specified
     Q_INVOKABLE QGeoCoordinate vertexCoordinate(int vertex) const;
+
+    QGCMapGeomType geomType() const override;
 
     /// Saves the polyline to the json object.
     ///     @param json Json object to save to

@@ -10,17 +10,18 @@
 #ifndef QGCMapPolygon_H
 #define QGCMapPolygon_H
 
-#include <QObject>
 #include <QGeoCoordinate>
-#include <QVariantList>
+#include <QObject>
 #include <QPolygon>
+#include <QVariantList>
 
+#include "QGCMapGeom.h"
 #include "QmlObjectListModel.h"
 #include "KMLDomDocument.h"
 
 /// The QGCMapPolygon class provides a polygon which can be displayed on a map using a map visuals control.
 /// It maintains a representation of the polygon on QVariantList and QmlObjectListModel format.
-class QGCMapPolygon : public QObject
+class QGCMapPolygon : public QObject, public QGCMapGeom
 {
     Q_OBJECT
 
@@ -80,6 +81,8 @@ public:
 
     Q_INVOKABLE void beginReset (void);
     Q_INVOKABLE void endReset   (void);
+
+    QGCMapGeomType geomType() const override { return Polygon; }
 
     /// Saves the polygon to the json object.
     ///     @param json Json object to save to

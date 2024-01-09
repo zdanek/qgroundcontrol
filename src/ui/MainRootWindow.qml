@@ -144,6 +144,12 @@ ApplicationWindow {
         planView.visible = true
     }
 
+    function showPoiLayersList() {
+        console.log('showPoiLayersList');
+        viewSwitch(toolbar.planViewToolbar)
+        planView.visible = true
+    }
+
     function showTool(toolTitle, toolSource, toolIcon) {
         toolDrawer.backIcon     = flightView.visible ? "/qmlimages/PaperPlane.svg" : "/qmlimages/Plan.svg"
         toolDrawer.toolTitle    = toolTitle

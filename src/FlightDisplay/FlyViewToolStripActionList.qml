@@ -28,6 +28,11 @@ ToolStripActionList {
         GuidedActionLand { },
         GuidedActionRTL { },
         GuidedActionPause { },
-        GuidedActionActionList { }
+        GuidedActionActionList { },
+        ToolStripAction {
+            text:           qsTr("POIs")
+            iconSource:     "/res/takeoff.svg"
+            onTriggered:    mainWindow.showPoiLayersList()
+        }
     ]
 }

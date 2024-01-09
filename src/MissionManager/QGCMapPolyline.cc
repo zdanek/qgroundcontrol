@@ -43,18 +43,23 @@ QGCMapPolyline::QGCMapPolyline(const QGCMapPolyline& other, QObject* parent)
     _init();
 }
 
-const QGCMapPolyline& QGCMapPolyline::operator=(const QGCMapPolyline& other)
+const QGCMapPolyline &QGCMapPolyline::operator=(const QGCMapPolyline &other)
 {
     clear();
 
     QVariantList vertices = other.path();
-    for (int i=0; i<vertices.count(); i++) {
+    for (int i = 0; i < vertices.count(); i++) {
         appendVertex(vertices[i].value<QGeoCoordinate>());
     }
 
     setDirty(true);
 
     return *this;
+}
+
+QGCMapGeomType QGCMapPolyline::geomType() const
+{
+    return Polyline;
 }
 
 void QGCMapPolyline::_init(void)

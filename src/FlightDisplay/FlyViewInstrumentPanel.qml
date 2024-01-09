@@ -1,6 +1,6 @@
 /****************************************************************************
  *
- * (c) 2009-2020 QGROUNDCONTROL PROJECT <http://www.qgroundcontrol.org>
+ * (c) 2009-2022 QGROUNDCONTROL PROJECT <http://www.qgroundcontrol.org>
  *
  * QGroundControl is licensed according to the terms in the file
  * COPYING.md in the root of the source code directory.
@@ -8,6 +8,7 @@
  ****************************************************************************/
 
 import QtQuick 2.12
+import QtQuick.Layouts              1.12
 
 import QGroundControl               1.0
 import QGroundControl.Airspace      1.0
@@ -35,4 +36,29 @@ Column {
         width:              parent.width
         missionController:  _missionController
     }
+
+    /*Column {
+        spacing: _margin
+        width: parent.width
+
+        Rectangle {
+            id: yo
+            color:          "steelblue"
+            radius:         _radius
+            opacity:        true ? 1.0 : 0.7
+            height:         childrenRect.height + _margin
+            width:          parent.width
+
+            QGCLabel {
+                id: label
+                anchors.left:   parent.left
+                text: "POI items"
+                color: "white"
+            }
+
+        }
+
+
+    }*/
+
 }

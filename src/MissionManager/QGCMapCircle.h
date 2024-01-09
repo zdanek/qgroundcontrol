@@ -9,16 +9,17 @@
 
 #pragma once
 
-#include <QObject>
+#include <QGCMapGeom.h>
 #include <QGeoCoordinate>
-#include <QVariantList>
+#include <QObject>
 #include <QPolygon>
+#include <QVariantList>
 
 #include "QmlObjectListModel.h"
 #include "FactSystem.h"
 
 /// The QGCMapCircle represents a circular area which can be displayed on a Map control.
-class QGCMapCircle : public QObject
+class QGCMapCircle : public QObject, public QGCMapGeom
 {
     Q_OBJECT
 
@@ -46,6 +47,8 @@ public:
     ///     @param errorString Error string if return is false
     /// @return true: success, false: failure (errorString set)
     bool loadFromJson(const QJsonObject& json, QString& errorString);
+
+    QGCMapGeomType geomType() const override { return Circle; }
 
     // Property methods
 

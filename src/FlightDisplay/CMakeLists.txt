@@ -1,5 +1,19 @@
+add_library(PoiLayers
+		PoiLayerController.cc
+		PoiLayer.cc)
 
-add_custom_target(FligthDisplayQml
+target_link_libraries(PoiLayers
+	PRIVATE
+		qgc
+		qtkml
+		)
+
+target_include_directories(PoiLayers
+	PUBLIC
+		${CMAKE_CURRENT_SOURCE_DIR}
+	)
+
+add_custom_target(FlightDisplayQml
 	SOURCES
 		DefaultChecklist.qml
 		FixedWingChecklist.qml
@@ -9,6 +23,7 @@ add_custom_target(FligthDisplayQml
 		FlightDisplayViewWidgets.qml
 		FlyViewAirspaceIndicator.qml
 		FlyViewCustomLayer.qml
+		FlyViewPoiLayer.qml
 		FlyViewInstrumentPanel.qml
 		FlyViewMap.qml
 		FlyViewMissionCompleteDialog.qml
@@ -30,6 +45,7 @@ add_custom_target(FligthDisplayQml
 		GuidedToolStripAction.qml
 		MultiRotorChecklist.qml
 		MultiVehicleList.qml
+		PoiLayerMenuWidget.qml
 		PreFlightBatteryCheck.qml
 		PreFlightCheckList.qml
 		PreFlightCheckListShowAction.qml

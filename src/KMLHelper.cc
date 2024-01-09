@@ -12,6 +12,8 @@
 #include <QFile>
 #include <QVariant>
 
+QGC_LOGGING_CATEGORY(KML, "KML")
+
 const char* KMLHelper::_errorPrefix = QT_TR_NOOP("KML file load failed. %1");
 
 QDomDocument KMLHelper::_loadFile(const QString& kmlFile, QString& errorString)
@@ -92,7 +94,11 @@ bool KMLHelper::loadPolygonFromFile(const QString& kmlFile, QList<QGeoCoordinate
         QString coordinateString = rgCoordinateStrings[i];
 
         QStringList rgValueStrings = coordinateString.split(",");
-
+        if (rgValueStrings.length() < 2) {
+            qCWarning(KML) << "KMLHelper::loadPolygonFromFile: Bad coordinate string" << coordinateString;
+            errorString = QString(_errorPrefix).arg(tr("Internal error: Unable to parse coordinates node in KML"));
+            return false;
+        }
         QGeoCoordinate coord;
         coord.setLongitude(rgValueStrings[0].toDouble());
         coord.setLatitude(rgValueStrings[1].toDouble());
