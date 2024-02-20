@@ -3,7 +3,7 @@
 
 #include "qtkml.h"
 #include <iostream>
-#include <kml/dom/kml22.h>
+#include <kml/dom.h>
 #include <qloggingcategory.h>
 
 void loadKML(const QString &kmlFile)
@@ -21,16 +21,85 @@ void loadKML(const QString &kmlFile)
 
     if (result) {
         qDebug() << "KML document loaded successfully";
+        qDebug() << "Potential errors: " << errorString;
     } else {
         qDebug() << "KML document failed to load:" << errorString;
     }
 
-    QVector<QtKml::KmlElement> elements = document->elements();
+    kmldom::FeaturePtr root = document->rootFeature();
     // QmlObjectListModel *qmlObjectListModel = new QmlObjectListModel();
-    for (auto element : elements) {
-        std::cout << "element:" << element.type().toStdString() << std::endl;
-        // std::cout << "Unknown attributes count:" << element
+    // iterate over the root feature
+    if (root) {
+        std::cout << "Root feature:" << root->get_name() << std::endl;
+    } else {
+        std::cout << "Root feature is null" << std::endl;
     }
+
+    std::cout << "has ext data" << root->has_extendeddata() << std::endl;
+    std::cout << "root attributes " << root->GetUnknownAttributes()->GetSize();
+
+    // for (int i = 0; i < root->GetUnknownAttributes()->GetSize(); i++) {
+    //     std::cout << "element:" << root->GetUnknownAttributes()->GetValue(i) << std::endl;
+    // }
+    kmlbase::StringMapIterator iterator = root->GetUnknownAttributes()->CreateIterator();
+
+    for (; !iterator.AtEnd(); iterator.Advance()) {
+        std::cout << "attribute:" << iterator.Data().first <<  " = " << iterator.Data().second << std::endl;
+    }
+
+    if (root->IsA(kmldom::KmlDomType::Type_Folder)) {
+        std::cout << "Root is a folder" << std::endl;
+    } else {
+        std::cout << "Root is not a folder" << std::endl;
+        return;
+    }
+    kmldom::FolderPtr folder = kmldom::AsFolder(root);
+    std::cout << "Folder name:" << folder->get_name() << std::endl;
+    std::cout << "Folder has ext data " << folder->has_extendeddata() << std::endl;
+    std::cout << "Folder has features " << folder->get_feature_array_size() << std::endl;
+
+    for (int i = 0; i < folder->get_feature_array_size(); i++) {
+        kmldom::FeaturePtr feature = folder->get_feature_array_at(i);
+        std::cout << "Feature name: " << feature->get_name() << std::endl;
+        std::cout << "Feature has type  " << kmldom::kmlDomTypeToString(feature->Type()) << std::endl;
+
+
+        if (feature->IsA(kmldom::KmlDomType::Type_Folder)) {
+            kmldom::FolderPtr featureFolder = kmldom::AsFolder(feature);
+            std::cout << "Feature is a folder" << std::endl;
+            std::cout << "Feature folder name:" << featureFolder->get_name() << std::endl;
+            std::cout << "Feature folder has ext data " << featureFolder->has_extendeddata() << std::endl;
+            std::cout << "Feature folder has features " << featureFolder->get_feature_array_size() << std::endl;
+            std::cout << "Feature has unknown attributes " << featureFolder->GetUnknownAttributes()->GetSize() << std::endl;
+            kmlbase::StringMapIterator iterator = featureFolder->GetUnknownAttributes()->CreateIterator();
+            for (; !iterator.AtEnd(); iterator.Advance()) {
+                std::cout << "attribute: " << iterator.Data().first <<  "= " << iterator.Data().second << std::endl;
+            }
+
+            std::cout << "Feature has unknown elements " << featureFolder->get_unknown_elements_array_size() << std::endl;
+            for (int i = 0; i < featureFolder->get_unknown_elements_array_size(); i++) {
+                std::cout << "Unknown element: " << featureFolder->get_unknown_elements_array_at(i) << std::endl;
+            }
+
+            std::cout << "Feature has misplaced elements " << featureFolder->get_misplaced_elements_array_size() << std::endl;
+            for (int i = 0; i < featureFolder->get_misplaced_elements_array_size(); i++) {
+                std::cout << "Misplaced element: " << featureFolder->get_misplaced_elements_array_at(i) << std::endl;
+            }
+        }
+
+    }
+
+
+    // for (auto element : root->get_name()
+    //     std::cout << "element:" << element->type().toStdString() << std::endl;
+    //     // std::cout << "Unknown attributes count:" << element
+    // }
+    //
+    //
+    // for (auto element : root->) {
+    //     std::cout << "element:" << element.type().toStdString() << std::endl;
+    //     // std::cout << "Unknown attributes count:" << element
+    // }
 }
 
 int main(int argc, char *argv[])
@@ -38,5 +107,6 @@ int main(int argc, char *argv[])
     std::cout << "Hello KML!" << std::endl;
 
     loadKML("/opt/workspace/projects/drones/qgmewamed/kml/ext_milstd.kml");
+    // loadKML("/opt/workspace/projects/drones/qgmewamed/kml/tic~mip31_29100019301000000001.kml");
     return 0;
 }

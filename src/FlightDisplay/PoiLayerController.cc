@@ -62,9 +62,9 @@ void PoiLayerController::start(void)
     poiLayer->setVisible(true);
 
     // mapPolygon->loadKMLOrSHPFile("/opt/workspace/projects/drones/qgmewamed/kml/polygon_mined-area.kml");
-    // poiLayer->polygons()->append(loadKML("/opt/workspace/projects/drones/qgmewamed/kml/polygon_mined-area.kml"));
-    // poiLayer->append(loadKML("/opt/workspace/projects/drones/qgmewamed/kml/tic~mip31_29100019301000000001.kml"));
-    poiLayer->append(loadKML("/opt/workspace/projects/drones/qgmewamed/kml/ext_milstd.kml"));
+    poiLayer->append(loadKML("/opt/workspace/projects/drones/qgmewamed/kml/polygon_mined-area.kml"));
+    poiLayer->append(loadKML("/opt/workspace/projects/drones/qgmewamed/kml/tic~mip31_29100019301000000001.kml"));
+    // poiLayer->append(loadKML("/opt/workspace/projects/drones/qgmewamed/kml/ext_milstd.kml"));
 
     _poiLayers.append(poiLayer);
 
@@ -72,10 +72,10 @@ void PoiLayerController::start(void)
     poiLayer2->setName("Most Poniatowskiego");
     poiLayer2->setVisible(true);
 
-    // poiLayer2->polygons()->append(loadKML("/opt/workspace/projects/drones/qgmewamed/kml/bridge-area.kml"));
-    // poiLayer2->polygons()->append(loadKML("/opt/workspace/projects/drones/qgmewamed/kml/bridge.kml"));
+    // poiLayer2->append(loadKML("/opt/workspace/projects/drones/qgmewamed/kml/bridge-area.kml"));
+    poiLayer2->append(loadKML("/opt/workspace/projects/drones/qgmewamed/kml/bridge.kml"));
     // poiLayer2->polylines()->append(loadKML("/opt/workspace/projects/drones/qgmewamed/kml/bridge.kml"));
-    // poiLayer2->polylines()->append(loadKML("/opt/workspace/projects/drones/qgmewamed/kml/bridge2.kml"));
+    poiLayer2->append(loadKML("/opt/workspace/projects/drones/qgmewamed/kml/bridge2.kml"));
 
     // loadKML("/opt/workspace/projects/drones/qgmewamed/kml/polygon_mined-area.kml");
     // loadKML("/opt/workspace/projects/drones/qgmewamed/kml/lake.kml");
@@ -105,6 +105,7 @@ QList<QGCMapGeom *> PoiLayerController::loadKML(const QString &kmlFile)
     QFile kml(kmlFile);
     Q_ASSERT(kml.exists());
     kml.open(QIODevice::ReadOnly | QIODevice::Text);
+
     QScopedPointer<QtKml::KmlDocument> document(new QtKml::KmlDocument());
     QString errorString;
     bool result = document->open(kml, &errorString);
@@ -115,6 +116,9 @@ QList<QGCMapGeom *> PoiLayerController::loadKML(const QString &kmlFile)
     } else {
         qCDebug(PoiLayerControllerLog) << "KML document failed to load:" << errorString;
     }
+
+    kmldom::FeaturePtr rootFeature = document->rootFeature();
+    rootFeature->AcceptChildren()
 
     QVector<QtKml::KmlElement> elements = document->elements();
     // QmlObjectListModel *qmlObjectListModel = new QmlObjectListModel();

@@ -102,7 +102,7 @@ Item {
         MapPolyline {
             opacity:        1.0
             line.color:   "black"
-            line.width:   1
+            line.width:   2
         }
     }
 
