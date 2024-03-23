@@ -19,6 +19,7 @@ Item {
     visible: poiLayer.visible
 
     function _drawVertices(element, item){
+//        console.log("element.vertices.length " + element.vertices.length + " color " + element.styles["fill_color"] + " " + element.styles["line_color"] + " " + element.styles["line_width"])
         var vertices = element.vertices;
         for(var k = 0; k < vertices.length; k++){
             item.addCoordinate(QtPositioning.coordinate(vertices[k].latitude, vertices[k].longitude))
@@ -55,27 +56,28 @@ Item {
             console.log("gra", poiLayer.kmlGraphics.renderers)
             for(var g = 0; g < poiLayer.kmlGraphics.renderers.length; g++){
                 var renderer = poiLayer.kmlGraphics.renderers[g]
-                console.log("renderere " + renderer);
-                console.log("elements " + renderer.elements.length);
                 for(var i = 0; i < renderer.elements.length; i++){
                     var element = renderer.elements[i]
-                    console.log("center Point: " + element.center)
-                    console.log("element.type: " + element.type)
                     switch(element.type){
                     case "polygon":
                         var polygon = Qt.createQmlObject('import QtLocation 5.5; MapPolygon{smooth:true;antialiasing:true}', mapControl, "mapPolygon")
-                        if(element.styles["fill"])
+                        if(element.styles["fill"]) {
                             polygon.color = _torealColor(element.styles["fill_color"])
-                        polygon.border.width = element.styles["line_width"]
-                        polygon.border.color = _torealColor(element.styles["line_color"])
+                        }
+                        if (element.styles["line_width"]) {
+                            polygon.border.width = element.styles["line_width"]
+                            polygon.border.color = _torealColor(element.styles["line_color"])
+                        }
+
                         _drawVertices(element, polygon)
                         mapControl.addMapItem(polygon)
                         break
                     case "polyline":
                         var polyline = Qt.createQmlObject('import QtLocation 5.5; MapPolyline{smooth:true;antialiasing:true}', mapControl, "mapPolyline")
-                        console.log("style " +element.styles["line_width"] + " " + element.styles["line_color"]);
+//                        console.log("style " +element.styles["line_width"] + " " + element.styles["line_color"]);
                         polyline.line.width = element.styles["line_width"]
                         polyline.line.color = _torealColor(element.styles["line_color"])
+
                         _drawVertices(element, polyline)
                         mapControl.addMapItem(polyline)
                         break
@@ -97,108 +99,6 @@ Item {
                     }
                 }
             }
-
-            // contains list of QGCMapPolygon
-            for (var i = 0; i < poiLayer.elements.count; i++) {
-                var poi = poiLayer.elements.get(i);
-                if (poi.type === "polygon") {
-                    var polygon = polygonDelegate.createObject(mapControl, {
-                        id: "poiPolygon" + i,
-                        color: "red",
-                        opacity: 0.5,
-                        path: poi.path,
-                        visible: poi.visible
-                    });
-                    mapControl.addMapItem(polygon)
-                } else if (poi.type === "polyline") {
-                    var polyline = polylineDelegate.createObject(mapControl, {
-                        id: "poiPolyline" + i,
-                        color: "green",
-                        opacity: 1,
-                        path: poi.path,
-                        visible: poi.visible
-                    });
-                    mapControl.addMapItem(polyline)
-                } else if (poi.type === "point") {
-                    var cricle = pointDelegate.createMapItem(mapControl, {
-                        id: "poiPoint" + i,
-                        color: "blue",
-                        opacity: 1,
-                        center: poi.center,
-                        visible: poi.visible
-                    });
-                    mapControl.addMapItem(cricle)
-                } else if (poi.type === "circle") {
-                    var cricle = circleDelegate.createMapItem(mapControl, {
-                        id: "poiCircle" + i,
-                        color: "blue",
-                        opacity: 1,
-                        center: poi.center,
-                        radius: poi.radius,
-                        visible: poi.visible
-                    });
-                    mapControl.addMapItem(cricle)
-                }
-                /*
-                var polygon = polygonDelegate.createObject(mapControl, {
-                    id: "poiPolygon" + i,
-                    color: "red",
-                    opacity: 0.5,
-                    path: poi.path,
-                    visible: poi.visible
-                });
-                mapControl.addMapItem(polygon)
-                */
-            }
-
-            /*
-            for (var i = 0; i < poiLayer.polylines.count; i++) {
-                var poi = poiLayer.polylines.get(i);
-                var polyline = polylineDelegate.createObject(mapControl, {
-                    id: "poiPolyline" + i,
-                    color: "green",
-                    opacity: 1,
-                    path: poi.path,
-                    visible: poi.visible
-                });
-                mapControl.addMapItem(polyline)
-            }
-
-            for (var i = 0; i < poiLayer.points.count; i++) {
-                var poi = poiLayer.points.get(i);
-                var cricle = pointDelegate.createMapItem(mapControl, {
-                    id: "poiPoint" + i,
-//                    color: "blue",
-//                    opacity: 1,
-                    center: poi.center,
-                    visible: poi.visible
-                });
-                mapControl.addMapItem(cricle)
-            }
-
-            for (var i = 0; i < poiLayer.circles.count; i++) {
-                var poi = poiLayer.circles.get(i);
-                var cricle = circleDelegate.createMapItem(mapControl, {
-                    id: "poiCircle" + i,
-                    color: "blue",
-//                    opacity: 1,
-                    center: poi.center,
-                    radius: poi.radius,
-                    visible: poi.visible
-                });
-                mapControl.addMapItem(cricle)
-            }
-*/
-
-/*
-            for (var i = 0; i < poiLayer.polygons.count; i++) {
-                var poi = poiLayer.polygons.get(i);
-                poi.visibleChanged.connect(function() {
-                    console.log("poiLayer.visible: " + poiLayer.visible + " poi.visible: " + poi.visible);
-                    mapControl.itemById("poiPolygon" + i).visible = poi.visible;
-                });
-            }
-*/
         }
     }
 
