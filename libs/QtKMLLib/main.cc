@@ -6,6 +6,95 @@
 #include <kml/dom.h>
 #include <qloggingcategory.h>
 
+void dump_attributes(const kmldom::ElementPtr element)
+{
+    if (element->GetUnknownAttributes() == nullptr) {
+        return;
+    }
+
+    std::cout << "Has unknown attributes " << element->GetUnknownAttributes()->GetSize() << std::endl;
+
+    kmlbase::StringMapIterator iterator = element->GetUnknownAttributes()->CreateIterator();
+    for (; !iterator.AtEnd(); iterator.Advance()) {
+        std::cout << "attribute: " << iterator.Data().first << "= " << iterator.Data().second << std::endl;
+    }
+}
+void dump_unknown_elements(const kmldom::ElementPtr & element)
+{
+    std::cout << "Has unknown elements " << element->get_unknown_elements_array_size() << std::endl;
+    for (int i = 0; i < element->get_unknown_elements_array_size(); i++) {
+        std::cout << "Unknown element: " << element->get_unknown_elements_array_at(i) << std::endl;
+    }
+
+}
+
+void dump_misplaced_elements(const kmldom::ElementPtr &element)
+{
+    std::cout << "Has misplaced elements " << element->get_misplaced_elements_array_size() << std::endl;
+    for (int i = 0; i < element->get_misplaced_elements_array_size(); i++) {
+        std::cout << "Misplaced element: " << element->get_misplaced_elements_array_at(i) << std::endl;
+        std::cout << "Misplaced element data: " << element->get_misplaced_elements_array_at(i)->get_char_data() << std::endl;
+    }
+}
+
+void dump_symbol_info(const kmldom::ExtSymbolInfoPtr & element)
+{
+    std::cout << "Symbol info has standard " << element->has_standard() << std::endl;
+    if (element->has_standard()) {
+        std::cout << "Symbol info standard " << element->get_standard() << std::endl;
+    }
+    std::cout << "Symbol info has code " << element->has_code() << std::endl;
+    if (element->has_code()) {
+        std::cout << "Symbol info code " << element->get_code() << std::endl;
+    }
+
+    if (element->has_coordinates()) {
+        std::cout << "Symbol info has coordinates: " << element->get_coordinates().get_latitude() << ", " << element->get_coordinates().get_longitude() << std::endl;
+    }
+
+    std::cout << "Symbol info has ext data " << element->has_extendeddata() << std::endl;
+
+    dump_attributes(element);
+    dump_unknown_elements(element);
+    dump_misplaced_elements(element);
+}
+
+void dump_folder(kmldom::FolderPtr folder)
+{
+    std::cout << "Folder name:" << folder->get_name() << std::endl;
+    std::cout << "Folder has ext data " << folder->has_extendeddata() << std::endl;
+    std::cout << "Folder has features " << folder->get_feature_array_size() << std::endl;
+
+    dump_attributes(folder);
+    dump_unknown_elements(folder);
+    dump_misplaced_elements(folder);
+
+    for (int i = 0; i < folder->get_feature_array_size(); i++) {
+        kmldom::FeaturePtr feature = folder->get_feature_array_at(i);
+        std::cout << "Feature name: " << feature->get_name() << std::endl;
+        std::cout << "Feature has type  " << kmldom::kmlDomTypeToString(feature->Type()) << std::endl;
+
+        if (feature->IsA(kmldom::KmlDomType::Type_Folder)) {
+            kmldom::FolderPtr featureFolder = kmldom::AsFolder(feature);
+            std::cout << "Feature is a folder" << std::endl;
+            dump_folder(featureFolder);
+        } else if (feature->IsA(kmldom::KmlDomType::Type_ExtSymbolInfo)) {
+            kmldom::ExtSymbolInfoPtr symbolInfo = kmldom::AsExtSymbolInfo(feature);
+            std::cout << "Feature is a symbol info" << std::endl;
+            dump_symbol_info(symbolInfo);
+        }
+        else {
+            std::cout << "Unknown feature type: " << feature->Type() << std::endl;
+        }
+
+        std::cout << ". "<< std::endl;
+    }
+}
+
+
+
+
+
 void loadKML(const QString &kmlFile)
 {
     qDebug() << "PoiLayerController::loadKML:" << kmlFile;

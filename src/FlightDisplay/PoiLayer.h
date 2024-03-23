@@ -16,10 +16,10 @@
 
 #pragma once
 
-#include <QGCMapGeom.h>
 #include <QObject>
 
 #include "QmlObjectListModel.h"
+#include "qmlkml.h"
 
 class PoiLayer : public QObject
 {
@@ -31,12 +31,18 @@ public:
 
     const PoiLayer& operator=(const PoiLayer& other);
 
-    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
+    Q_PROPERTY(QString name READ name NOTIFY nameChanged)
+    Q_PROPERTY(QString id READ id)
     Q_PROPERTY(bool visible READ visible WRITE setVisible NOTIFY visibleChanged)
-    Q_PROPERTY(QmlObjectListModel* polygons READ polygons NOTIFY polygonsChanged)
-    Q_PROPERTY(QmlObjectListModel* polylines READ polylines NOTIFY polylinesChanged)
+    Q_PROPERTY(QmlObjectListModel* elements READ elements NOTIFY elementsChanged)
+    Q_PROPERTY(QtKml::KmlQmlGraphics* kmlGraphics READ kmlGraphics NOTIFY kmlGraphicsChanged)
+    // Q_PROPERTY()
+    // Q_PROPERTY(QmlObjectListModel* polylines READ polylines NOTIFY polylinesChanged)
 
-    Q_INVOKABLE void clear(void);
+    // Q_INVOKABLE void clear(void);
+
+    QString id() const { return _id;}
+    void setId(const QString& id) { _id = id; }
 
     QString name() const { return _name; }
     void setName(const QString& name);
@@ -44,23 +50,27 @@ public:
     bool visible() const { return _visible; }
     void setVisible(bool visible);
 
-    void append(QList<QGCMapGeom*> mapObjects);
+    // void setKmlElements(QList<QtKml::KmlElement> &kml_elements);
+    void setKmlGraphics(QSharedPointer<QtKml::KmlQmlGraphics> &kml_graphics);
+
+    QtKml::KmlQmlGraphics* kmlGraphics() { return _kmlGraphics.data(); }
 
 signals:
     void nameChanged(const QString& name);
     void visibleChanged(bool visible);
-    void polygonsChanged(QmlObjectListModel* polygons);
-    void polylinesChanged(QmlObjectListModel* polylines);
+    void elementsChanged(const QmlObjectListModel &polygons);
+    void kmlGraphicsChanged();
+    // void polylinesChanged(QmlObjectListModel* polylines);
 
 private:
-    QmlObjectListModel* polygons() { return &_polygons; }
-    QmlObjectListModel* polylines() { return &_polylines; }
+    QmlObjectListModel* elements() { return &_elements;}
+
+    // QmlObjectListModel* polygons() { return &_polygons; }
+    // QmlObjectListModel* polylines() { return &_polylines; }
 
     QString _name;
+    QString _id;
     bool _visible = true;
-    QmlObjectListModel _polygons;
-    QmlObjectListModel _circles;
-    QmlObjectListModel _polylines;
-    QmlObjectListModel _points;
-
+    QmlObjectListModel _elements;
+    QSharedPointer<QtKml::KmlQmlGraphics> _kmlGraphics;
 };

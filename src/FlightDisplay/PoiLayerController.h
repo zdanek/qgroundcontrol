@@ -20,9 +20,11 @@
 #include <QObject>
 
 #include "QGCLoggingCategory.h"
+#include "QGCMapLayer.h"
 #include "QmlObjectListModel.h"
 #include "qtkml.h"
 #include <qgeocoordinate.h>
+#include "PoiLayer.h"
 
 Q_DECLARE_LOGGING_CATEGORY(PoiLayerControllerLog)
 
@@ -38,24 +40,24 @@ public:
     Q_PROPERTY(QmlObjectListModel* poiLayers READ poiLayers NOTIFY poiLayersChanged)
 
     /// Should be called immediately upon Component.onCompleted.
-    Q_INVOKABLE void start(void);
+    Q_INVOKABLE void start();
 
     bool poiLayerVisible() const;
     void setPoiLayerVisible(bool poiLayerVisible);
 
 signals:
     void poiLayerVisibleChanged(bool poiLayerVisible);
-    void poiLayersChanged(QmlObjectListModel* poiLayers);
+    void poiLayersChanged();
+    void poiLayerAdded(PoiLayer* poiLayer);
 
 private:
     //return poiLayers
     QmlObjectListModel *poiLayers() { return &_poiLayers; }
     QList<QGeoCoordinate> map(const QtKml::KmlElement::KmlVertices & vector) const;
     QGeoCoordinate map(const QGeoCoordinate &coordinate) const;
-    QList<QGCMapGeom*> loadKML(const QString& kmlFile);
+    QSharedPointer<QtKml::KmlQmlGraphics> loadKML(const QString &kmlFile);
 
     bool _poiLayerVisible = true;
     QmlObjectListModel _poiLayers;
-
 };
 

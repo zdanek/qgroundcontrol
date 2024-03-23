@@ -50,7 +50,28 @@ Item {
     PoiLayerController {
         id: _poiLayerController
 
-        Component.onCompleted: start()
+//        Component.onCompleted: start()
+    }
+
+//    Connections{
+//        target: poiLayerControler
+//        function onPoiLayerAdded(poiLayer) {
+//            console.log("layer added " + poiLayer.id + " " + poiLayer.name);
+//            addLayer(poiLayer);
+//        }
+//    }
+
+    function addLayer(poiLayer) {
+        console.log("addLayer " + poiLayer.name);
+
+        var poiLayerVis = Qt.createComponent("PoiLayerVisual.qml").createObject(_root, {poiLayer: poiLayer, mapControl: mapControl});
+        poiLayerVis.anchors.left = layersListBackPane.left;
+        poiLayerVis.anchors.right = layersListBackPane.right;
+        poiLayerVis.anchors.top = _poiRepeater.itemAt(_poiRepeater.count - 1).bottom;
+        poiLayerVis.anchors.topMargin = _margin;
+        poiLayerVis.anchors.bottom = layersListBackPane.bottom;
+        poiLayerVis.visible = true;
+
     }
 
     KMLOrSHPFileDialog {
@@ -75,7 +96,8 @@ Item {
             topMargin:      _toolsMargin
         }
         onClicked: {
-            kmlOrSHPLoadDialog.openForLoad()
+            poiLayerControler.start();
+//            kmlOrSHPLoadDialog.openForLoad()
         }
 
     }
@@ -166,7 +188,7 @@ Item {
     }
 
     Repeater {
-        model:  _poiLayerController.poiLayers
+       model:  _poiLayerController.poiLayers
 
         delegate: PoiLayerVisual {
             id:             poiLayerVis

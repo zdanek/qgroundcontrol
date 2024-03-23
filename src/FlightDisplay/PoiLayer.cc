@@ -47,10 +47,29 @@ void PoiLayer::setVisible(bool visible)
     }
 }
 
-void PoiLayer::append(QList<QGCMapGeom *> mapObjects)
+void PoiLayer::setKmlGraphics(QSharedPointer<QtKml::KmlQmlGraphics> &kml_graphics)
+{
+    _kmlGraphics = kml_graphics;
+
+    //emit elementsChanged(&_kmlGraphics->kmlElements());
+}
+
+/*
+void PoiLayer::setKmlElements(QList<QtKml::KmlElement> &kml_elements)
+{
+    _elements.clear();
+    for (QtKml::KmlElement &kmlElement : kml_elements) {
+        // _elements.append(kmlElement);
+    }
+
+}
+*/
+/*
+
+void PoiLayer::append(QGCMapLayer* mapLayer)
 {
     // appends map objects, POLYLINE to _polylines, POLYGON to _polygons, POINT to _points and emits signals
-    for (QGCMapGeom *mapObject : mapObjects) {
+    for (QGCMapGeom *mapObject : mapLayer->getMapObjects()) {
 
         QGCMapGeomType type = mapObject->geomType();
 
@@ -109,3 +128,5 @@ void PoiLayer::clear(void)
 
     //TODO(bzd) dlaczego jest w innych klasach ustawiane dirtyy? np w GQCMapPolygon:95
 }
+
+*/
