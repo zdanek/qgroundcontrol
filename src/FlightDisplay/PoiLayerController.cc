@@ -55,8 +55,10 @@ void PoiLayerController::start()
 {
     qCDebug(PoiLayerControllerLog) << "PoiLayerController::start";
 
-    // QSharedPointer<QtKml::KmlQmlGraphics> poiGraphics = loadKML("/opt/workspace/projects/drones/qgmewamed/kml/ext_milstd.kml");
-    QSharedPointer<QtKml::KmlQmlGraphics> poiGraphics = loadKML("/opt/workspace/projects/drones/qgmewamed/kml/tic~mip31_29100019301000000001.kml");
+//     QSharedPointer<QtKml::KmlQmlGraphics> poiGraphics = loadKML("/opt/workspace/projects/drones/qgmewamed/kml/ext_milstd.kml");
+//    QSharedPointer<QtKml::KmlQmlGraphics> poiGraphics = loadKML("/opt/workspace/projects/drones/qgmewamed/kml/tic~mip31_29100019301000000001.kml");
+//    QSharedPointer<QtKml::KmlQmlGraphics> poiGraphics = loadKML("http://localhost:8080/rest/layers/kml/get/mip31~29100019300000000000");
+    QSharedPointer<QtKml::KmlQmlGraphics> poiGraphics = loadKML("http://localhost:8080/rest/layers/kml/get/mip31~29100019300000000005");
     PoiLayer * poiLayer = new PoiLayer(this);
     poiLayer->setId("tic~mip31:29100019301000000001");
     poiLayer->setKmlGraphics(poiGraphics);
@@ -105,7 +107,7 @@ QSharedPointer<QtKml::KmlQmlGraphics> PoiLayerController::loadKML(const QString 
     qCDebug(PoiLayerControllerLog) << "PoiLayerController::loadKML:" << kmlFile;
 
     QFile kml(kmlFile);
-    Q_ASSERT(kml.exists());
+//    Q_ASSERT(kml.exists());
     kml.open(QIODevice::ReadOnly | QIODevice::Text);
     QtKml::KmlDocument* document(new QtKml::KmlDocument());
     QSharedPointer<QtKml::KmlQmlGraphics> graphics(new QtKml::KmlQmlGraphics());

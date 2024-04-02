@@ -41,19 +41,19 @@ Item {
 
         if (mapControl) {
             console.log('Creating POI polygons for layer "' + poiLayer.name + '"')
-            console.log("poiLayer.kmlGraphics ", poiLayer.kmlGraphics)
+//            console.log("poiLayer.kmlGraphics ", poiLayer.kmlGraphics)
             var kmlgraphics = poiLayer.kmlGraphics
-            console.log("graphics renderers[0] " + kmlgraphics.renderers[0]);
+//            console.log("graphics renderers[0] " + kmlgraphics.renderers[0]);
             for(var g = 0; g < kmlgraphics.renderers.length; g++){
                 var graphics = kmlgraphics.renderers[g]
-                console.log("graphic.elements.length " + graphics.elements.length);
+//                console.log("graphic.elements.length " + graphics.elements.length);
                 for(var i = 0; i < graphics.elements.length; i++){
                     var element = graphics.elements[i]
-                    console.log("center Point: " + element.center)
+//                    console.log("center Point: " + element.center)
                 }
             }
 
-            console.log("gra", poiLayer.kmlGraphics.renderers)
+//            console.log("gra", poiLayer.kmlGraphics.renderers)
             for(var g = 0; g < poiLayer.kmlGraphics.renderers.length; g++){
                 var renderer = poiLayer.kmlGraphics.renderers[g]
                 for(var i = 0; i < renderer.elements.length; i++){
@@ -96,6 +96,30 @@ Item {
                         mapControl.addMapItem(point)
                         console.log(element.styles["icon"] + " f4 " + point.coordinate + " --> " + point.sourceItem.source)
                         break;
+                    case "svgWithLabel":
+//                        SvgLabelledPoint {
+//                            id: svgLabelledPoint
+//                            svgSource: element.styles["icon"]
+//                            label: element.styles["label"]
+//                            coordinate: QtPositioning.coordinate(element.vertices[0].latitude, element.vertices[0].longitude)
+//                        }
+                        var point = Qt.createQmlObject('import QtLocation 5.5; import QtQuick 2.4; MapQuickItem{
+                                                        smooth:true;
+                                                        antialiasing:true;
+                                                        anchorPoint.x: p_icon.width / 2;
+                                                        anchorPoint.y: p_icon.height;
+                                                        zoomLevel: 15;
+                                                        sourceItem:Image{
+                                                            id:p_icon
+                                                            }
+                                                        }', mapControl, "mapQuickItem")
+                        point.sourceItem.source = "http://localhost:8080/rest/symbol/" + element.extraData;
+                        //"file:///tmp/mewa/SFGCEVCA-------.svg"
+                        point.coordinate = QtPositioning.coordinate(element.vertices[0].latitude, element.vertices[0].longitude)
+                        mapControl.addMapItem(point)
+                        console.log(element.styles["icon"] + " f4 " + point.coordinate + " --> " + point.sourceItem.source)
+                        break;
+
                     }
                 }
             }

@@ -57,6 +57,7 @@ add_custom_target(FlightDisplayQml
 		ProximityRadarVideoView.qml
 		RoverChecklist.qml
 		SubChecklist.qml
+		SvgLabelledPoint.qml
 		TelemetryValuesBar.qml
 		TerrainProgress.qml
 		VehicleWarnings.qml
