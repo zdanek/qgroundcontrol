@@ -1,17 +1,4 @@
-add_library(PoiLayers
-		PoiLayerController.cc
-		PoiLayer.cc)
-
-target_link_libraries(PoiLayers
-	PRIVATE
-		qgc
-		qtkml
-		)
-
-target_include_directories(PoiLayers
-	PUBLIC
-		${CMAKE_CURRENT_SOURCE_DIR}
-	)
+add_subdirectory(poi)
 
 add_custom_target(FlightDisplayQml
 	SOURCES
@@ -45,7 +32,6 @@ add_custom_target(FlightDisplayQml
 		GuidedToolStripAction.qml
 		MultiRotorChecklist.qml
 		MultiVehicleList.qml
-		PoiLayerMenuWidget.qml
 		PreFlightBatteryCheck.qml
 		PreFlightCheckList.qml
 		PreFlightCheckListShowAction.qml

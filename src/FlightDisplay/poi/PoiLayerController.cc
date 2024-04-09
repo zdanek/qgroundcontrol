@@ -56,13 +56,28 @@ void PoiLayerController::start()
     qCDebug(PoiLayerControllerLog) << "PoiLayerController::start";
 
 //     QSharedPointer<QtKml::KmlQmlGraphics> poiGraphics = loadKML("/opt/workspace/projects/drones/qgmewamed/kml/ext_milstd.kml");
-//    QSharedPointer<QtKml::KmlQmlGraphics> poiGraphics = loadKML("/opt/workspace/projects/drones/qgmewamed/kml/tic~mip31_29100019301000000001.kml");
+    QSharedPointer<QtKml::KmlQmlGraphics> poiGraphics = loadKML("/opt/workspace/projects/drones/qgmewamed/kml/tic~mip31_29100019301000000001.kml");
 //    QSharedPointer<QtKml::KmlQmlGraphics> poiGraphics = loadKML("http://localhost:8080/rest/layers/kml/get/mip31~29100019300000000000");
-    QSharedPointer<QtKml::KmlQmlGraphics> poiGraphics = loadKML("http://localhost:8080/rest/layers/kml/get/mip31~29100019300000000005");
+//    QSharedPointer<QtKml::KmlQmlGraphics> poiGraphics = loadKML("http://localhost:8080/rest/layers/kml/get/mip31~29100019300000000005");
     PoiLayer * poiLayer = new PoiLayer(this);
-    poiLayer->setId("tic~mip31:29100019301000000001");
+    QString &id = poiGraphics->documents()[0];
+    QString name;
+
+    QtKml::KmlDocument *doc = poiGraphics->document(id);
+    if (doc) {
+        kmldom::FeaturePtr root = doc->rootFeature();
+        if (root->IsA(kmldom::KmlDomType::Type_Folder)) {
+            kmldom::FolderPtr folder = kmldom::AsFolder(root);
+            name = folder->get_name().c_str();
+        }
+    } else {
+        name = "Unknown";
+    }
+
+    poiLayer->setId(id);
     poiLayer->setKmlGraphics(poiGraphics);
-    poiLayer->setName("Pole minowe");
+    poiLayer->setName(name);
+
     poiLayer->setVisible(true);
 
     // mapPolygon->loadKMLOrSHPFile("/opt/workspace/projects/drones/qgmewamed/kml/polygon_mined-area.kml");
