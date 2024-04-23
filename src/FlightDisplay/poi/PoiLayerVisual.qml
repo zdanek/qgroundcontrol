@@ -16,7 +16,23 @@ Item {
     id: _root
     property var mapControl             /// Map control to place item in
     property var poiLayer               /// poi layer with POI items - PoiLayer object
-    visible: poiLayer.visible
+
+    Item {
+        id: poiLayerItem
+        visible: true
+
+        MapPolyline {
+            id: line
+            line.width: 3
+            line.color: 'green'
+            path: [
+                { latitude: 50, longitude: 21.0 },
+                { latitude: 51, longitude: 21.1 },
+                { latitude: 52, longitude: 21.5 },
+                { latitude: 53, longitude: 21.5 }
+            ]
+        }
+    }
 
     function _drawVertices(element, item){
 //        console.log("element.vertices.length " + element.vertices.length + " color " + element.styles["fill_color"] + " " + element.styles["line_color"] + " " + element.styles["line_width"])
@@ -39,7 +55,13 @@ Item {
     Component.onCompleted: {
         console.log("poilayer " + poiLayer.id)
 
+
+
         if (mapControl) {
+//            var layerItem = Qt.createQmlObject('import QtQuick 2.12; Item { id: newPoiLayer }', mapControl, "poiLayerItem")
+//             var layerItem = Qt.createQmlObject('import QtQuick 2.12; import QtLocation 5.9; MapQuickItem { id: newPoiLayer }', mapControl, "poiLayerItem");
+//             mapControl.addMapItem(layerItem)
+
             console.log('Creating POI polygons for layer "' + poiLayer.name + '"')
 //            console.log("poiLayer.kmlGraphics ", poiLayer.kmlGraphics)
             var kmlgraphics = poiLayer.kmlGraphics
@@ -82,15 +104,7 @@ Item {
                         mapControl.addMapItem(polyline)
                         break
                     case "point":
-                        var point = Qt.createQmlObject('import QtLocation 5.5; import QtQuick 2.4; MapQuickItem{
-                                                        smooth:true;
-                                                        antialiasing:true;
-                                                        anchorPoint.x: p_icon.width / 2;
-                                                        anchorPoint.y: p_icon.height;
-                                                        sourceItem:Image{
-                                                            id:p_icon
-                                                            }
-                                                        }', mapControl, "mapQuickItem")
+                        var point = Qt.createQmlObject('import QtLocation 5.5; import QtQuick 2.4; MapQuickItem { smooth:true; antialiasing:true; anchorPoint.x: p_icon.width / 2; anchorPoint.y: p_icon.height; sourceItem:Image { id:p_icon; } }', mapControl, "mapQuickItem")
                         point.sourceItem.source = element.styles["icon"]
                         point.coordinate = QtPositioning.coordinate(element.vertices[0].latitude, element.vertices[0].longitude)
                         mapControl.addMapItem(point)
@@ -103,23 +117,13 @@ Item {
 //                            label: element.styles["label"]
 //                            coordinate: QtPositioning.coordinate(element.vertices[0].latitude, element.vertices[0].longitude)
 //                        }
-                        var point = Qt.createQmlObject('import QtLocation 5.5; import QtQuick 2.4; MapQuickItem{
-                                                        smooth:true;
-                                                        antialiasing:true;
-                                                        anchorPoint.x: p_icon.width / 2;
-                                                        anchorPoint.y: p_icon.height;
-                                                        zoomLevel: 15;
-                                                        sourceItem:Image{
-                                                            id:p_icon
-                                                            }
-                                                        }', mapControl, "mapQuickItem")
-                        point.sourceItem.source = "http://localhost:8080/rest/symbol/" + element.extraData;
+                        var point = Qt.createQmlObject('import QtLocation 5.5; import QtQuick 2.4; MapQuickItem{ smooth:true; antialiasing:true; anchorPoint.x: p_icon.width / 2; anchorPoint.y: p_icon.height; zoomLevel: 15; sourceItem:Image { id:p_icon; } }', mapControl, "mapQuickItem")
+                        point.sourceItem.source = "http://10.0.0.100/rest/symbol/" + element.extraData;
                         //"file:///tmp/mewa/SFGCEVCA-------.svg"
                         point.coordinate = QtPositioning.coordinate(element.vertices[0].latitude, element.vertices[0].longitude)
                         mapControl.addMapItem(point)
                         console.log(element.styles["icon"] + " f4 " + point.coordinate + " --> " + point.sourceItem.source)
                         break;
-
                     }
                 }
             }
