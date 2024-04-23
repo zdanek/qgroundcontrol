@@ -138,9 +138,9 @@ void WmsMapProvider::_loadConfig()
         layer_ = "Raster";
         style_ = settings.value("style", "default").toString();
     } else {
-        wmsServiceUrl_ = settings.value("url", "http://10.0.0.100/services/wms").toString();
-        query_srs_ = settings.value("srs", "EPSG:3857").toString();
-        layer_ = settings.value("layer", "klokantech-basic-2").toString();
+        wmsServiceUrl_ = settings.value("url", "http://10.0.0.100/geoserver/wms").toString();
+        query_srs_ = settings.value("srs", "EPSG:4326").toString();
+        layer_ = settings.value("layer", "Polska").toString();
         style_ = settings.value("style", "default").toString();
     }
 
