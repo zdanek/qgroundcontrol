@@ -57,7 +57,8 @@ WindowsBuild {
 # Branding
 #
 
-QGC_APP_NAME        = "QGroundControl"
+QGC_APPLICATION_NAME= "QGroundControl"
+# QGC_APP_NAME= "QGroundControl"
 QGC_ORG_NAME        = "QGroundControl.org"
 QGC_ORG_DOMAIN      = "org.qgroundcontrol"
 QGC_APP_DESCRIPTION = "Open source ground control app provided by QGroundControl dev team"
@@ -363,6 +364,10 @@ CustomBuild {
         $$PWD/qgcimages.qrc \
         $$PWD/resources/InstrumentValueIcons/InstrumentValueIcons.qrc \
 }
+
+DEFINES += QGC_APPLICATION_NAME=\"\\\"$$QGC_APPLICATION_NAME\\\"\"
+DEFINES += QGC_ORG_NAME=\"\\\"$$QGC_ORG_NAME\\\"\"
+DEFINES += QGC_ORG_DOMAIN=\"\\\"$$QGC_ORG_DOMAIN\\\"\"
 
 #
 # Main QGroundControl portion of project file

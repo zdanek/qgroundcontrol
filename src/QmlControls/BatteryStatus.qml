@@ -17,7 +17,6 @@ import QGroundControl.ScreenTools           1.0
 import QGroundControl.Palette               1.0
 import MAVLink                              1.0
 
-
 Item {
     id: batteryVisual
     implicitWidth: batteryRow.implicitWidth
@@ -44,8 +43,8 @@ Item {
     }
 
     function getBatteryPercentageText() {
-    if (!battery) {
-        return "?%"
+        if (!battery) {
+            return "?%"
         }
         if (!isNaN(battery.percentRemaining.rawValue)) {
             return battery.percentRemaining.valueString + battery.percentRemaining.units
@@ -58,8 +57,8 @@ Item {
     }
 
     function getBatteryVoltageText() {
-    if (!battery) {
-        return ""
+        if (!battery) {
+            return ""
         }
         if (!isNaN(battery.voltage.rawValue)) {
             return battery.voltage.valueString + " " + battery.voltage.units
