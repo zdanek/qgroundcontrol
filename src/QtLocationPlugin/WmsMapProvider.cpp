@@ -141,7 +141,7 @@ void WmsMapProvider::_loadConfig()
         wmsServiceUrl_ = settings.value("url", "http://10.0.0.100/geoserver/wms").toString();
         query_srs_ = settings.value("srs", "EPSG:4326").toString();
         layer_ = settings.value("layer", "Polska").toString();
-        style_ = settings.value("style", "default").toString();
+        style_ = "";// settings.value("style", "default").toString();
     }
 
     if (query_srs_.endsWith(":3857")) {
