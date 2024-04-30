@@ -47,7 +47,7 @@ Item {
     property real   _margins:               ScreenTools.defaultFontPixelWidth / 2
     property real   _toolsMargin:           ScreenTools.defaultFontPixelWidth * 0.75
     property rect   _centerViewport:        Qt.rect(0, 0, width, height)
-    property real   _rightPanelWidth:       ScreenTools.defaultFontPixelWidth * 30
+    property real   _rightPanelWidth:       ScreenTools.defaultFontPixelWidth * 40
 
     QGCToolInsets {
         id:                     _totalToolInsets
@@ -78,23 +78,23 @@ Item {
         anchors.right:      parent.right
         width:              _rightPanelWidth
         spacing:            ScreenTools.defaultFontPixelWidth
-        visible:            QGroundControl.multiVehicleManager.vehicles.count > 1 && QGroundControl.corePlugin.options.flyView.showMultiVehicleList
+        visible:            QGroundControl.multiVehicleManager.vehicles.count > 0 && QGroundControl.corePlugin.options.flyView.showMultiVehicleList
 
-        property bool showSingleVehiclePanel:  !visible || singleVehicleRadio.checked
+        property bool showSingleVehiclePanel:  !visible //|| singleVehicleRadio.checked
 
         QGCMapPalette { id: mapPal; lightColors: true }
 
-        QGCRadioButton {
-            id:             singleVehicleRadio
-            text:           qsTr("Single")
-            checked:        true
-            textColor:      mapPal.text
-        }
-
-        QGCRadioButton {
-            text:           qsTr("Multi-Vehicle")
-            textColor:      mapPal.text
-        }
+        // QGCRadioButton {
+        //     id:             singleVehicleRadio
+        //     text:           qsTr("Single")
+        //     checked:        true
+        //     textColor:      mapPal.text
+        // }
+        //
+        // QGCRadioButton {
+        //     text:           qsTr("Multi-Vehicle")
+        //     textColor:      mapPal.text
+        // }
     }
 
     MultiVehicleList {
@@ -106,18 +106,18 @@ Item {
         visible:            !multiVehiclePanelSelector.showSingleVehiclePanel
     }
 
-    FlyViewInstrumentPanel {
-        id:                         instrumentPanel
-        anchors.margins:            _toolsMargin
-        anchors.top:                multiVehiclePanelSelector.visible ? multiVehiclePanelSelector.bottom : parent.top
-        anchors.right:              parent.right
-        width:                      _rightPanelWidth
-        spacing:                    _toolsMargin
-        visible:                    QGroundControl.corePlugin.options.flyView.showInstrumentPanel && multiVehiclePanelSelector.showSingleVehiclePanel
-        availableHeight:            parent.height - y - _toolsMargin
-
-        property real rightInset: visible ? parent.width - x : 0
-    }
+    // FlyViewInstrumentPanel {
+    //     id:                         instrumentPanel
+    //     anchors.margins:            _toolsMargin
+    //     anchors.top:                multiVehiclePanelSelector.visible ? multiVehiclePanelSelector.bottom : parent.top
+    //     anchors.right:              parent.right
+    //     width:                      _rightPanelWidth
+    //     spacing:                    _toolsMargin
+    //     visible:                    QGroundControl.corePlugin.options.flyView.showInstrumentPanel && multiVehiclePanelSelector.showSingleVehiclePanel
+    //     availableHeight:            parent.height - y - _toolsMargin
+    //
+    //     property real rightInset: visible ? parent.width - x : 0
+    // }
 
     PhotoVideoControl {
         id:                     photoVideoControl

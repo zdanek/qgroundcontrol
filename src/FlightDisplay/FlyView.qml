@@ -100,7 +100,9 @@ Item {
         anchors.fill:       widgetLayer
         z:                  _fullItemZorder + 2
         mapControl:         _mapControl
-        visible:            !QGroundControl.videoManager.fullScreen
+        // visible:            !QGroundControl.videoManager.fullScreen
+        // TODO(bzd) disabled
+        visible:            false
     }
 
     GuidedActionsController {
