@@ -28,7 +28,7 @@ protected:
 private slots:
     void _testDirty(void);
     void _testVertexManipulation(void);
-//    void _testKMLLoad(void);
+    void _testKMLLoad(void);
     void _testSelectVertex(void);
 
 private:
