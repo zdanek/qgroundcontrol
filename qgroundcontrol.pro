@@ -364,6 +364,10 @@ CustomBuild {
         $$PWD/resources/InstrumentValueIcons/InstrumentValueIcons.qrc \
 }
 
+DEFINES += QGC_APPLICATION_NAME=\"\\\"$$QGC_APPLICATION_NAME\\\"\"
+DEFINES += QGC_ORG_NAME=\"\\\"$$QGC_ORG_NAME\\\"\"
+DEFINES += QGC_ORG_DOMAIN=\"\\\"$$QGC_ORG_DOMAIN\\\"\"
+
 #
 # Main QGroundControl portion of project file
 #
