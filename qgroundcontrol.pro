@@ -581,7 +581,7 @@ HEADERS += \
     src/Compression/QGCZlib.h \
     src/FirmwarePlugin/PX4/px4_custom_mode.h \
     src/FollowMe/FollowMe.h \
-    src/FlightDisplay/PoiLayerController.h \
+    src/FlightDisplay/poi/PoiLayerController.h \
     src/Joystick/Joystick.h \
     src/Joystick/JoystickManager.h \
     src/Joystick/JoystickMavCommand.h \
@@ -836,7 +836,7 @@ SOURCES += \
     src/Compression/QGCLZMA.cc \
     src/Compression/QGCZlib.cc \
     src/FollowMe/FollowMe.cc \
-    src/FlightDisplay/PoiLayerController.cc \
+    src/FlightDisplay/poi/PoiLayerController.cc \
     src/Joystick/Joystick.cc \
     src/Joystick/JoystickManager.cc \
     src/Joystick/JoystickMavCommand.cc \
