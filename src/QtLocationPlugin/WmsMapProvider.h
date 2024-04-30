@@ -14,7 +14,9 @@
  *   @author Bartek Zdanowski <bartek.zdanowski@gmail.com>
  */
 
-#pragma once
+#ifndef WMSMAPPROVIDER_H
+#define WMSMAPPROVIDER_H
+
 
 #include "MapProvider.h"
 
@@ -70,3 +72,5 @@ private:
 //    QString query_srs_ = "EPSG:4326";
     void _saveConfig();
 };
+
+#endif
