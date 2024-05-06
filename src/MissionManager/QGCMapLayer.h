@@ -1,8 +1,8 @@
 #pragma once
 
-#include "qmlkml.h"
 #include <QGCMapGeom.h>
 #include <QString>
+#include "qtkml.h"
 
 class QGCMapLayer : public QObject
 {
