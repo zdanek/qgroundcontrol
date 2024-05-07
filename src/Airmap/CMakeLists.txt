@@ -1,8 +1,8 @@
 
 if(QGC_AIRMAP)
-
+message(STATUS "Building Airmap")
 	add_library(Airmap
-		AirMapAdvisoryManager.cc
+		AirMapAdvisoryManagerasdfsa.cc
 		AirMapFlightManager.cc
 		AirMapFlightPlanManager.cc
 		AirMapManager.cc
@@ -30,9 +30,10 @@ if(QGC_AIRMAP)
 		FlightFeature.qml
 	)
 else()
+	message(STATUS "Building Airmap dummy")
 	add_library(Airmap
 		dummy/AirspaceManager.cc
-		airmap.qrc
+		dummy/airmap_dummy.qrc
 	)
 	target_include_directories(Airmap PUBLIC dummy)
 endif()

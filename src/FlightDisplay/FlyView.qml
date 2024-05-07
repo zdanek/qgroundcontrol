@@ -95,6 +95,14 @@ Item {
         visible:            !QGroundControl.videoManager.fullScreen
     }
 
+    FlyViewPoiLayer {
+        id:                 poiLayerOverlay
+        anchors.fill:       widgetLayer
+        z:                  _fullItemZorder + 2
+        mapControl:         _mapControl
+        visible:            !QGroundControl.videoManager.fullScreen
+    }
+
     GuidedActionsController {
         id:                 guidedActionsController
         missionController:  _missionController

@@ -118,6 +118,8 @@ void QGCLoggingCategoryRegister::setFilterRulesFromSettings(const QString& comma
     filterRules += filterRuleFormat.arg("GStreamerAPILog");
 
     filterRules += "qt.qml.connections=false";
+    //TODO(bzd) to be removed on PR
+    filterRules += "qt.qml.binding.removal.info=true";
 
     qDebug() << "Filter rules" << filterRules;
     QLoggingCategory::setFilterRules(filterRules);

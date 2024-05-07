@@ -11,3 +11,5 @@ endif()
 
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "Force qmdnsengine to build as static" FORCE)
 add_subdirectory(qmdnsengine)
+
+add_subdirectory(QtKMLLib)

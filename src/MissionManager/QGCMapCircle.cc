@@ -31,6 +31,19 @@ QGCMapCircle::QGCMapCircle(QObject* parent)
     _init();
 }
 
+QGCMapCircle::QGCMapCircle(const QGeoCoordinate& center, double radius, QObject* parent)
+    : QObject           (parent)
+    , _dirty            (false)
+    , _center           (center)
+    , _radius           (FactSystem::defaultComponentId, _radiusFactName, FactMetaData::valueTypeDouble)
+    , _interactive      (false)
+    , _showRotation     (false)
+    , _clockwiseRotation(true)
+{
+    _radius.setRawValue(radius);
+    _init();
+}
+
 QGCMapCircle::QGCMapCircle(const QGeoCoordinate& center, double radius, bool showRotation, bool clockwiseRotation, QObject* parent)
     : QObject           (parent)
     , _dirty            (false)
@@ -95,12 +108,12 @@ void QGCMapCircle::saveToJson(QJsonObject& json)
     json.insert(jsonCircleKey, circleObject);
 }
 
-bool QGCMapCircle::loadFromJson(const QJsonObject& json, QString& errorString)
+bool QGCMapCircle::loadFromJson(const QJsonObject &json, QString &errorString)
 {
     errorString.clear();
 
     QList<JsonHelper::KeyValidateInfo> circleKeyInfo = {
-        { jsonCircleKey, QJsonValue::Object, true },
+        {jsonCircleKey, QJsonValue::Object, true},
     };
     if (!JsonHelper::validateKeys(json, circleKeyInfo, errorString)) {
         return false;
@@ -109,8 +122,8 @@ bool QGCMapCircle::loadFromJson(const QJsonObject& json, QString& errorString)
     QJsonObject circleObject = json[jsonCircleKey].toObject();
 
     QList<JsonHelper::KeyValidateInfo> circleObjectKeyInfo = {
-        { _jsonCenterKey, QJsonValue::Array,    true },
-        { _jsonRadiusKey, QJsonValue::Double,   true },
+        {_jsonCenterKey, QJsonValue::Array, true},
+        {_jsonRadiusKey, QJsonValue::Double, true},
     };
     if (!JsonHelper::validateKeys(circleObject, circleObjectKeyInfo, errorString)) {
         return false;
@@ -123,9 +136,9 @@ bool QGCMapCircle::loadFromJson(const QJsonObject& json, QString& errorString)
     setCenter(center);
     _radius.setRawValue(circleObject[_jsonRadiusKey].toDouble());
 
-    _interactive =          false;
-    _showRotation =         false;
-    _clockwiseRotation =    true;
+    _interactive = false;
+    _showRotation = false;
+    _clockwiseRotation = true;
 
     return true;
 }

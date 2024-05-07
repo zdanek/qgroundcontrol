@@ -103,6 +103,7 @@ SimpleItemMapVisuals                    1.0 SimpleItemMapVisuals.qml
 SliderSwitch                            1.0 SliderSwitch.qml
 SubMenuButton                           1.0 SubMenuButton.qml
 SurveyMapVisuals                        1.0 SurveyMapVisuals.qml
+SvgLabelledPoint                        1.0 SvgLabelledPoint.qml
 TerrainStatus                           1.0 TerrainStatus.qml
 TransectStyleComplexItemEditor          1.0 TransectStyleComplexItemEditor.qml
 TransectStyleComplexItemStats           1.0 TransectStyleComplexItemStats.qml

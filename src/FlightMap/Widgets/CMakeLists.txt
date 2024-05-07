@@ -1,4 +1,4 @@
-add_custom_target(FligthMapWidgetsQml
+add_custom_target(FlightMapWidgetsQml
 	SOURCES
 		CenterMapDropButton.qml
 		CenterMapDropPanel.qml

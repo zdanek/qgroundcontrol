@@ -14,7 +14,10 @@
 #include <QList>
 #include <QGeoCoordinate>
 
+#include "QGCLoggingCategory.h"
 #include "ShapeFileHelper.h"
+
+Q_DECLARE_LOGGING_CATEGORY(KML)
 
 class KMLHelper : public QObject
 {

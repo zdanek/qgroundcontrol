@@ -178,6 +178,7 @@ endif()
 target_link_libraries(qgc
 	PRIVATE
 		shp
+		qtkml
 		Qt5::QuickControls2
 
 	PUBLIC
@@ -200,6 +201,7 @@ target_link_libraries(qgc
 		gps
 		Joystick
 		MissionManager
+		PoiLayers
 		PositionManager
 		QmlControls
 		QtLocationPlugin

@@ -1,5 +1,6 @@
+add_subdirectory(poi)
 
-add_custom_target(FligthDisplayQml
+add_custom_target(FlightDisplayQml
 	SOURCES
 		DefaultChecklist.qml
 		FixedWingChecklist.qml
@@ -9,6 +10,7 @@ add_custom_target(FligthDisplayQml
 		FlightDisplayViewWidgets.qml
 		FlyViewAirspaceIndicator.qml
 		FlyViewCustomLayer.qml
+		FlyViewPoiLayer.qml
 		FlyViewInstrumentPanel.qml
 		FlyViewMap.qml
 		FlyViewMissionCompleteDialog.qml
@@ -41,6 +43,7 @@ add_custom_target(FligthDisplayQml
 		ProximityRadarVideoView.qml
 		RoverChecklist.qml
 		SubChecklist.qml
+		SvgLabelledPoint.qml
 		TelemetryValuesBar.qml
 		TerrainProgress.qml
 		VehicleWarnings.qml

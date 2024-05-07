@@ -22,3 +22,9 @@
 [submodule "libs/qmdnsengine"]
 	path = libs/qmdnsengine
 	url = https://github.com/patrickelectric/qmdnsengine
+[submodule "libs/QtKMLLib/QtKMLLib"]
+	path = libs/QtKMLLib/QtKMLLib
+	url = git@github.com:mmertama/QtKMLLib.git
+[submodule "libs/QtKMLLib"]
+	path = libs/QtKMLLib
+	url = https://github.com/zdanek/QtKMLLib.git
