@@ -252,6 +252,20 @@ MacBuild {
     LIBS += -lSDL2
 }
 
+# libkml
+LinuxBuild {
+    INCLUDEPATH += \
+        $$SOURCE_DIR/libs/QtKMLLib/kmllib/third_party/libkml/include
+    LIBS += -L$$SOURCE_DIR/libs/QtKMLLib/kmllib/third_party/libkml/lib
+    LIBS += \
+        -lkmlbase \
+        -lkmlconvenience \
+        -lkmldom \
+        -lkmlengine \
+        -lkmlregionator \
+        -lkmlxsd
+}
+
 # Include Android OpenSSL libs
 AndroidBuild {
     include($$SOURCE_DIR/libs/OpenSSL/android_openssl/openssl.pri)

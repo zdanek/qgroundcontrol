@@ -179,7 +179,7 @@ QSharedPointer<QtKml::KmlQmlGraphics> PoiLayerController::loadKML(const QString 
 
         mapElements.append(&element);
     }
-    /*
+
 
     for (int i = 0; i < folder->get_feature_array_size(); i++) {
         kmldom::FeaturePtr feature = folder->get_feature_array_at(i);

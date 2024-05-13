@@ -155,6 +155,19 @@ LinuxBuild {
         QMAKE_POST_LINK += && $$QMAKE_COPY --dereference --recursive $$[QT_INSTALL_PLUGINS]/$$QT_PLUGIN $$DESTDIR/Qt/plugins/
     }
 
+    KML_LIB_LIST += \
+        libkmlbase.so \
+        libkmlconvenience.so \
+        libkmldom.so \
+        libkmlengine.so \
+        libkmlregionator.so \
+        libkmlxsd.so
+
+    # QMAKE_POST_LINK += && $$QMAKE_COPY $$SOURCE_DIR/libs/QtKMLLib/kmllib/third_party/libkml/lib $$DESTDIR/Qt/libs/
+    for(KML_LIB, KML_LIB_LIST) {
+        QMAKE_POST_LINK += && $$QMAKE_COPY --dereference --recursive $$SOURCE_DIR/libs/QtKMLLib/kmllib/third_party/libkml/lib/$$KML_LIB $$DESTDIR/Qt/libs/
+    }
+
     # QT_INSTALL_QML
     QMAKE_POST_LINK += && $$QMAKE_COPY --dereference --recursive $$[QT_INSTALL_QML] $$DESTDIR/Qt/
 

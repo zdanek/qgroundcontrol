@@ -393,6 +393,7 @@ INCLUDEPATH += \
     src/Compression \
     src/AutoPilotPlugins \
     src/FlightDisplay \
+    src/FlightDisplay/poi \
     src/FlightMap \
     src/FlightMap/Widgets \
     src/FollowMe \
@@ -586,6 +587,7 @@ HEADERS += \
     src/FirmwarePlugin/PX4/px4_custom_mode.h \
     src/FollowMe/FollowMe.h \
     src/FlightDisplay/poi/PoiLayerController.h \
+    src/FlightDisplay/poi/PoiLayer.h \
     src/Joystick/Joystick.h \
     src/Joystick/JoystickManager.h \
     src/Joystick/JoystickMavCommand.h \
@@ -841,6 +843,7 @@ SOURCES += \
     src/Compression/QGCZlib.cc \
     src/FollowMe/FollowMe.cc \
     src/FlightDisplay/poi/PoiLayerController.cc \
+    src/FlightDisplay/poi/PoiLayer.cc \
     src/Joystick/Joystick.cc \
     src/Joystick/JoystickManager.cc \
     src/Joystick/JoystickMavCommand.cc \
