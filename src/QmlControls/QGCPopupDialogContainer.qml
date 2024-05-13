@@ -166,7 +166,7 @@ Popup {
         function onEnableAcceptButton() {   acceptButton.enabled = true }
         function onEnableRejectButton() {   rejectButton.enabled = true }
         function onDisableAcceptButton() {  acceptButton.enabled = false }
-        function onDisableRejectButton() {  rejectButton.enabled = false }
+        function onDisableRejectButton() {  rejectButton.enabled = false }h
     }
 
     Rectangle {
