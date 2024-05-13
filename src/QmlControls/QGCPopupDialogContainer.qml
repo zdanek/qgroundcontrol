@@ -162,11 +162,11 @@ Popup {
 
     Connections {
         target:                 dialogComponentLoader.item
-        onHideDialog:           close()
-        onEnableAcceptButton:   acceptButton.enabled = true
-        onEnableRejectButton:   rejectButton.enabled = true
-        onDisableAcceptButton:  acceptButton.enabled = false
-        onDisableRejectButton:  rejectButton.enabled = false
+        function onHideDialog() { close() }
+        function onEnableAcceptButton() {   acceptButton.enabled = true }
+        function onEnableRejectButton() {   rejectButton.enabled = true }
+        function onDisableAcceptButton() {  acceptButton.enabled = false }
+        function onDisableRejectButton() {  rejectButton.enabled = false }
     }
 
     Rectangle {

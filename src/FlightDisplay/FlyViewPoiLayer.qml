@@ -155,7 +155,7 @@ Item {
             spacing: _margin
 
             anchors {
-                top:            layersListTitle.bottom
+                // top:            layersListTitle.bottom
                 topMargin:      _margin
                 horizontalCenter: parent.horizontalCenter
             }

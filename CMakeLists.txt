@@ -269,7 +269,7 @@ else()
 			${CMAKE_CURRENT_SOURCE_DIR}/resources/InstrumentValueIcons/InstrumentValueIcons.qrc)
 endif()
 
-if (NOT AIRMAP_DISABLE)
+if (NOT DISABLE_AIRMAP)
 	list(APPEND QGC_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/Airmap/airmap.qrc)
 else()
 	list(APPEND QGC_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/Airmap/dummy/airmap_dummy.qrc)
