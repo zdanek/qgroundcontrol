@@ -36,28 +36,31 @@ public:
     PoiLayerController(QObject* parent = nullptr);
     ~PoiLayerController();
 
-    Q_PROPERTY(bool poiLayerVisible READ poiLayerVisible WRITE setPoiLayerVisible NOTIFY poiLayerVisibleChanged)
+//    Q_PROPERTY(bool poiLayerVisible READ poiLayerVisible WRITE setPoiLayerVisible NOTIFY poiLayerVisibleChanged)
     Q_PROPERTY(QmlObjectListModel* poiLayers READ poiLayers NOTIFY poiLayersChanged)
 
     /// Should be called immediately upon Component.onCompleted.
     Q_INVOKABLE void start();
+    Q_INVOKABLE void deletePoiLayer(QString id);
 
-    bool poiLayerVisible() const;
-    void setPoiLayerVisible(bool poiLayerVisible);
+//    bool poiLayerVisible() const;
+//    void setPoiLayerVisible(bool poiLayerVisible);
 
 signals:
-    void poiLayerVisibleChanged(bool poiLayerVisible);
+//    void poiLayerVisibleChanged(bool poiLayerVisible);
     void poiLayersChanged();
-    void poiLayerAdded(PoiLayer* poiLayer);
+//    void poiLayerAdded(PoiLayer* poiLayer);
+//    void poiLayerDeleted(QString id);
 
 private:
     //return poiLayers
     QmlObjectListModel *poiLayers() { return &_poiLayers; }
     QList<QGeoCoordinate> map(const QtKml::KmlElement::KmlVertices & vector) const;
-    QGeoCoordinate map(const QGeoCoordinate &coordinate) const;
+//    QGeoCoordinate map(const QGeoCoordinate &coordinate) const;
     QSharedPointer<QtKml::KmlQmlGraphics> loadKML(const QString &kmlFile);
 
-    bool _poiLayerVisible = true;
+//    bool _poiLayerVisible = true;
     QmlObjectListModel _poiLayers;
+    void addPoiLayer(PoiLayer *pLayer);
 };
 

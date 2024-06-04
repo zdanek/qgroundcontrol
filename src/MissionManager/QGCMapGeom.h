@@ -17,6 +17,7 @@ enum QGCMapGeomType {
     Polyline,
     Circle,
     Point,
+    Svg,
     Invalid
 };
 

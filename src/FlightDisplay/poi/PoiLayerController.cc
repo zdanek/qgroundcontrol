@@ -38,29 +38,21 @@ PoiLayerController::PoiLayerController(QObject *parent)
 
 PoiLayerController::~PoiLayerController() {}
 
-bool PoiLayerController::poiLayerVisible() const
-{
-    return _poiLayerVisible;
-}
-
-void PoiLayerController::setPoiLayerVisible(bool poiLayerVisible)
-{
-    if (_poiLayerVisible != poiLayerVisible) {
-        _poiLayerVisible = poiLayerVisible;
-        emit poiLayerVisibleChanged(poiLayerVisible);
-    }
-}
-
 void PoiLayerController::start()
 {
     qCDebug(PoiLayerControllerLog) << "PoiLayerController::start";
 
+    QList<QGCMapGeom *> elements = QList<QGCMapGeom *>();
+//    QGCMapPolygon *poly = new QGCMapPolygon(this);
+
+//    poly->loadFromJson("{\"type\":\"Polygon\",\"coordinates\":[[[19.938,50.061],[19.938,50.062],[19.939,50.062],[19.939,50.061],[19.938,50.061]]]}", false , "error");
+//    elements.append();
 //     QSharedPointer<QtKml::KmlQmlGraphics> poiGraphics = loadKML("/opt/workspace/projects/drones/qgmewamed/kml/ext_milstd.kml");
     QSharedPointer<QtKml::KmlQmlGraphics> poiGraphics = loadKML("/opt/workspace/projects/drones/qgmewamed/kml/tic~mip31_29100019301000000001.kml");
 //    QSharedPointer<QtKml::KmlQmlGraphics> poiGraphics = loadKML("http://localhost:8080/rest/layers/kml/get/mip31~29100019300000000000");
 //    QSharedPointer<QtKml::KmlQmlGraphics> poiGraphics = loadKML("http://localhost:8080/rest/layers/kml/get/mip31~29100019300000000005");
     PoiLayer * poiLayer = new PoiLayer(this);
-    QString &id = poiGraphics->documents()[0];
+    QString id = poiGraphics->documents()[0];
     QString name;
 
     QtKml::KmlDocument *doc = poiGraphics->document(id);
@@ -71,10 +63,16 @@ void PoiLayerController::start()
             name = folder->get_name().c_str();
         }
     } else {
-        name = "Unknown";
+        name = QString("Unknown %1").arg(rand());
     }
 
+    if (id.isEmpty()) {
+        id = name;
+    }
+
+    qCDebug(PoiLayerControllerLog) << "Layer name " << name << " layer ID " << id;
     poiLayer->setId(id);
+    poiLayer->append(elements);
     poiLayer->setKmlGraphics(poiGraphics);
     poiLayer->setName(name);
 
@@ -84,7 +82,7 @@ void PoiLayerController::start()
     // poiLayer->append(loadKML("/opt/workspace/projects/drones/qgmewamed/kml/ext_milstd.kml"));
     // poiLayer->append(loadKML("/opt/workspace/projects/drones/qgmewamed/kml/tic~mip31_29100019301000000001.kml"));
 
-    _poiLayers.append(poiLayer);
+    addPoiLayer(poiLayer);
 
     // PoiLayer *poiLayer2 = new PoiLayer(this);
     // poiLayer2->setName("Most Poniatowskiego");
@@ -103,6 +101,22 @@ void PoiLayerController::start()
 
 
     //emit poiLayersChanged();
+}
+
+void PoiLayerController::deletePoiLayer(QString id)
+{
+    qCDebug(PoiLayerControllerLog) << "PoiLayerController::deletePoiLayer:" << id;
+    for (int i = 0; i < _poiLayers.count(); i++) {
+        PoiLayer *poiLayer = dynamic_cast<PoiLayer *>(_poiLayers.get(i));
+        if (poiLayer->id() == id) {
+            poiLayer->setVisible(false);
+            emit poiLayer->deleted();
+            _poiLayers.removeAt(i);
+            poiLayer->deleteLater();
+            emit poiLayersChanged();
+            return;
+        }
+    }
 }
 
 QList<QGeoCoordinate> PoiLayerController::map(const QtKml::KmlElement::KmlVertices &vector) const
@@ -211,5 +225,18 @@ QSharedPointer<QtKml::KmlQmlGraphics> PoiLayerController::loadKML(const QString 
 
     }
 */
+
+}
+void PoiLayerController::addPoiLayer(PoiLayer *pLayer) {
+    for (int i = 0; i < _poiLayers.count(); i++) {
+        PoiLayer *poiLayer = dynamic_cast<PoiLayer *>(_poiLayers.get(i));
+        if (poiLayer->id() == pLayer->id()) {
+            qCDebug(PoiLayerControllerLog) << "PoiLayerController::addPoiLayer: Layer with ID " << pLayer->id() << " already exists";
+            deletePoiLayer(pLayer->id());
+        }
+    }
+
+    _poiLayers.append(pLayer);
+    emit poiLayersChanged();
 
 }

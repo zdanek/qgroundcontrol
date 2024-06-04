@@ -23,11 +23,16 @@ Rectangle {
     height:             childrenRect.height
 
     property var modelData
+    property var layerController
 
     readonly property real  _margin:            ScreenTools.defaultFontPixelWidth / 2
     readonly property real  _radius:            ScreenTools.defaultFontPixelWidth / 2
     readonly property real  _trashSize:         ScreenTools.defaultFontPixelHeight * 1.5
 
+    function remove(layerId) {
+        console.log("remove layerId: ", layerId)
+        layerController.deletePoiLayer(layerId)
+    }
     Row {
       id:                 topRowLayout
       anchors.margins:    _margin
@@ -51,7 +56,7 @@ Rectangle {
 
           QGCMouseArea {
               fillItem:   parent
-              onClicked:  remove()
+              onClicked:  remove(modelData.id)
           }
       }
 

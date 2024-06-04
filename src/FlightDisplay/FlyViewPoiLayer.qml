@@ -178,9 +178,10 @@ Item {
             Repeater {
                 id:                 _poiRepeater
                 model:              _poiLayerController.poiLayers
-                //_missionController.missionItemsModel
+
                 delegate: PoiLayerMenuWidget {
                     modelData: object
+                    layerController: _poiLayerController
 
                 }
             }

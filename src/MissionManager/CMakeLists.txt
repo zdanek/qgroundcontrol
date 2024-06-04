@@ -110,6 +110,8 @@ add_library(MissionManager
 	QGCMapPolygon.h
 	QGCMapPolyline.cc
 	QGCMapPolyline.h
+	QGCMapSvgIcon.cc
+	QGCMapSvgIcon.h
 	RallyPoint.cc
 	RallyPointController.cc
 	RallyPointController.h

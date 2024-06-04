@@ -18,6 +18,7 @@
 
 #include <QObject>
 
+#include "QGCMapGeom.h"
 #include "QmlObjectListModel.h"
 #include "qmlkml.h"
 
@@ -50,7 +51,7 @@ public:
     bool visible() const { return _visible; }
     void setVisible(bool visible);
 
-    // void setKmlElements(QList<QtKml::KmlElement> &kml_elements);
+    void append(QList<QGCMapGeom *> map_geoms);
     void setKmlGraphics(QSharedPointer<QtKml::KmlQmlGraphics> &kml_graphics);
 
     QtKml::KmlQmlGraphics* kmlGraphics() { return _kmlGraphics.data(); }
@@ -58,8 +59,9 @@ public:
 signals:
     void nameChanged(const QString& name);
     void visibleChanged(bool visible);
-    void elementsChanged(const QmlObjectListModel &polygons);
+    void elementsChanged(const QmlObjectListModel &elements);
     void kmlGraphicsChanged();
+    void deleted();
     // void polylinesChanged(QmlObjectListModel* polylines);
 
 private:

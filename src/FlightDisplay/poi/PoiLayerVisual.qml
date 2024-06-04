@@ -16,10 +16,33 @@ Item {
     id: _root
     property var mapControl             /// Map control to place item in
     property var poiLayer               /// poi layer with POI items - PoiLayer object
+    property var poiLayerController
+
+    property var lvisible: poiLayer.visible
+    property var __items: []
+
+    onLvisibleChanged: function (sth, visible) {
+        console.log("onVisibleChanged " + lvisible)
+        for (var i = 0; i < __items.length; i++) {
+            __items[i].visible = lvisible
+        }
+    }
+
+    Connections {
+        target: poiLayer
+        function onDeleted() {
+            console.log("Layer deleted " + poiLayer.id)
+            console.log("Removing all items")
+            for (var i = 0; i < __items.length; i++) {
+                mapControl.removeMapItem(__items[i])
+            }
+            __items = []
+        }
+    }
 
     Item {
         id: poiLayerItem
-        visible: true
+        visible: poiLayer.visible
 
         MapPolyline {
             id: line
@@ -32,6 +55,11 @@ Item {
                 { latitude: 53, longitude: 21.5 }
             ]
         }
+    }
+
+    function _addMapElement(element){
+        __items.push(element)
+        mapControl.addMapItem(element)
     }
 
     function _drawVertices(element, item){
@@ -92,7 +120,7 @@ Item {
                         }
 
                         _drawVertices(element, polygon)
-                        mapControl.addMapItem(polygon)
+                        _addMapElement(polygon)
                         break
                     case "polyline":
                         var polyline = Qt.createQmlObject('import QtLocation 5.5; MapPolyline{smooth:true;antialiasing:true}', mapControl, "mapPolyline")
@@ -101,13 +129,13 @@ Item {
                         polyline.line.color = _torealColor(element.styles["line_color"])
 
                         _drawVertices(element, polyline)
-                        mapControl.addMapItem(polyline)
+                        _addMapElement(polyline)
                         break
                     case "point":
                         var point = Qt.createQmlObject('import QtLocation 5.5; import QtQuick 2.4; MapQuickItem { smooth:true; antialiasing:true; anchorPoint.x: p_icon.width / 2; anchorPoint.y: p_icon.height; sourceItem:Image { id:p_icon; } }', mapControl, "mapQuickItem")
                         point.sourceItem.source = element.styles["icon"]
                         point.coordinate = QtPositioning.coordinate(element.vertices[0].latitude, element.vertices[0].longitude)
-                        mapControl.addMapItem(point)
+                        _addMapElement(point)
                         console.log(element.styles["icon"] + " f4 " + point.coordinate + " --> " + point.sourceItem.source)
                         break;
                     case "svgWithLabel":
@@ -118,10 +146,11 @@ Item {
 //                            coordinate: QtPositioning.coordinate(element.vertices[0].latitude, element.vertices[0].longitude)
 //                        }
                         var point = Qt.createQmlObject('import QtLocation 5.5; import QtQuick 2.4; MapQuickItem{ smooth:true; antialiasing:true; anchorPoint.x: p_icon.width / 2; anchorPoint.y: p_icon.height; zoomLevel: 15; sourceItem:Image { id:p_icon; } }', mapControl, "mapQuickItem")
-                        point.sourceItem.source = "http://10.0.0.100/rest/symbol/" + element.extraData;
+                        // point.sourceItem.source = "http://10.0.0.100/rest/symbol/" + element.extraData;
+                        point.sourceItem.source = "http://127.0.0.1:8080/rest/symbol/" + element.extraData;
                         //"file:///tmp/mewa/SFGCEVCA-------.svg"
                         point.coordinate = QtPositioning.coordinate(element.vertices[0].latitude, element.vertices[0].longitude)
-                        mapControl.addMapItem(point)
+                        _addMapElement(point)
                         console.log(element.styles["icon"] + " f4 " + point.coordinate + " --> " + point.sourceItem.source)
                         break;
                     }

@@ -20,6 +20,7 @@
 #include "QGCMapCircle.h"
 #include "QGCMapPolygon.h"
 #include "QGCMapPolyline.h"
+#include "QGCMapSvgIcon.h"
 
 PoiLayer::PoiLayer(QObject* parent)
     : QObject(parent)
@@ -64,39 +65,53 @@ void PoiLayer::setKmlElements(QList<QtKml::KmlElement> &kml_elements)
 
 }
 */
-/*
 
-void PoiLayer::append(QGCMapLayer* mapLayer)
+void PoiLayer::append(QList<QGCMapGeom *> map_geoms)
 {
     // appends map objects, POLYLINE to _polylines, POLYGON to _polygons, POINT to _points and emits signals
-    for (QGCMapGeom *mapObject : mapLayer->getMapObjects()) {
+    for (QGCMapGeom *mapObject : map_geoms) {
+        QObject *mo = dynamic_cast<QObject *>(mapObject);
+        _elements.append(mo);
+    }
 
+    if (true) {
+        emit elementsChanged(&_elements);
+        return;
+    }
+    if (false) {
+        QGCMapGeom *&mapObject = map_geoms.first();
         QGCMapGeomType type = mapObject->geomType();
 
         switch (type) {
             case QGCMapGeomType::Polygon: {
                 // c++ cast to QGCMapPolyline
                 QGCMapPolygon *polygonX = dynamic_cast<QGCMapPolygon *>(mapObject);
-                QGCMapPolygon *polygon = qobject_cast<QGCMapPolygon *>(polygonX);
-                _polygons.append(polygon);
+//                QGCMapPolygon *polygon = qobject_cast<QGCMapPolygon *>(mapObject);
+                _elements.append(polygonX);
                 break;
             }
-            case QGCMapGeomType::Circle: {
-                QGCMapCircle *polygonX = dynamic_cast<QGCMapCircle *>(mapObject);
-                QGCMapCircle *polygon = qobject_cast<QGCMapCircle *>(polygonX);
-                _circles.append(polygon);
-                break;
-            }
-            case QGCMapGeomType::Point: {
-                QGCMapCircle *polygonX = dynamic_cast<QGCMapCircle *>(mapObject);
-                QGCMapCircle *polygon = qobject_cast<QGCMapCircle *>(polygonX);
-                _circles.append(polygon);
-                break;
-            }
+//            case QGCMapGeomType::Circle: {
+//                QGCMapCircle *polygonX = dynamic_cast<QGCMapCircle *>(mapObject);
+//                QGCMapCircle *polygon = qobject_cast<QGCMapCircle *>(polygonX);
+//                _circles.append(polygon);
+//                break;
+//            }
+//            case QGCMapGeomType::Point: {
+//                QGCMapCircle *polygonX = dynamic_cast<QGCMapCircle *>(mapObject);
+//                QGCMapCircle *polygon = qobject_cast<QGCMapCircle *>(polygonX);
+//                _circles.append(polygon);
+//                break;
+//            }
             case QGCMapGeomType::Polyline: {
                 QGCMapPolyline *polylineX = dynamic_cast<QGCMapPolyline *>(mapObject);
                 QGCMapPolyline *polyline = qobject_cast<QGCMapPolyline *>(polylineX);
-                _polylines.append(polyline);
+                _elements.append(polyline);
+                break;
+            }
+            case QGCMapGeomType::Svg: {
+                QGCMapSvgIcon *polygonX = dynamic_cast<QGCMapSvgIcon *>(mapObject);
+                QGCMapSvgIcon *polygon = qobject_cast<QGCMapSvgIcon *>(polygonX);
+                _elements.append(polygon);
                 break;
             }
             default:
@@ -104,7 +119,7 @@ void PoiLayer::append(QGCMapLayer* mapLayer)
         }
     }
 }
-
+/*
 const PoiLayer& PoiLayer::operator=(const PoiLayer& other)
 {
     clear();
