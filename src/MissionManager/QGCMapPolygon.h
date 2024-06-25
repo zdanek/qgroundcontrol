@@ -44,6 +44,7 @@ public:
     Q_PROPERTY(bool                 traceMode       READ traceMode      WRITE setTraceMode      NOTIFY traceModeChanged)
     Q_PROPERTY(bool                 showAltColor    READ showAltColor   WRITE setShowAltColor   NOTIFY showAltColorChanged)
     Q_PROPERTY(int                  selectedVertex  READ selectedVertex WRITE selectVertex      NOTIFY selectedVertexChanged)
+    Q_PROPERTY(int                  type            READ type                                   CONSTANT)
 
     Q_INVOKABLE void clear(void);
     Q_INVOKABLE void appendVertex(const QGeoCoordinate& coordinate);

@@ -64,7 +64,7 @@ Item {
 
     function _drawVertices(element, item){
 //        console.log("element.vertices.length " + element.vertices.length + " color " + element.styles["fill_color"] + " " + element.styles["line_color"] + " " + element.styles["line_width"])
-        var vertices = element.vertices;
+        var vertices = element.path;
         for(var k = 0; k < vertices.length; k++){
             item.addCoordinate(QtPositioning.coordinate(vertices[k].latitude, vertices[k].longitude))
         }
@@ -83,42 +83,47 @@ Item {
     Component.onCompleted: {
         console.log("poilayer " + poiLayer.id)
 
-
-
         if (mapControl) {
-//            var layerItem = Qt.createQmlObject('import QtQuick 2.12; Item { id: newPoiLayer }', mapControl, "poiLayerItem")
-//             var layerItem = Qt.createQmlObject('import QtQuick 2.12; import QtLocation 5.9; MapQuickItem { id: newPoiLayer }', mapControl, "poiLayerItem");
-//             mapControl.addMapItem(layerItem)
+            //            var layerItem = Qt.createQmlObject('import QtQuick 2.12; Item { id: newPoiLayer }', mapControl, "poiLayerItem")
+            //             var layerItem = Qt.createQmlObject('import QtQuick 2.12; import QtLocation 5.9; MapQuickItem { id: newPoiLayer }', mapControl, "poiLayerItem");
+            //             mapControl.addMapItem(layerItem)
 
             console.log('Creating POI polygons for layer "' + poiLayer.name + '"')
-//            console.log("poiLayer.kmlGraphics ", poiLayer.kmlGraphics)
-            var kmlgraphics = poiLayer.kmlGraphics
-//            console.log("graphics renderers[0] " + kmlgraphics.renderers[0]);
-            for(var g = 0; g < kmlgraphics.renderers.length; g++){
-                var graphics = kmlgraphics.renderers[g]
-//                console.log("graphic.elements.length " + graphics.elements.length);
-                for(var i = 0; i < graphics.elements.length; i++){
-                    var element = graphics.elements[i]
-//                    console.log("center Point: " + element.center)
-                }
+            //            console.log("poiLayer.kmlGraphics ", poiLayer.kmlGraphics)
+
+            var poiElements = []
+            var poiLength = 0
+            if (!poiLayer.kmlgraphics) {
+                console.log("Using poiLayer.elements ", poiLayer.elements, poiLayer.elements.count)
+                poiLength = poiLayer.elements.count
+                poiElements = poiLayer.elements
+                console.log("first element", poiElements.get(0));
             }
 
-//            console.log("gra", poiLayer.kmlGraphics.renderers)
-            for(var g = 0; g < poiLayer.kmlGraphics.renderers.length; g++){
-                var renderer = poiLayer.kmlGraphics.renderers[g]
-                for(var i = 0; i < renderer.elements.length; i++){
-                    var element = renderer.elements[i]
-                    switch(element.type){
+
+            if (poiLayer.kmlgraphics && poiLayer.kmlgraphics.renderers) {
+                console.log("Using poiLayer.kmlGraphics.renderers ", poiLayer.kmlGraphics.renderers)
+                poiElements = poiLayer.kmlGraphics.renderers[0].elements;
+                poiLength = poiLayer.kmlGraphics.renderers[0].elements.length
+            }
+
+                //            console.log("gra", poiLayer.kmlGraphics.renderers)
+            for (var i = 0; i < poiLength; i++) {
+                var element = poiElements.get(i)
+                console.log("element", element)
+                console.log("element type", element.type)
+                switch (element.type) {
+                    case 0:
                     case "polygon":
                         var polygon = Qt.createQmlObject('import QtLocation 5.5; MapPolygon{smooth:true;antialiasing:true}', mapControl, "mapPolygon")
-                        if(element.styles["fill"]) {
+/*                        if (element.styles["fill"]) {
                             polygon.color = _torealColor(element.styles["fill_color"])
                         }
                         if (element.styles["line_width"]) {
                             polygon.border.width = element.styles["line_width"]
                             polygon.border.color = _torealColor(element.styles["line_color"])
                         }
-
+*/
                         _drawVertices(element, polygon)
                         _addMapElement(polygon)
                         break
@@ -153,7 +158,6 @@ Item {
                         _addMapElement(point)
                         console.log(element.styles["icon"] + " f4 " + point.coordinate + " --> " + point.sourceItem.source)
                         break;
-                    }
                 }
             }
         }

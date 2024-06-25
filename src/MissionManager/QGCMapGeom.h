@@ -26,4 +26,8 @@ public:
     virtual ~QGCMapGeom() {}
     virtual QGCMapGeomType geomType() const = 0;
 
+    int type() const{
+        return (int) geomType();
+    }
+
 };

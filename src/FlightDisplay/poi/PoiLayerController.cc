@@ -19,8 +19,11 @@
 #include "PoiLayer.h"
 #include "PoiLayerController.h"
 
+#include <QGeoPath>
+#include <QGeoPolygon>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <QtLocation/private/qgeojson_p.h>
 
 #include "QGCApplication.h"
 #include "QGCLoggingCategory.h"
@@ -41,6 +44,39 @@ PoiLayerController::~PoiLayerController() {}
 void PoiLayerController::start()
 {
     qCDebug(PoiLayerControllerLog) << "PoiLayerController::start";
+
+//    loadGeoJson("/opt/workspace/projects/drones/qgmewamed/kml/MERGED_tic~mip31_29100019301000000001.geojson");
+    loadGeoJson("/opt/workspace/projects/drones/qgmewamed/kml/tic~mip31_29100019301000000001.geojson");
+    //    loadGeoJson("/opt/workspace/projects/drones/qgmewamed/kml/line-samples.geojson");
+    //    loadGeoJson("/opt/workspace/projects/drones/qgmewamed/kml/example1.geojson");
+
+    PoiLayer *poiL = new PoiLayer(this);
+    poiL->setId("geoj1");
+    poiL->setName("Geojson");
+    poiL->setVisible(true);
+
+    QList<QGCMapGeom *> geoms = QList<QGCMapGeom *>();
+
+    QGCMapPolygon *poly = new QGCMapPolygon(this);
+    QList<QGeoCoordinate> path = QList<QGeoCoordinate>();
+    path.append(QGeoCoordinate(50.061, 19.938));
+    path.append(QGeoCoordinate(51.062, 20.938));
+    path.append(QGeoCoordinate(52.062, 21.939));
+
+//    QGeoPath gp = QGeoPath(path, 0.5f);
+    poly->appendVertices(path);
+    geoms.append(poly);
+     
+     
+     poiL->append(geoms);
+     
+    addPoiLayer(poiL);
+    emit poiLayersChanged();
+
+
+
+    if (true)
+        return;
 
     QList<QGCMapGeom *> elements = QList<QGCMapGeom *>();
 //    QGCMapPolygon *poly = new QGCMapPolygon(this);
@@ -99,8 +135,6 @@ void PoiLayerController::start()
     // _poiLayers.append(poiLayer2);
     // emit poiLayerAdded(poiLayer);
 
-
-    //emit poiLayersChanged();
 }
 
 void PoiLayerController::deletePoiLayer(QString id)
@@ -238,5 +272,100 @@ void PoiLayerController::addPoiLayer(PoiLayer *pLayer) {
 
     _poiLayers.append(pLayer);
     emit poiLayersChanged();
+
+}
+void PoiLayerController::loadGeoJson(const QString &geoJsonFile)
+{
+    qCDebug(PoiLayerControllerLog) << "PoiLayerController::loadGeoJson:" << geoJsonFile;
+    QFile geoJson(geoJsonFile);
+    geoJson.open(QIODevice::ReadOnly | QIODevice::Text);
+    QString geoJsonString = geoJson.readAll();
+    geoJson.close();
+
+    QJsonDocument doc = QJsonDocument::fromJson(geoJsonString.toUtf8());
+    const QVariantList &x = QGeoJson::importGeoJson(doc);
+
+    const QVariant &qv = x.at(0);
+    const QVariantMap &qvm = qv.toMap();
+
+    //qCDebug(PoiLayerControllerLog) << qvm.
+    // read key "type"
+    qCDebug(PoiLayerControllerLog) << qvm["type"].toString() << " " << qvm["data"];
+    qCDebug(PoiLayerControllerLog) << "qvm" << qvm;
+
+    const QString &type = qvm["type"].toString();
+    if (type == "FeatureCollection") {
+        const QVariantList &features = qvm["data"].toList();
+        for (const QVariant &feature : features) {
+            const QVariantMap &featureMap = feature.toMap();
+            const QString &type = featureMap["type"].toString();
+            if (type == "Polygon") {
+                const QGeoPolygon &gp = featureMap["data"].value<QGeoPolygon>();
+                qCDebug(PoiLayerControllerLog) << "Polygon:" << gp;
+                if (featureMap.contains("properties")) {
+                    const QVariantMap &properties = featureMap["properties"].toMap();
+                    qCDebug(PoiLayerControllerLog) << "properties:" << properties;
+                }
+                continue;
+            }
+            if (type == "MultiLineString") {
+                qCDebug(PoiLayerControllerLog) << "MultiLineString";
+                const QVariantList &mls = featureMap["data"].toList();
+                for (const QVariant &line : mls) {
+                    const QMap<QString, QVariant> &lineMap = line.toMap();
+                    qCDebug(PoiLayerControllerLog) << " :" << lineMap["type"];
+                    if (lineMap["type"].toString() == "LineString") {
+                        const QGeoPath &gp = lineMap["data"].value<QGeoPath>();
+
+                        // type is ShapeType.PathType == 3
+                        qCDebug(PoiLayerControllerLog) << "GeoPath type: " << gp.type();
+                        qCDebug(PoiLayerControllerLog) << "GeoPath path: " << gp.path();
+                        if (lineMap.contains("properties")) {
+                            const QVariantMap &properties = lineMap["properties"].toMap();
+                            qCDebug(PoiLayerControllerLog) << "properties:" << properties;
+                        }
+
+                    }
+
+                }
+                continue;
+            }
+            if (type == "LineString") {
+                qCDebug(PoiLayerControllerLog) << "LineString";
+                const QGeoPath &gp = featureMap["data"].value<QGeoPath>();
+                qCDebug(PoiLayerControllerLog) << "GeoPath type: " << gp.type();
+                qCDebug(PoiLayerControllerLog) << "GeoPath path: " << gp.path();
+                if (featureMap.contains("properties")) {
+                    const QVariantMap &properties = featureMap["properties"].toMap();
+                    qCDebug(PoiLayerControllerLog) << "properties:" << properties;
+                }
+                continue;
+            }
+            if (type == "Point") {
+                qCDebug(PoiLayerControllerLog) << "Point";
+                const QGeoCoordinate &gc = featureMap["data"].value<QGeoCoordinate>();
+                qCDebug(PoiLayerControllerLog) << "GeoCoordinate: " << gc;
+                if (featureMap.contains("properties")) {
+                    const QVariantMap &properties = featureMap["properties"].toMap();
+                    qCDebug(PoiLayerControllerLog) << "properties:" << properties;
+                }
+
+                continue;
+            }
+            qCCritical(PoiLayerControllerLog) << "Unsupported type:" << type;
+        }
+    }
+
+    /*QJsonObject obj = doc.object();
+    QJsonArray features = obj["features"].toArray();
+
+    for (int i = 0; i < features.size(); i++) {
+        QJsonObject feature = features[i].toObject();
+        QJsonObject geometry = feature["geometry"].toObject();
+        QJsonArray coordinates = geometry["coordinates"].toArray();
+        QJsonArray coordinates2 = coordinates[0].toArray();
+        QGeoCoordinate coordinate(coordinates2[1].toDouble(), coordinates2[0].toDouble());
+        qCDebug(PoiLayerControllerLog) << "coordinate:" << coordinate;
+    }*/
 
 }
