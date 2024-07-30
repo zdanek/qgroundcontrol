@@ -115,9 +115,12 @@ Item {
                 switch (element.type) {
                     case 0:
                     case "polygon":
+                    case "gPoiPolygon":
+                        console.log("polygon")
                         var polygon = Qt.createQmlObject('import QtLocation 5.5; MapPolygon{smooth:true;antialiasing:true}', mapControl, "mapPolygon")
+                        //bzd wypelnic ze styli
+                        polygon.color = _torealColor("#FF0000FF")
 /*                        if (element.styles["fill"]) {
-                            polygon.color = _torealColor(element.styles["fill_color"])
                         }
                         if (element.styles["line_width"]) {
                             polygon.border.width = element.styles["line_width"]
@@ -127,16 +130,20 @@ Item {
                         _drawVertices(element, polygon)
                         _addMapElement(polygon)
                         break
+                    case 1:
+                    case "gPoiPolyline":
                     case "polyline":
+                        console.log("polyline")
                         var polyline = Qt.createQmlObject('import QtLocation 5.5; MapPolyline{smooth:true;antialiasing:true}', mapControl, "mapPolyline")
 //                        console.log("style " +element.styles["line_width"] + " " + element.styles["line_color"]);
-                        polyline.line.width = element.styles["line_width"]
-                        polyline.line.color = _torealColor(element.styles["line_color"])
+//                         polyline.line.width = element.styles["line_width"]
+//                         polyline.line.color = _torealColor(element.styles["line_color"])
 
                         _drawVertices(element, polyline)
                         _addMapElement(polyline)
                         break
                     case "point":
+                        console.log("point")
                         var point = Qt.createQmlObject('import QtLocation 5.5; import QtQuick 2.4; MapQuickItem { smooth:true; antialiasing:true; anchorPoint.x: p_icon.width / 2; anchorPoint.y: p_icon.height; sourceItem:Image { id:p_icon; } }', mapControl, "mapQuickItem")
                         point.sourceItem.source = element.styles["icon"]
                         point.coordinate = QtPositioning.coordinate(element.vertices[0].latitude, element.vertices[0].longitude)
@@ -144,6 +151,7 @@ Item {
                         console.log(element.styles["icon"] + " f4 " + point.coordinate + " --> " + point.sourceItem.source)
                         break;
                     case "svgWithLabel":
+                        console.log("svgWithLabel")
 //                        SvgLabelledPoint {
 //                            id: svgLabelledPoint
 //                            svgSource: element.styles["icon"]
@@ -158,6 +166,9 @@ Item {
                         _addMapElement(point)
                         console.log(element.styles["icon"] + " f4 " + point.coordinate + " --> " + point.sourceItem.source)
                         break;
+                    default:
+                        console.log("unsupported element type " + element.type)
+                        break
                 }
             }
         }

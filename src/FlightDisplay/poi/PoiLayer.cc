@@ -16,6 +16,7 @@
 
 #include "PoiLayer.h"
 
+#include "PoiGeom.h"
 #include "PoiLayerController.h"
 #include "QGCMapCircle.h"
 #include "QGCMapPolygon.h"
@@ -65,6 +66,20 @@ void PoiLayer::setKmlElements(QList<QtKml::KmlElement> &kml_elements)
 
 }
 */
+
+void PoiLayer::append(QList<PoiGeom *> poi_geoms)
+{
+    // appends map objects, POLYLINE to _polylines, POLYGON to _polygons, POINT to _points and emits signals
+    for (PoiGeom *mapObject : poi_geoms) {
+        QObject *mo = dynamic_cast<QObject *>(mapObject);
+        _elements.append(mo);
+    }
+
+    if (true) {
+        emit elementsChanged(&_elements);
+        return;
+    }
+}
 
 void PoiLayer::append(QList<QGCMapGeom *> map_geoms)
 {

@@ -58,7 +58,7 @@ private:
     QList<QGeoCoordinate> map(const QtKml::KmlElement::KmlVertices & vector) const;
 //    QGeoCoordinate map(const QGeoCoordinate &coordinate) const;
     QSharedPointer<QtKml::KmlQmlGraphics> loadKML(const QString &kmlFile);
-    void loadGeoJson(const QString &geoJsonFile);
+    PoiLayer *loadGeoJson(const QString &geoJsonFile);
 
 //    bool _poiLayerVisible = true;
     QmlObjectListModel _poiLayers;

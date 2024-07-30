@@ -18,6 +18,7 @@
 
 #include <QObject>
 
+#include "PoiGeom.h"
 #include "QGCMapGeom.h"
 #include "QmlObjectListModel.h"
 #include "qmlkml.h"
@@ -51,6 +52,7 @@ public:
     bool visible() const { return _visible; }
     void setVisible(bool visible);
 
+    void append(QList<PoiGeom *> poi_geoms);
     void append(QList<QGCMapGeom *> map_geoms);
     void setKmlGraphics(QSharedPointer<QtKml::KmlQmlGraphics> &kml_graphics);
 

@@ -1,4 +1,7 @@
 add_library(PoiLayers
+        PoiGeom.cc
+        PoiPolygon.cc
+        PoiPolyline.cc
         PoiLayerController.cc
         PoiLayer.cc)
 
