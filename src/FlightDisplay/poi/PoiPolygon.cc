@@ -9,6 +9,8 @@
 PoiPolygon::PoiPolygon(QObject *parent)
     : QObject(parent)
 {
+    setLineWidth(2);
+    setLineColor("black");
 
 }
 

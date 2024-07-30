@@ -14,7 +14,7 @@ PoiPolyline::PoiPolyline(QObject *parent)
 
 void PoiPolyline::appendVertices(const QList<QGeoCoordinate> &coordinates) {
 
-    qCDebug(PoiLayerControllerLog) << "PoiPolyline::appendVertices coordinates:" << coordinates;
+//    qCDebug(PoiLayerControllerLog) << "PoiPolyline::appendVertices coordinates:" << coordinates;
     QList<QObject*> objects;
 
     for (const QGeoCoordinate& coordinate: coordinates) {
@@ -27,7 +27,7 @@ void PoiPolyline::appendVertices(const QList<QGeoCoordinate> &coordinates) {
 
 void PoiPolyline::appendVertices(const QVariantList& varCoords)
 {
-    qCDebug(PoiLayerControllerLog) << "PoiPolyline::appendVertices varCoords:" << varCoords;
+//    qCDebug(PoiLayerControllerLog) << "PoiPolyline::appendVertices varCoords:" << varCoords;
     QList<QGeoCoordinate> rgCoords;
     for (const QVariant& varCoord: varCoords) {
         rgCoords.append(varCoord.value<QGeoCoordinate>());

@@ -48,17 +48,19 @@ void PoiLayerController::start()
 {
     qCDebug(PoiLayerControllerLog) << "PoiLayerController::start";
 
-    PoiLayer *poiL = loadGeoJson("/opt/workspace/projects/drones/qgmewamed/kml/MERGED_tic~mip31_29100019301000000001.geojson");
-//    PoiLayer *poiL = loadGeoJson("/opt/workspace/projects/drones/qgmewamed/kml/tic~mip31_29100019301000000001.geojson");
+//    PoiLayer *poiL = loadGeoJson("/opt/workspace/projects/drones/qgmewamed/kml/MERGED_tic~mip31_29100019301000000001.geojson");
+    PoiLayer *poiL = loadGeoJson("/opt/workspace/projects/drones/qgmewamed/kml/tic~mip31_29100019301000000001.geojson");
     //    loadGeoJson("/opt/workspace/projects/drones/qgmewamed/kml/line-samples.geojson");
     //    loadGeoJson("/opt/workspace/projects/drones/qgmewamed/kml/example1.geojson");
 
 
-     
-    addPoiLayer(poiL);
+    if (poiL) {
+        poiL->setVisible(true);
+        addPoiLayer(poiL);
+        emit poiLayersChanged();
+    }
 
-    addPoiLayer(loadGeoJson("/opt/workspace/projects/drones/qgmewamed/kml/vienna-streets.geojson"));
-    emit poiLayersChanged();
+//    addPoiLayer(loadGeoJson("/opt/workspace/projects/drones/qgmewamed/kml/vienna-streets.geojson"));
 
 
 
@@ -275,7 +277,7 @@ PoiLayer *PoiLayerController::loadGeoJson(const QString &geoJsonFile)
     geoJson.close();
 
     QJsonDocument doc = QJsonDocument::fromJson(geoJsonString.toUtf8());
-    qCDebug(PoiLayerControllerLog) << "doc:" << doc;
+//    qCDebug(PoiLayerControllerLog) << "doc:" << doc;
 
     if (!doc["name"].isUndefined()) {
             const QString &name = doc["name"].toString();
@@ -291,59 +293,89 @@ PoiLayer *PoiLayerController::loadGeoJson(const QString &geoJsonFile)
 
     const QVariantList &x = QGeoJson::importGeoJson(doc);
 
+    qCDebug(PoiLayerControllerLog) << "x size" << x.size();
+    if (x.size() == 0) {
+        qCCritical(PoiLayerControllerLog) << "No features found in GeoJSON";
+        return nullptr;
+    }
     const QVariant &qv = x.at(0);
     const QVariantMap &qvm = qv.toMap();
 
-    //qCDebug(PoiLayerControllerLog) << qvm.
-    // read key "type"
     qCDebug(PoiLayerControllerLog) << "qvm: " << qvm;
     qCDebug(PoiLayerControllerLog) << qvm["type"].toString() << " " << qvm["data"];
+
+//    QMap(
+//        ("data", QVariant(QVariantList, (QVariant(QVariantMap, QMap(("data", QVariant(QGeoPath, ))("type", QVariant(QString, "LineString")))), QVariant(QVariantMap, QMap(("data", QVariant(QGeoPath, ))("type", QVariant(QString, "LineString")))), QVariant(QVariantMap, QMap(("data", QVariant(QGeoPath, ))("type", QVariant(QString, "LineString")))), QVariant(QVariantMap, QMap(("data", QVariant(QGeoPath, ))("type", QVariant(QString, "LineString")))), QVariant(QVariantMap, QMap(("data", QVariant(QGeoPath, ))("type", QVariant(QString, "LineString")))))))
+//        ("properties", QVariant(QVariantMap, QMap(("description", QVariant(QString, "<b>TE_002</b><br/>TE_002"))("stroke", QVariant(QString, "#80e0ff"))("stroke-opacity", QVariant(qlonglong, 1))("stroke-width", QVariant(qlonglong, 3)))))
+//        ("type", QVariant(QString, "GeometryCollection")))
 
     const QString &type = qvm["type"].toString();
     if (type == "FeatureCollection") {
         const QVariantList &features = qvm["data"].toList();
         for (const QVariant &feature : features) {
+//            qCDebug(PoiLayerControllerLog) << "Feature:" << feature;
             const QVariantMap &featureMap = feature.toMap();
             const QString &type = featureMap["type"].toString();
+
+            QVariantMap styles;
+            if (featureMap.contains("properties")) {
+                const QVariantMap &properties = featureMap["properties"].toMap();
+                if (properties.contains("stroke")) {
+                    styles["line_color"] = properties["stroke"].toString();
+                }
+                if (properties.contains("stroke-width")) {
+                    styles["line_width"] = properties["stroke-width"].toInt();
+                }
+                if (properties.contains("stroke-opacity")) {
+                    styles["line_opacity"] = properties["stroke-opacity"].toDouble();
+                }
+                if (properties.contains("fill")) {
+                    qCDebug(PoiLayerControllerLog) << "fill:" << properties["fill"].toString();
+                    styles["fill_color"] = properties["fill"].toString();
+                }
+                if (properties.contains("fill-opacity")) {
+                    styles["fill_opacity"] = properties["fill-opacity"].toDouble();
+                }
+            }
+
+            if (type == "GeometryCollection") {
+//                qCDebug(PoiLayerControllerLog) << "GeometryCollection";
+//                qCDebug(PoiLayerControllerLog) << "GeometryCollection data:" << data;
+                const QVariantList &geometries = featureMap["data"].toList();
+                for (const QVariant &geometry : geometries) {
+//                     qCDebug(PoiLayerControllerLog) << " geometry qVariant type:" << geometry.typeName();
+                     //const QVariant &data = geometry["data"];
+                    const QMap<QString, QVariant> &geometryMap = geometry.toMap();
+//                    qCDebug(PoiLayerControllerLog) << " :" << geometryMap["type"];
+                    if (geometryMap["type"] == "LineString") {
+//                        geoms.append(processLineString(geometryMap, styles, poiL));
+                    } else {
+                        qCCritical(PoiLayerControllerLog) << "Unsupported type:" << geometryMap["type"];
+                    }
+                }
+                continue;
+            }
+
             if (type == "Polygon") {
                 const QGeoPolygon &gp = featureMap["data"].value<QGeoPolygon>();
                 qCDebug(PoiLayerControllerLog) << "Polygon:" << gp;
-                if (featureMap.contains("properties")) {
-                    const QVariantMap &properties = featureMap["properties"].toMap();
-                    qCDebug(PoiLayerControllerLog) << "properties:" << properties;
-                }
+
+                PoiPolygon *pp = new PoiPolygon(poiL);
+                pp->setStyles(styles);
+                pp->appendVertices(gp.path());
+
+                geoms.append(pp);
                 continue;
             }
             if (type == "MultiLineString") {
                 qCDebug(PoiLayerControllerLog) << "MultiLineString";
-
-
-//                QList<QGeoCoordinate> path = QList<QGeoCoordinate>();
-//                path.append(QGeoCoordinate(50.061, 19.938));
-//                path.append(QGeoCoordinate(51.062, 20.938));
-//                path.append(QGeoCoordinate(52.062, 21.939));
-
-                //    QGeoPath gp = QGeoPath(path, 0.5f);
 
                 const QVariantList &mls = featureMap["data"].toList();
                 for (const QVariant &line : mls) {
                     const QMap<QString, QVariant> &lineMap = line.toMap();
                     qCDebug(PoiLayerControllerLog) << " :" << lineMap["type"];
                     if (lineMap["type"].toString() == "LineString") {
-                        PoiPolyline *poly = new PoiPolyline(poiL);
-                        const QGeoPath &gp = lineMap["data"].value<QGeoPath>();
-
-                        // type is ShapeType.PathType == 3
-                        qCDebug(PoiLayerControllerLog) << "GeoPath type: " << gp.type();
-                        qCDebug(PoiLayerControllerLog) << "GeoPath path: " << gp.path();
-                        if (lineMap.contains("properties")) {
-                            const QVariantMap &properties = lineMap["properties"].toMap();
-                            qCDebug(PoiLayerControllerLog) << "properties:" << properties;
-                        }
-
-                        poly->appendVertices(gp.variantPath());
-
-                        geoms.append(poly);
+                        geoms.append(processLineString(lineMap, styles, poiL));
 
                     } else {
                         qCCritical(PoiLayerControllerLog) << "Unsupported type:" << lineMap["type"];
@@ -354,29 +386,14 @@ PoiLayer *PoiLayerController::loadGeoJson(const QString &geoJsonFile)
                 continue;
             }
             if (type == "LineString") {
-                qCDebug(PoiLayerControllerLog) << "LineString";
-                const QGeoPath &gp = featureMap["data"].value<QGeoPath>();
-                qCDebug(PoiLayerControllerLog) << "GeoPath type: " << gp.type();
-                qCDebug(PoiLayerControllerLog) << "GeoPath path: " << gp.path();
-                if (featureMap.contains("properties")) {
-                    const QVariantMap &properties = featureMap["properties"].toMap();
-                    qCDebug(PoiLayerControllerLog) << "properties:" << properties;
-                }
-
-                PoiPolyline *poly = new PoiPolyline(poiL);
-                poly->appendVertices(gp.variantPath());
-                geoms.append(poly);
+                geoms.append(processLineString(featureMap, styles, poiL));
 
                 continue;
             }
             if (type == "Point") {
                 qCDebug(PoiLayerControllerLog) << "Point";
                 const QGeoCoordinate &gc = featureMap["data"].value<QGeoCoordinate>();
-                qCDebug(PoiLayerControllerLog) << "GeoCoordinate: " << gc;
-                if (featureMap.contains("properties")) {
-                    const QVariantMap &properties = featureMap["properties"].toMap();
-                    qCDebug(PoiLayerControllerLog) << "properties:" << properties;
-                }
+//                qCDebug(PoiLayerControllerLog) << "GeoCoordinate: " << gc;
 
                 continue;
             }
@@ -390,4 +407,18 @@ PoiLayer *PoiLayerController::loadGeoJson(const QString &geoJsonFile)
     poiL->setVisible(true);
 
     return poiL;
+}
+
+PoiGeom *PoiLayerController::processLineString(const QVariantMap &featureMap, const QVariantMap &styles, QObject *parent) const
+{
+//    qCDebug(PoiLayerControllerLog) << "Processing LineString";
+    const QGeoPath &gp = featureMap["data"].value<QGeoPath>();
+//    qCDebug(PoiLayerControllerLog) << "GeoPath type: " << gp.type();
+//    qCDebug(PoiLayerControllerLog) << "GeoPath path: " << gp.path();
+
+    PoiPolyline *poly = new PoiPolyline(parent);
+    poly->setStyles(styles);
+    poly->appendVertices(gp.variantPath());
+
+    return poly;
 }

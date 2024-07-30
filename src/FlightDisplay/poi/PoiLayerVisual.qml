@@ -46,7 +46,7 @@ Item {
     }
 
     function _drawVertices(element, item){
-//        console.log("element.vertices.length " + element.vertices.length + " color " + element.styles["fill_color"] + " " + element.styles["line_color"] + " " + element.styles["line_width"])
+        // console.log("element.vertices.length " + element.path.length + " color " + element.styles["fill_color"] + " " + element.styles["line_color"] + " " + element.styles["line_width"])
         var vertices = element.path;
         for(var k = 0; k < vertices.length; k++){
             item.addCoordinate(QtPositioning.coordinate(vertices[k].latitude, vertices[k].longitude))
@@ -96,12 +96,17 @@ Item {
                     case "gPoiPolygon":
                         console.log("polygon")
                         var polygon = Qt.createQmlObject('import QtLocation 5.5; MapPolygon{smooth:true;antialiasing:true}', mapControl, "mapPolygon")
-                        //bzd wypelnic ze styli
-                        if (element.styles["fill"]) {
+                        polygon.border.width = 10
+                        polygon.border.color = "red"
+                        polygon.color = "pink"
+
+                        if (element.styles["fill_color"]) {
                             polygon.color = _torealColor(element.styles["fill_color"])
                         }
                         if (element.styles["line_width"]) {
                             polygon.border.width = element.styles["line_width"]
+                        }
+                        if (element.styles["line_color"]) {
                             polygon.border.color = _torealColor(element.styles["line_color"])
                         }
 

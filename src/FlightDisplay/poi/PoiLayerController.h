@@ -63,5 +63,6 @@ private:
 //    bool _poiLayerVisible = true;
     QmlObjectListModel _poiLayers;
     void addPoiLayer(PoiLayer *pLayer);
+    PoiGeom *processLineString(const QVariantMap &featureMap, const QVariantMap &styles, QObject *parent) const;
 };
 
