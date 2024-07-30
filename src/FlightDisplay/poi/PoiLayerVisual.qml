@@ -96,9 +96,6 @@ Item {
                     case "gPoiPolygon":
                         console.log("polygon")
                         var polygon = Qt.createQmlObject('import QtLocation 5.5; MapPolygon{smooth:true;antialiasing:true}', mapControl, "mapPolygon")
-                        polygon.border.width = 10
-                        polygon.border.color = "red"
-                        polygon.color = "pink"
 
                         if (element.styles["fill_color"]) {
                             polygon.color = _torealColor(element.styles["fill_color"])

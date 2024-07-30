@@ -328,6 +328,9 @@ PoiLayer *PoiLayerController::loadGeoJson(const QString &geoJsonFile)
                 }
                 if (properties.contains("stroke-opacity")) {
                     styles["line_opacity"] = properties["stroke-opacity"].toDouble();
+                    if (styles["line_opacity"] == 0) {
+                        styles["line_width"] = 0;
+                    }
                 }
                 if (properties.contains("fill")) {
                     qCDebug(PoiLayerControllerLog) << "fill:" << properties["fill"].toString();
@@ -335,6 +338,9 @@ PoiLayer *PoiLayerController::loadGeoJson(const QString &geoJsonFile)
                 }
                 if (properties.contains("fill-opacity")) {
                     styles["fill_opacity"] = properties["fill-opacity"].toDouble();
+                    if (styles["fill_opacity"] == 0) {
+                        styles["fill_color"] = "transparent";
+                    }
                 }
             }
 
@@ -348,7 +354,7 @@ PoiLayer *PoiLayerController::loadGeoJson(const QString &geoJsonFile)
                     const QMap<QString, QVariant> &geometryMap = geometry.toMap();
 //                    qCDebug(PoiLayerControllerLog) << " :" << geometryMap["type"];
                     if (geometryMap["type"] == "LineString") {
-//                        geoms.append(processLineString(geometryMap, styles, poiL));
+                        geoms.append(processLineString(geometryMap, styles, poiL));
                     } else {
                         qCCritical(PoiLayerControllerLog) << "Unsupported type:" << geometryMap["type"];
                     }
@@ -394,6 +400,8 @@ PoiLayer *PoiLayerController::loadGeoJson(const QString &geoJsonFile)
                 qCDebug(PoiLayerControllerLog) << "Point";
                 const QGeoCoordinate &gc = featureMap["data"].value<QGeoCoordinate>();
 //                qCDebug(PoiLayerControllerLog) << "GeoCoordinate: " << gc;
+
+                PoiPoint *pp = new PoiPoint(poiL);
 
                 continue;
             }
