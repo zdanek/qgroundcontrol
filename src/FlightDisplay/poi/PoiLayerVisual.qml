@@ -40,23 +40,6 @@ Item {
         }
     }
 
-    Item {
-        id: poiLayerItem
-        visible: poiLayer.visible
-
-        MapPolyline {
-            id: line
-            line.width: 3
-            line.color: 'green'
-            path: [
-                { latitude: 50, longitude: 21.0 },
-                { latitude: 51, longitude: 21.1 },
-                { latitude: 52, longitude: 21.5 },
-                { latitude: 53, longitude: 21.5 }
-            ]
-        }
-    }
-
     function _addMapElement(element){
         __items.push(element)
         mapControl.addMapItem(element)
@@ -84,12 +67,7 @@ Item {
         console.log("poilayer " + poiLayer.id)
 
         if (mapControl) {
-            //            var layerItem = Qt.createQmlObject('import QtQuick 2.12; Item { id: newPoiLayer }', mapControl, "poiLayerItem")
-            //             var layerItem = Qt.createQmlObject('import QtQuick 2.12; import QtLocation 5.9; MapQuickItem { id: newPoiLayer }', mapControl, "poiLayerItem");
-            //             mapControl.addMapItem(layerItem)
-
             console.log('Creating POI polygons for layer "' + poiLayer.name + '"')
-            //            console.log("poiLayer.kmlGraphics ", poiLayer.kmlGraphics)
 
             var poiElements = []
             var poiLength = 0
@@ -119,14 +97,14 @@ Item {
                         console.log("polygon")
                         var polygon = Qt.createQmlObject('import QtLocation 5.5; MapPolygon{smooth:true;antialiasing:true}', mapControl, "mapPolygon")
                         //bzd wypelnic ze styli
-                        polygon.color = _torealColor("#FF0000FF")
-/*                        if (element.styles["fill"]) {
+                        if (element.styles["fill"]) {
+                            polygon.color = _torealColor(element.styles["fill_color"])
                         }
                         if (element.styles["line_width"]) {
                             polygon.border.width = element.styles["line_width"]
                             polygon.border.color = _torealColor(element.styles["line_color"])
                         }
-*/
+
                         _drawVertices(element, polygon)
                         _addMapElement(polygon)
                         break
@@ -136,8 +114,8 @@ Item {
                         console.log("polyline")
                         var polyline = Qt.createQmlObject('import QtLocation 5.5; MapPolyline{smooth:true;antialiasing:true}', mapControl, "mapPolyline")
 //                        console.log("style " +element.styles["line_width"] + " " + element.styles["line_color"]);
-//                         polyline.line.width = element.styles["line_width"]
-//                         polyline.line.color = _torealColor(element.styles["line_color"])
+                        polyline.line.width = element.styles["line_width"]
+                        polyline.line.color = _torealColor(element.styles["line_color"])
 
                         _drawVertices(element, polyline)
                         _addMapElement(polyline)
@@ -174,46 +152,4 @@ Item {
         }
     }
 
-    Component {
-        id: polygonDelegate
-
-        MapPolygon {
-            color:          "red"
-            opacity:        1.0
-            border.color:   "black"
-            border.width:   2
-        }
-    }
-
-    Component {
-        id: polylineDelegate
-
-        MapPolyline {
-            opacity:        1.0
-            line.color:   "black"
-            line.width:   2
-        }
-    }
-
-    Component {
-        id: circleDelegate
-
-        MapCircle {
-//            opacity:        1.0
-            border.color:   "black"
-            border.width:   1
-            radius: 5
-        }
-    }
-
-    Component {
-        id: pointDelegate
-
-        MapCircle {
-//            opacity:        1.0
-            border.color:   "black"
-            border.width:   1
-            radius: 5
-        }
-    }
 }

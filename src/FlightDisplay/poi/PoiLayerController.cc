@@ -56,6 +56,8 @@ void PoiLayerController::start()
 
      
     addPoiLayer(poiL);
+
+    addPoiLayer(loadGeoJson("/opt/workspace/projects/drones/qgmewamed/kml/vienna-streets.geojson"));
     emit poiLayersChanged();
 
 

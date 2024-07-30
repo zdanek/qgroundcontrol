@@ -8,7 +8,8 @@
 PoiPolyline::PoiPolyline(QObject *parent)
     : QObject(parent)
 {
-
+    setLineWidth(2);
+    setLineColor("black");
 }
 
 void PoiPolyline::appendVertices(const QList<QGeoCoordinate> &coordinates) {
