@@ -104,8 +104,6 @@ add_library(MissionManager
 	QGCFencePolygon.h
 	QGCMapCircle.cc
 	QGCMapCircle.h
-	QGCMapLayer.cc
-	QGCMapLayer.h
 	QGCMapPolygon.cc
 	QGCMapPolygon.h
 	QGCMapPolyline.cc
@@ -158,8 +156,6 @@ target_link_libraries(MissionManager
 	PUBLIC
 		Qt5::Xml
 		qgc
-	PRIVATE
-		qtkml
 )
 
 target_include_directories(MissionManager INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})

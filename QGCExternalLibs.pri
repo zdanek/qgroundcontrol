@@ -95,37 +95,6 @@ exists($$MAVLINKPATH/common) {
     error($$sprintf("MAVLink folder does not exist at '%1'! Run 'git submodule init && git submodule update' on the command line.",$$MAVLINKPATH_REL))
 }
 
-# [REQUIRED] QtKML library
-HEADERS+= \
-    libs/QtKMLLib/kmllib/qtkml.h \
-    libs/QtKMLLib/kmllib/rendervisitor.h \
-    libs/QtKMLLib/kmllib/graphicsvisitor.h \
-    libs/QtKMLLib/kmllib/stylevisitor.h \
-    libs/QtKMLLib/kmllib/mercatorprojection.h \
-    libs/QtKMLLib/kmllib/kmldocument.h \
-    libs/QtKMLLib/kmllib/coord.h \
-    libs/QtKMLLib/kmllib/kmlelement.h \
-    libs/QtKMLLib/kmllib/kmlgraphics.h \
-    libs/QtKMLLib/kmllib/kmlrenderer.h \
-    libs/QtKMLLib/kmllib/qmlkml.h
-
-
-SOURCES += \
-    libs/QtKMLLib/kmllib/rendervisitor.cpp \
-    libs/QtKMLLib/kmllib/graphicsvisitor.cpp \
-    libs/QtKMLLib/kmllib/stylevisitor.cpp \
-    libs/QtKMLLib/kmllib/mercatorprojection.cpp \
-    libs/QtKMLLib/kmllib/kmldocument.cpp \
-    libs/QtKMLLib/kmllib/kmlelement.cpp \
-    libs/QtKMLLib/kmllib/kmlgraphics.cpp \
-    libs/QtKMLLib/kmllib/qmlimage.cpp \
-    libs/QtKMLLib/kmllib/kmlrenderer.cpp \
-    libs/QtKMLLib/kmllib/kmlitem.cpp
-    
-INCLUDEPATH += \
-        libs/QtKMLLib/kmllib
-
-
 #
 # [REQUIRED] EIGEN matrix library
 # NOMINMAX constant required to make internal min/max work.
@@ -250,20 +219,6 @@ MacBuild {
     INCLUDEPATH += $$SOURCE_DIR/libs/OpenSSL/Windows/x64/include
     LIBS += -L$$SOURCE_DIR/libs/sdl2/msvc/lib/x64
     LIBS += -lSDL2
-}
-
-# libkml
-LinuxBuild {
-    INCLUDEPATH += \
-        $$SOURCE_DIR/libs/QtKMLLib/kmllib/third_party/libkml/include
-    LIBS += -L$$SOURCE_DIR/libs/QtKMLLib/kmllib/third_party/libkml/lib
-    LIBS += \
-        -lkmlbase \
-        -lkmlconvenience \
-        -lkmldom \
-        -lkmlengine \
-        -lkmlregionator \
-        -lkmlxsd
 }
 
 # Include Android OpenSSL libs

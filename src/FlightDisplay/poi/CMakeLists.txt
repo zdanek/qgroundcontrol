@@ -10,7 +10,6 @@ add_library(PoiLayers
 target_link_libraries(PoiLayers
         PRIVATE
         qgc
-        qtkml
 )
 
 target_include_directories(PoiLayers

@@ -19,8 +19,6 @@
 #include "PoiGeom.h"
 #include "PoiLayerController.h"
 #include "QGCMapCircle.h"
-#include "QGCMapPolygon.h"
-#include "QGCMapPolyline.h"
 #include "QGCMapSvgIcon.h"
 
 PoiLayer::PoiLayer(QObject* parent)
@@ -49,24 +47,6 @@ void PoiLayer::setVisible(bool visible)
     }
 }
 
-void PoiLayer::setKmlGraphics(QSharedPointer<QtKml::KmlQmlGraphics> &kml_graphics)
-{
-    _kmlGraphics = kml_graphics;
-
-    //emit elementsChanged(&_kmlGraphics->kmlElements());
-}
-
-/*
-void PoiLayer::setKmlElements(QList<QtKml::KmlElement> &kml_elements)
-{
-    _elements.clear();
-    for (QtKml::KmlElement &kmlElement : kml_elements) {
-        // _elements.append(kmlElement);
-    }
-
-}
-*/
-
 void PoiLayer::append(QList<PoiGeom *> poi_geoms)
 {
     // appends map objects, POLYLINE to _polylines, POLYGON to _polygons, POINT to _points and emits signals
@@ -93,70 +73,4 @@ void PoiLayer::append(QList<QGCMapGeom *> map_geoms)
         emit elementsChanged(&_elements);
         return;
     }
-    if (false) {
-        QGCMapGeom *&mapObject = map_geoms.first();
-        QGCMapGeomType type = mapObject->geomType();
-
-        switch (type) {
-            case QGCMapGeomType::Polygon: {
-                // c++ cast to QGCMapPolyline
-                QGCMapPolygon *polygonX = dynamic_cast<QGCMapPolygon *>(mapObject);
-//                QGCMapPolygon *polygon = qobject_cast<QGCMapPolygon *>(mapObject);
-                _elements.append(polygonX);
-                break;
-            }
-//            case QGCMapGeomType::Circle: {
-//                QGCMapCircle *polygonX = dynamic_cast<QGCMapCircle *>(mapObject);
-//                QGCMapCircle *polygon = qobject_cast<QGCMapCircle *>(polygonX);
-//                _circles.append(polygon);
-//                break;
-//            }
-//            case QGCMapGeomType::Point: {
-//                QGCMapCircle *polygonX = dynamic_cast<QGCMapCircle *>(mapObject);
-//                QGCMapCircle *polygon = qobject_cast<QGCMapCircle *>(polygonX);
-//                _circles.append(polygon);
-//                break;
-//            }
-            case QGCMapGeomType::Polyline: {
-                QGCMapPolyline *polylineX = dynamic_cast<QGCMapPolyline *>(mapObject);
-                QGCMapPolyline *polyline = qobject_cast<QGCMapPolyline *>(polylineX);
-                _elements.append(polyline);
-                break;
-            }
-            case QGCMapGeomType::Svg: {
-                QGCMapSvgIcon *polygonX = dynamic_cast<QGCMapSvgIcon *>(mapObject);
-                QGCMapSvgIcon *polygon = qobject_cast<QGCMapSvgIcon *>(polygonX);
-                _elements.append(polygon);
-                break;
-            }
-            default:
-                qCWarning(PoiLayerControllerLog) << "PoiLayer " << _name << " append: unknown map object type " << type;
-        }
-    }
 }
-/*
-const PoiLayer& PoiLayer::operator=(const PoiLayer& other)
-{
-    clear();
-
-    _name = other._name;
-    _visible = other._visible;
-    //TODO(bzd) copy polygons?
-    _polygons.append(other._polygons.children());
-    _polylines.append(other._polylines.children());
-
-    //TODO(bzd) czy ustawiac dirty jak np w QGCMapPolygon::operator= ?
-    return *this;
-}
-
-void PoiLayer::clear(void)
-{
-    _polygons.clearAndDeleteContents();
-    _polylines.clearAndDeleteContents();
-    emit polygonsChanged(&_polygons);
-    emit polylinesChanged(&_polylines);
-
-    //TODO(bzd) dlaczego jest w innych klasach ustawiane dirtyy? np w GQCMapPolygon:95
-}
-
-*/

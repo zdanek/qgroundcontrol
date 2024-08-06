@@ -21,7 +21,6 @@
 #include "PoiGeom.h"
 #include "QGCMapGeom.h"
 #include "QmlObjectListModel.h"
-#include "qmlkml.h"
 
 class PoiLayer : public QObject
 {
@@ -37,11 +36,6 @@ public:
     Q_PROPERTY(QString id READ id)
     Q_PROPERTY(bool visible READ visible WRITE setVisible NOTIFY visibleChanged)
     Q_PROPERTY(QmlObjectListModel* elements READ elements NOTIFY elementsChanged)
-    Q_PROPERTY(QtKml::KmlQmlGraphics* kmlGraphics READ kmlGraphics NOTIFY kmlGraphicsChanged)
-    // Q_PROPERTY()
-    // Q_PROPERTY(QmlObjectListModel* polylines READ polylines NOTIFY polylinesChanged)
-
-    // Q_INVOKABLE void clear(void);
 
     QString id() const { return _id;}
     void setId(const QString& id) { _id = id; }
@@ -54,9 +48,6 @@ public:
 
     void append(QList<PoiGeom *> poi_geoms);
     void append(QList<QGCMapGeom *> map_geoms);
-    void setKmlGraphics(QSharedPointer<QtKml::KmlQmlGraphics> &kml_graphics);
-
-    QtKml::KmlQmlGraphics* kmlGraphics() { return _kmlGraphics.data(); }
 
 signals:
     void nameChanged(const QString& name);
@@ -64,17 +55,11 @@ signals:
     void elementsChanged(const QmlObjectListModel &elements);
     void kmlGraphicsChanged();
     void deleted();
-    // void polylinesChanged(QmlObjectListModel* polylines);
 
 private:
     QmlObjectListModel* elements() { return &_elements;}
-
-    // QmlObjectListModel* polygons() { return &_polygons; }
-    // QmlObjectListModel* polylines() { return &_polylines; }
-
     QString _name;
     QString _id;
     bool _visible = true;
     QmlObjectListModel _elements;
-    QSharedPointer<QtKml::KmlQmlGraphics> _kmlGraphics;
 };

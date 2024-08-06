@@ -178,7 +178,6 @@ endif()
 target_link_libraries(qgc
 	PRIVATE
 		shp
-		qtkml
 		Qt5::QuickControls2
 
 	PUBLIC

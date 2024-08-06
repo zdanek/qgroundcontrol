@@ -18,12 +18,10 @@
 
 #include <QImage>
 #include <QObject>
+#include <qgeocoordinate.h>
 
 #include "QGCLoggingCategory.h"
-#include "QGCMapLayer.h"
 #include "QmlObjectListModel.h"
-#include "qtkml.h"
-#include <qgeocoordinate.h>
 #include "PoiLayer.h"
 
 Q_DECLARE_LOGGING_CATEGORY(PoiLayerControllerLog)
@@ -55,9 +53,6 @@ signals:
 private:
     //return poiLayers
     QmlObjectListModel *poiLayers() { return &_poiLayers; }
-    QList<QGeoCoordinate> map(const QtKml::KmlElement::KmlVertices & vector) const;
-//    QGeoCoordinate map(const QGeoCoordinate &coordinate) const;
-    QSharedPointer<QtKml::KmlQmlGraphics> loadKML(const QString &kmlFile);
     PoiLayer *loadGeoJson(const QString &geoJsonFile);
 
 //    bool _poiLayerVisible = true;
