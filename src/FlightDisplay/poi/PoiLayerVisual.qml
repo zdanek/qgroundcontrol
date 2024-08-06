@@ -88,8 +88,8 @@ Item {
                 //            console.log("gra", poiLayer.kmlGraphics.renderers)
             for (var i = 0; i < poiLength; i++) {
                 var element = poiElements.get(i)
-                console.log("element", element)
-                console.log("element type", element.type)
+                // console.log("element", element)
+                // console.log("element type", element.type)
                 switch (element.type) {
                     case 0:
                     case "polygon":
@@ -115,36 +115,34 @@ Item {
                     case "polyline":
                         console.log("polyline")
                         var polyline = Qt.createQmlObject('import QtLocation 5.5; MapPolyline{smooth:true;antialiasing:true}', mapControl, "mapPolyline")
-//                        console.log("style " +element.styles["line_width"] + " " + element.styles["line_color"]);
                         polyline.line.width = element.styles["line_width"]
                         polyline.line.color = _torealColor(element.styles["line_color"])
 
                         _drawVertices(element, polyline)
                         _addMapElement(polyline)
                         break
+                    case 3:
                     case "point":
                         console.log("point")
-                        var point = Qt.createQmlObject('import QtLocation 5.5; import QtQuick 2.4; MapQuickItem { smooth:true; antialiasing:true; anchorPoint.x: p_icon.width / 2; anchorPoint.y: p_icon.height; sourceItem:Image { id:p_icon; } }', mapControl, "mapQuickItem")
-                        point.sourceItem.source = element.styles["icon"]
-                        point.coordinate = QtPositioning.coordinate(element.vertices[0].latitude, element.vertices[0].longitude)
-                        _addMapElement(point)
-                        console.log(element.styles["icon"] + " f4 " + point.coordinate + " --> " + point.sourceItem.source)
+                        // console.log("element.center", element.center)
+                        var item = Qt.createQmlObject('import QtLocation 5.5; import QtQuick 2.4; MapQuickItem {  }', mapControl, "mapCircle")
+                        item.anchorPoint = Qt.point(2.5,2.5)
+                        item.coordinate = element.center
+                        item.zoomLevel = 10
+                        var circle = Qt.createQmlObject('import QtQuick 2.7; Rectangle{ width: 10; height: 10; radius: 5}', mapControl);
+                        circle.color = "red"
+                        item.sourceItem = circle
+                        _addMapElement(item)
+
                         break;
+                    case 4:
                     case "svgWithLabel":
                         console.log("svgWithLabel")
-//                        SvgLabelledPoint {
-//                            id: svgLabelledPoint
-//                            svgSource: element.styles["icon"]
-//                            label: element.styles["label"]
-//                            coordinate: QtPositioning.coordinate(element.vertices[0].latitude, element.vertices[0].longitude)
-//                        }
-                        var point = Qt.createQmlObject('import QtLocation 5.5; import QtQuick 2.4; MapQuickItem{ smooth:true; antialiasing:true; anchorPoint.x: p_icon.width / 2; anchorPoint.y: p_icon.height; zoomLevel: 15; sourceItem:Image { id:p_icon; } }', mapControl, "mapQuickItem")
-                        // point.sourceItem.source = "http://10.0.0.100/rest/symbol/" + element.extraData;
-                        point.sourceItem.source = "http://127.0.0.1:8080/rest/symbol/" + element.extraData;
-                        //"file:///tmp/mewa/SFGCEVCA-------.svg"
-                        point.coordinate = QtPositioning.coordinate(element.vertices[0].latitude, element.vertices[0].longitude)
+                        var point = Qt.createQmlObject('import QtLocation 5.5; import QtQuick 2.4; MapQuickItem{ smooth:true; antialiasing:true; anchorPoint.x: p_icon.width / 2; anchorPoint.y: p_icon.height; zoomLevel: 14; sourceItem:Image { id:p_icon; } }', mapControl, "mapQuickItem")
+                        point.sourceItem.source = element.src;
+                        point.coordinate = element.center
                         _addMapElement(point)
-                        console.log(element.styles["icon"] + " f4 " + point.coordinate + " --> " + point.sourceItem.source)
+
                         break;
                     default:
                         console.log("unsupported element type " + element.type)

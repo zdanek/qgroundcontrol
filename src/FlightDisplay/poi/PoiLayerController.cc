@@ -19,6 +19,7 @@
 #include "PoiLayer.h"
 #include "PoiLayerController.h"
 
+#include <QGeoCircle>
 #include <QGeoPath>
 #include <QGeoPolygon>
 #include <QQmlApplicationEngine>
@@ -26,8 +27,10 @@
 #include <QtLocation/private/qgeojson_p.h>
 
 #include "PoiGeom.h"
+#include "PoiPoint.h"
 #include "PoiPolygon.h"
 #include "PoiPolyline.h"
+#include "PoiSvg.h"
 #include "QGCApplication.h"
 #include "QGCLoggingCategory.h"
 #include "QGCMapLayer.h"
@@ -397,12 +400,35 @@ PoiLayer *PoiLayerController::loadGeoJson(const QString &geoJsonFile)
                 continue;
             }
             if (type == "Point") {
+                qCDebug(PoiLayerControllerLog) << featureMap;
                 qCDebug(PoiLayerControllerLog) << "Point";
-                const QGeoCoordinate &gc = featureMap["data"].value<QGeoCoordinate>();
-//                qCDebug(PoiLayerControllerLog) << "GeoCoordinate: " << gc;
-
-                PoiPoint *pp = new PoiPoint(poiL);
-
+                const QGeoCircle &gc = featureMap["data"].value<QGeoCircle>();
+                qCDebug(PoiLayerControllerLog) << "GeoCoordinate: " << gc;
+                const QMap<QString, QVariant> &properties = featureMap["properties"].toMap();
+                if (properties.contains("code")) {
+                    qCDebug(PoiLayerControllerLog) << "code:" << properties["code"];
+                    QString code = properties["code"].toString();
+                    QString standard;
+                    if (properties.contains("standard")) {
+                        standard = properties["standard"].toString();
+                    } else {
+                        standard = "milstd_2525c";
+                    }
+                    qCDebug(PoiLayerControllerLog) << "code standard: " << standard;
+                    if (standard == "milstd_2525c") {
+                        PoiSvg *pp = new PoiSvg(poiL);
+                        pp->setCenter(gc.center());
+                        pp->setSrc("http://127.0.0.1:8080/rest/symbol/" + code);
+                        geoms.append(pp);
+                        continue;
+                    } else {
+                        qCritical(PoiLayerControllerLog) << "Unsupported code standard:" << standard;
+                    }
+                } else {
+                    PoiPoint *pp = new PoiPoint(poiL);
+                    pp->setCenter(gc.center());
+                    geoms.append(pp);
+                }
                 continue;
             }
             qCCritical(PoiLayerControllerLog) << "Unsupported type:" << type;

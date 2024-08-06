@@ -4,7 +4,8 @@ add_library(PoiLayers
         PoiPoint.cc
         PoiPolyline.cc
         PoiLayerController.cc
-        PoiLayer.cc)
+        PoiLayer.cc
+        PoiSvg.cc)
 
 target_link_libraries(PoiLayers
         PRIVATE

@@ -2,8 +2,8 @@
 // Created by zdanek on 30.07.24.
 //
 
-#include "PoiPoint.h"
+#include "PoiSvg.h"
 
-PoiPoint::PoiPoint(QObject *parent)
+PoiSvg::PoiSvg(QObject *parent)
     : QObject(parent)
 {}
