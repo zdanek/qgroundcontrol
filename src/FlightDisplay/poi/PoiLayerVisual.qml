@@ -46,7 +46,6 @@ Item {
     }
 
     function _drawVertices(element, item){
-        // console.log("element.vertices.length " + element.path.length + " color " + element.styles["fill_color"] + " " + element.styles["line_color"] + " " + element.styles["line_width"])
         var vertices = element.path;
         for(var k = 0; k < vertices.length; k++){
             item.addCoordinate(QtPositioning.coordinate(vertices[k].latitude, vertices[k].longitude))
@@ -85,16 +84,12 @@ Item {
                 poiLength = poiLayer.kmlGraphics.renderers[0].elements.length
             }
 
-                //            console.log("gra", poiLayer.kmlGraphics.renderers)
             for (var i = 0; i < poiLength; i++) {
                 var element = poiElements.get(i)
-                // console.log("element", element)
-                // console.log("element type", element.type)
                 switch (element.type) {
                     case 0:
                     case "polygon":
                     case "gPoiPolygon":
-                        console.log("polygon")
                         var polygon = Qt.createQmlObject('import QtLocation 5.5; MapPolygon{smooth:true;antialiasing:true}', mapControl, "mapPolygon")
 
                         if (element.styles["fill_color"]) {
@@ -113,7 +108,6 @@ Item {
                     case 1:
                     case "gPoiPolyline":
                     case "polyline":
-                        console.log("polyline")
                         var polyline = Qt.createQmlObject('import QtLocation 5.5; MapPolyline{smooth:true;antialiasing:true}', mapControl, "mapPolyline")
                         polyline.line.width = element.styles["line_width"]
                         polyline.line.color = _torealColor(element.styles["line_color"])
@@ -123,8 +117,6 @@ Item {
                         break
                     case 3:
                     case "point":
-                        console.log("point")
-                        // console.log("element.center", element.center)
                         var item = Qt.createQmlObject('import QtLocation 5.5; import QtQuick 2.4; MapQuickItem {  }', mapControl, "mapCircle")
                         item.anchorPoint = Qt.point(2.5,2.5)
                         item.coordinate = element.center
@@ -137,7 +129,6 @@ Item {
                         break;
                     case 4:
                     case "svgWithLabel":
-                        console.log("svgWithLabel")
                         var point = Qt.createQmlObject('import QtLocation 5.5; import QtQuick 2.4; MapQuickItem{ smooth:true; antialiasing:true; anchorPoint.x: p_icon.width / 2; anchorPoint.y: p_icon.height; zoomLevel: 14; sourceItem:Image { id:p_icon; } }', mapControl, "mapQuickItem")
                         point.sourceItem.source = element.src;
                         point.coordinate = element.center
@@ -151,5 +142,4 @@ Item {
             }
         }
     }
-
 }

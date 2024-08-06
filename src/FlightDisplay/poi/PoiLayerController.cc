@@ -416,9 +416,12 @@ PoiLayer *PoiLayerController::loadGeoJson(const QString &geoJsonFile)
                     }
                     qCDebug(PoiLayerControllerLog) << "code standard: " << standard;
                     if (standard == "milstd_2525c") {
+                        QString aa = properties["aa"].toString();
+                        QString w = properties["w"].toString();
+                        QString t = properties["t"].toString();
                         PoiSvg *pp = new PoiSvg(poiL);
                         pp->setCenter(gc.center());
-                        pp->setSrc("http://127.0.0.1:8080/rest/symbol/" + code);
+                        pp->setSrc("http://127.0.0.1:8080/rest/symbol/" + code + "?aa=" + aa + "&w=" + w + "&t=" + t);
                         geoms.append(pp);
                         continue;
                     } else {
