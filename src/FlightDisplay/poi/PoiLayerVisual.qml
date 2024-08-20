@@ -68,28 +68,14 @@ Item {
         if (mapControl) {
             console.log('Creating POI polygons for layer "' + poiLayer.name + '"')
 
-            var poiElements = []
-            var poiLength = 0
-            if (!poiLayer.kmlgraphics) {
-                console.log("Using poiLayer.elements ", poiLayer.elements, poiLayer.elements.count)
-                poiLength = poiLayer.elements.count
-                poiElements = poiLayer.elements
-                console.log("first element", poiElements.get(0));
-            }
-
-
-            if (poiLayer.kmlgraphics && poiLayer.kmlgraphics.renderers) {
-                console.log("Using poiLayer.kmlGraphics.renderers ", poiLayer.kmlGraphics.renderers)
-                poiElements = poiLayer.kmlGraphics.renderers[0].elements;
-                poiLength = poiLayer.kmlGraphics.renderers[0].elements.length
-            }
+            var poiElements = poiLayer.elements
+            var poiLength = poiLayer.elements.count
 
             for (var i = 0; i < poiLength; i++) {
                 var element = poiElements.get(i)
                 switch (element.type) {
                     case 0:
                     case "polygon":
-                    case "gPoiPolygon":
                         var polygon = Qt.createQmlObject('import QtLocation 5.5; MapPolygon{smooth:true;antialiasing:true}', mapControl, "mapPolygon")
 
                         if (element.styles["fill_color"]) {
@@ -106,7 +92,6 @@ Item {
                         _addMapElement(polygon)
                         break
                     case 1:
-                    case "gPoiPolyline":
                     case "polyline":
                         var polyline = Qt.createQmlObject('import QtLocation 5.5; MapPolyline{smooth:true;antialiasing:true}', mapControl, "mapPolyline")
                         polyline.line.width = element.styles["line_width"]

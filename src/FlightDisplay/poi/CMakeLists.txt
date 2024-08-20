@@ -1,9 +1,11 @@
 add_library(PoiLayers
+        DynamicPoiManager.cc
         PoiGeom.cc
         PoiPolygon.cc
         PoiPoint.cc
         PoiPolyline.cc
         PoiLayerController.cc
+        PoiLayerLoader.cc
         PoiLayer.cc
         PoiSvg.cc)
 

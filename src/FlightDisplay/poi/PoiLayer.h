@@ -25,20 +25,22 @@
 class PoiLayer : public QObject
 {
     Q_OBJECT
-
 public:
+
     PoiLayer(QObject* parent = nullptr);
     ~PoiLayer();
-
     const PoiLayer& operator=(const PoiLayer& other);
+
+    QString id() const { return _id;}
 
     Q_PROPERTY(QString name READ name NOTIFY nameChanged)
     Q_PROPERTY(QString id READ id)
     Q_PROPERTY(bool visible READ visible WRITE setVisible NOTIFY visibleChanged)
-    Q_PROPERTY(QmlObjectListModel* elements READ elements NOTIFY elementsChanged)
+    Q_PROPERTY(QmlObjectListModel* elements READ
+                   elements NOTIFY elementsChanged)
 
-    QString id() const { return _id;}
     void setId(const QString& id) { _id = id; }
+    void setSyncpoint(const int syncpoint);
 
     QString name() const { return _name; }
     void setName(const QString& name);
@@ -53,13 +55,15 @@ signals:
     void nameChanged(const QString& name);
     void visibleChanged(bool visible);
     void elementsChanged(const QmlObjectListModel &elements);
-    void kmlGraphicsChanged();
     void deleted();
+    void syncpointChanged();
 
 private:
     QmlObjectListModel* elements() { return &_elements;}
+
+    QmlObjectListModel _elements;
     QString _name;
     QString _id;
-    bool _visible = true;
-    QmlObjectListModel _elements;
+    bool _visible = false;
+    int _syncpoint = -1;
 };

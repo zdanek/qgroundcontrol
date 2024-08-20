@@ -1,0 +1,1 @@
+{"type": "FeatureCollection", "properties": {"ext:id": "mip31~29100019300000003302", "ext:syncpoint": "41785", "name": "pln tst"}, "features": [{"type": "Feature", "properties": {"code": "SFGAUC-----E--G", "standard": "milstd2525b", "aa": "", "t": "pun001", "w": "25075252ZAPR23"}, "geometry": {"type": "Point", "coordinates": [20.462747, 52.143058]}}]}

@@ -74,3 +74,10 @@ void PoiLayer::append(QList<QGCMapGeom *> map_geoms)
         return;
     }
 }
+
+void PoiLayer::setSyncpoint(const int syncpoint) {
+    if (_syncpoint != syncpoint) {
+        _syncpoint = syncpoint;
+        emit syncpointChanged();
+    }
+}

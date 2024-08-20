@@ -32,32 +32,26 @@ class PoiLayerController : public QObject
 
 public:
     PoiLayerController(QObject* parent = nullptr);
-    ~PoiLayerController();
+    virtual ~PoiLayerController() {}
 
-//    Q_PROPERTY(bool poiLayerVisible READ poiLayerVisible WRITE setPoiLayerVisible NOTIFY poiLayerVisibleChanged)
     Q_PROPERTY(QmlObjectListModel* poiLayers READ poiLayers NOTIFY poiLayersChanged)
 
     /// Should be called immediately upon Component.onCompleted.
     Q_INVOKABLE void start();
     Q_INVOKABLE void deletePoiLayer(QString id);
 
-//    bool poiLayerVisible() const;
-//    void setPoiLayerVisible(bool poiLayerVisible);
-
 signals:
-//    void poiLayerVisibleChanged(bool poiLayerVisible);
     void poiLayersChanged();
-//    void poiLayerAdded(PoiLayer* poiLayer);
-//    void poiLayerDeleted(QString id);
+
+public slots:
+    void loadGeoJsonFile(const QString &geoJsonFile);
+    void removeGeoJsonFile(const QString &geoJsonFile);
 
 private:
-    //return poiLayers
     QmlObjectListModel *poiLayers() { return &_poiLayers; }
-    PoiLayer *loadGeoJson(const QString &geoJsonFile);
-
-//    bool _poiLayerVisible = true;
-    QmlObjectListModel _poiLayers;
     void addPoiLayer(PoiLayer *pLayer);
-    PoiGeom *processLineString(const QVariantMap &featureMap, const QVariantMap &styles, QObject *parent) const;
+
+    QmlObjectListModel _poiLayers;
+    QMap<QString, QString> _file_to_layer;
 };
 
