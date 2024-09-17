@@ -36,8 +36,7 @@ public:
     Q_PROPERTY(QString name READ name NOTIFY nameChanged)
     Q_PROPERTY(QString id READ id)
     Q_PROPERTY(bool visible READ visible WRITE setVisible NOTIFY visibleChanged)
-    Q_PROPERTY(QmlObjectListModel* elements READ
-                   elements NOTIFY elementsChanged)
+    Q_PROPERTY(QmlObjectListModel *elements READ elements NOTIFY elementsChanged)
 
     void setId(const QString& id) { _id = id; }
     void setSyncpoint(const int syncpoint);

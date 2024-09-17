@@ -12,8 +12,14 @@
 class PoiLayerLoader {
 
 public:
+    explicit PoiLayerLoader(const QString imagesBasePath);
     static PoiGeom *processLineString(const QVariantMap &featureMap, const QVariantMap &styles, QObject *parent);
-    static PoiLayer *loadGeoJson(const QString &geoJsonFile, QObject *parent);
+    PoiLayer *loadGeoJson(const QString &geoJsonFile, QObject *parent);
+
+private:
+    const QString _imagesBasePath;
+    QString getImagePath(const QString &code, const QString &standard, const QString &aa, const QString &w, const QString &t);
+    QString crc(const QString &text);
 };
 
 #endif //SRC_FLIGHTDISPLAY_POI_POILAYERLOADER_H_

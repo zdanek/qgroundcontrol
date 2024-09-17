@@ -15,17 +15,15 @@
 #include "PoiSvg.h"
 #include "QGCLoggingCategory.h"
 #include "PoiLayer.h"
-#include "PoiLayerController.h"
 #include "PoiGeom.h"
 #include "PoiPoint.h"
 #include "QGCApplication.h"
 
 QGC_LOGGING_CATEGORY(PoiLayerLoaderLog, "PoiLayerLoaderLog")
 
-
 PoiLayer *PoiLayerLoader::loadGeoJson(const QString &geoJsonFile, QObject *parent)
 {
-    qCDebug(PoiLayerLoaderLog) << "PoiLayerController::loadGeoJson:" << geoJsonFile;
+    qCDebug(PoiLayerLoaderLog) << "PoiLayerLoaderLog::loadGeoJson:" << geoJsonFile;
 
     PoiLayer *poiL = new PoiLayer(parent);
     QList<PoiGeom *> geoms = QList<PoiGeom *>();
@@ -168,12 +166,13 @@ PoiLayer *PoiLayerLoader::loadGeoJson(const QString &geoJsonFile, QObject *paren
                     }
                     qCDebug(PoiLayerLoaderLog) << "code standard: " << standard;
 
+                    // TODO(bzd) change it to src on disk, let python script load and store images
                     QString aa = properties["aa"].toString();
                     QString w = properties["w"].toString();
                     QString t = properties["t"].toString();
                     PoiSvg *pp = new PoiSvg(poiL);
                     pp->setCenter(gc.center());
-                    pp->setSrc("http://127.0.0.1:8080/rest/symbol/" + code + "?aa=" + aa + "&w=" + w + "&t=" + t);
+                    pp->setSrc(getImagePath(code, standard, aa, w, t));
                     geoms.append(pp);
                     continue;
                 } else {
@@ -202,3 +201,28 @@ PoiGeom *PoiLayerLoader::processLineString(const QVariantMap &featureMap, const 
 
     return poly;
 }
+
+PoiLayerLoader::PoiLayerLoader(const QString imagesBasePath)
+    : _imagesBasePath(imagesBasePath)
+{}
+
+QString PoiLayerLoader::getImagePath(const QString &code, const  QString &standard, const QString &aa, const QString &w, const QString &t)
+{
+    QString text_crc = crc(t);
+    QString filename = standard + "_" + code + aa + w + text_crc + ".svg";
+    qCDebug(PoiLayerLoaderLog) << "getImagePath: " << _imagesBasePath << "/" << filename;
+    return "file:///" + _imagesBasePath + "/" + filename;
+    //return "http://127.0.0.1:8080/rest/symbol/" + code + "?aa=" + aa + "&w=" + w + "&t=" + t;
+}
+
+QString PoiLayerLoader::crc(const QString &text)
+{
+    if (text.isEmpty()) {
+        return "";
+    }
+    QByteArray ba = text.toUtf8();
+    QCryptographicHash hash(QCryptographicHash::Md5);
+    hash.addData(ba);
+    return hash.result().toHex();
+}
+

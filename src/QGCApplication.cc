@@ -185,6 +185,13 @@ static QObject* shapeFileHelperSingletonFactory(QQmlEngine*, QJSEngine*)
     return new ShapeFileHelper;
 }
 
+static QObject* poilayerControllerFactory(QQmlEngine* engine, QJSEngine* scriptEngine)
+{
+    Q_UNUSED(engine)
+    Q_UNUSED(scriptEngine)
+    return new PoiLayerController(qgcApp()->toolbox());
+}
+
 QGCApplication::QGCApplication(int &argc, char* argv[], bool unitTesting)
     : QApplication          (argc, argv)
     , _runningUnitTests     (unitTesting)
@@ -514,7 +521,7 @@ void QGCApplication::_initCommon()
     qmlRegisterType<SyslinkComponentController>     (kQGCControllers,                       1, 0, "SyslinkComponentController");
     qmlRegisterType<EditPositionDialogController>   (kQGCControllers,                       1, 0, "EditPositionDialogController");
     qmlRegisterType<RCToParamDialogController>      (kQGCControllers,                       1, 0, "RCToParamDialogController");
-    qmlRegisterType<PoiLayerController>             (kQGCControllers,                       1, 0, "PoiLayerController");
+    qmlRegisterType<PoiLayerController>      (kQGCControllers,                       1, 0, "PoiLayerController");
 
     qmlRegisterType<TerrainProfile>                 ("QGroundControl.Controls",             1, 0, "TerrainProfile");
     qmlRegisterType<ToolStripAction>                ("QGroundControl.Controls",             1, 0, "ToolStripAction");
@@ -536,6 +543,9 @@ void QGCApplication::_initCommon()
     qmlRegisterSingletonType<ScreenToolsController>     ("QGroundControl.ScreenToolsController",    1, 0, "ScreenToolsController",  screenToolsControllerSingletonFactory);
     qmlRegisterSingletonType<ShapeFileHelper>           ("QGroundControl.ShapeFileHelper",          1, 0, "ShapeFileHelper",        shapeFileHelperSingletonFactory);
     qmlRegisterSingletonType<ShapeFileHelper>           ("MAVLink",                                 1, 0, "MAVLink",                mavlinkSingletonFactory);
+
+//    qmlRegisterSingletonInstance<PoiLayerController>    ("QGroundControl.PoiLayerController",     1,0, "PoiLayerController",  new PoiLayerController(qgcApp()->toolbox()));
+//    qmlRegisterSingletonType<PoiLayerController>        ("QGroundControl.PoiLayerController",                           1, 0, "PoiLayerController",     poilayerControllerFactory);
 
     // Although this should really be in _initForNormalAppBoot putting it here allowws us to create unit tests which pop up more easily
     if(QFontDatabase::addApplicationFont(":/fonts/opensans") < 0) {

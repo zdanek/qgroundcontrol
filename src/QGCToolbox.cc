@@ -75,6 +75,7 @@ QGCToolbox::QGCToolbox(QGCApplication* app)
     _videoManager           = new VideoManager              (app, this);
     _mavlinkLogManager      = new MAVLinkLogManager         (app, this);
     _adsbVehicleManager     = new ADSBVehicleManager        (app, this);
+    _dynamicPoiManager      = new DynamicPoiManager         (app, this);
 #if defined(QGC_ENABLE_PAIRING)
     _pairingManager         = new PairingManager            (app, this);
 #endif

@@ -13,18 +13,16 @@
  *
  *   @author Bartek Zdanowski <bartek.zdanowski@pelixar.com>
  */
-
-#include <QObject>
-
-#include "PoiLayer.h"
 #include "PoiLayerController.h"
 
 #include <QGeoCircle>
 #include <QGeoPath>
 #include <QGeoPolygon>
+#include <QObject>
 #include <QtLocation/private/qgeojson_p.h>
 
 #include "PoiGeom.h"
+#include "PoiLayer.h"
 #include "PoiLayerLoader.h"
 #include "PoiPoint.h"
 #include "PoiPolygon.h"
@@ -32,25 +30,63 @@
 #include "PoiSvg.h"
 #include "QGCApplication.h"
 #include "QGCLoggingCategory.h"
+#include "DynamicPoiManager.h"
 
 QGC_LOGGING_CATEGORY(PoiLayerControllerLog, "PoiLayerControllerLog")
 
-PoiLayerController::PoiLayerController(QObject *parent)
+
+PoiLayerController::PoiLayerController( QObject *parent)
     : QObject(parent)
-{}
+{
+    qCDebug(PoiLayerControllerLog) << "PoiLayerController::PoiLayerController";
+    _dynamicPoiManager = qgcApp()->toolbox()->dynamicPoiManager();
+//    _dynamicPoiManager = toolbox->dynamicPoiManager();
+//    _poiLayers.setParent(this);
+    connect(_dynamicPoiManager, &DynamicPoiManager::poiLayersChanged, this, &PoiLayerController::poiLayersChanged, Qt::QueuedConnection);
+    connect(this, &PoiLayerController::deletePoiLayerById, _dynamicPoiManager, &DynamicPoiManager::removeLayerById);
+    connect(_dynamicPoiManager, &DynamicPoiManager::poiLayerRemoved, this, &PoiLayerController::poiLayerRemoved);
+//    connect(_dynamicPoiManager, &DynamicPoiManager::addLayer, this, &PoiLayerController::addPoiLayer);
+//    connect(_dynamicPoiManager, &DynamicPoiManager::removeLayer, this, &PoiLayerController::deletePoiLayer);
+}
 
 void PoiLayerController::start()
 {
-    qCDebug(PoiLayerControllerLog) << "PoiLayerController::start";
+//    qCDebug(PoiLayerControllerLog) << "PoiLayerController::start";
+//
+//    PoiLayerLoader pl("/opt/workspace/projects/drones/qgmewamed/geojsons/images");
+//    QStringList files = QDir("/opt/workspace/projects/drones/qgmewamed/geojsons").entryList(QDir::Files);
+//    for (const QString &file : files) {
+//        qCDebug(PoiLayerControllerLog) << "file:" << file;
+//        //bzd poi
+//        PoiLayer *layer = pl.loadGeoJson("/opt/workspace/projects/drones/qgmewamed/geojsons/" + file, this);
+//        if (layer) {
+//            layer->setVisible(true);
+//            _dynamicPoiManager->addLayer(layer);
+//        }
+//        //        layer = loadGeoJsonFile("/opt/workspace/projects/drones/qgmewamed/geojsons/" + file);
+//    }
 
-    QStringList files = QDir("/opt/workspace/projects/drones/qgmewamed/geojsons").entryList(QDir::Files);
-    for (const QString &file : files) {
-        qCDebug(PoiLayerControllerLog) << "file:" << file;
-        emit loadGeoJsonFile("/opt/workspace/projects/drones/qgmewamed/geojsons/" + file);
+}
+QmlObjectListModel *PoiLayerController::poiLayers()
+{
+    qCDebug(PoiLayerControllerLog) << "PoiLayerController::poiLayers - _dynamicPoiManager->poiLayers().count():"
+                                   << _dynamicPoiManager->poiLayers().count();
+    for (PoiLayer *layer : _dynamicPoiManager->poiLayers()) {
+        if (_poiLayers.contains(layer)) {
+            continue;
+        }
+        _poiLayers.append(layer);
     }
+    return &_poiLayers;
+}
+void PoiLayerController::poiLayerRemoved(const PoiLayer *layer) {
+    qCDebug(PoiLayerControllerLog) << "PoiLayerController::poiLayerRemoved";
+    _poiLayers.removeOne(const_cast<PoiLayer *>(layer));
+    emit poiLayersChanged();
 }
 
-void PoiLayerController::deletePoiLayer(QString id)
+/*
+void PoiLayerController::deletePoiLayerById(QString id)
 {
     qCDebug(PoiLayerControllerLog) << "PoiLayerController::deletePoiLayer:" << id;
     for (int i = 0; i < _poiLayers.count(); i++) {
@@ -102,3 +138,4 @@ void PoiLayerController::removeGeoJsonFile(const QString &geoJsonFile) {
     emit poiLayersChanged();
 
 }
+*/

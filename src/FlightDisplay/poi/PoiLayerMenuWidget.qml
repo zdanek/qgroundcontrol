@@ -31,7 +31,7 @@ Rectangle {
 
     function remove(layerId) {
         console.log("remove layerId: ", layerId)
-        layerController.deletePoiLayer(layerId)
+        layerController.deletePoiLayerById(layerId)
     }
     Row {
       id:                 topRowLayout
@@ -61,7 +61,7 @@ Rectangle {
       }
 
       QGCCheckBox {
-          id:         flightSpeedCheckbox
+          id:         layerVisibleCheckbox
           text:       modelData.name
           checked:    modelData.visible
           onClicked:  modelData.visible = checked

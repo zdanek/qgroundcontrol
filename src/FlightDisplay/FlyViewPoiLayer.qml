@@ -28,6 +28,7 @@ import QGroundControl.FlightMap     1.0
 import QGroundControl.Palette       1.0
 import QGroundControl.ScreenTools   1.0
 import QGroundControl.Vehicle       1.0
+// import QGroundControl.PoiLayerController 1.0
 
 Item {
     id: _root
@@ -47,11 +48,14 @@ Item {
     readonly property real  _rightPanelWidth:   Math.min(parent.width / 3, ScreenTools.defaultFontPixelWidth * 30)
     readonly property real  _toolsMargin:       ScreenTools.defaultFontPixelWidth * 0.75
 
-    PoiLayerController {
-        id: _poiLayerController
+     PoiLayerController {
+         id: _poiLayerController
 
-//        Component.onCompleted: start()
-    }
+// //        Component.onCompleted: start()
+     }
+
+
+
 
 //    Connections{
 //        target: poiLayerControler

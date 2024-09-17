@@ -24,6 +24,7 @@ Item {
     onLvisibleChanged: function (sth, visible) {
         console.log("onVisibleChanged " + lvisible)
         for (var i = 0; i < __items.length; i++) {
+            console.log("Setting item " + i + " visible to " + lvisible);
             __items[i].visible = lvisible
         }
     }
@@ -41,6 +42,7 @@ Item {
     }
 
     function _addMapElement(element){
+        console.log("Adding element " + element.id)
         __items.push(element)
         mapControl.addMapItem(element)
     }
@@ -52,6 +54,13 @@ Item {
         }
     }
 
+    function _clearMap(){
+        console.log("Clearing map")
+        for (var i = 0; i < __items.length; i++) {
+            mapControl.removeMapItem(__items[i])
+        }
+        __items = []
+    }
 
     function _torealColor(color){
         return color;
@@ -114,7 +123,7 @@ Item {
                         break;
                     case 4:
                     case "svgWithLabel":
-                        var point = Qt.createQmlObject('import QtLocation 5.5; import QtQuick 2.4; MapQuickItem{ smooth:true; antialiasing:true; anchorPoint.x: p_icon.width / 2; anchorPoint.y: p_icon.height; zoomLevel: 14; sourceItem:Image { id:p_icon; } }', mapControl, "mapQuickItem")
+                        var point = Qt.createQmlObject('import QtLocation 5.5; import QtQuick 2.4; MapQuickItem{ smooth:true; antialiasing:true; anchorPoint.x: p_icon.width / 2; anchorPoint.y: p_icon.height; zoomLevel: 15; sourceItem:Image { id:p_icon; } }', mapControl, "mapQuickItem")
                         point.sourceItem.source = element.src;
                         point.coordinate = element.center
                         _addMapElement(point)

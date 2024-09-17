@@ -1,0 +1,27 @@
+{
+  "type": "FeatureCollection",
+  "properties": {
+    "ext:id": "mip31~29100019300000003339",
+    "ext:syncpoint": "41853",
+    "name": "test ovrly"
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "code": "SFGP-----------",
+        "standard": "milstd2525b",
+        "aa": "CIV",
+        "t": "test",
+        "w": "25075632ZAPR23"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.440104,
+          52.15438
+        ]
+      }
+    }
+  ]
+}

@@ -7,8 +7,11 @@
 
 #include "PoiLayer.h"
 #include "QGCToolbox.h"
+#include "QGCLoggingCategory.h"
 
 class QGCToolbox;
+
+Q_DECLARE_LOGGING_CATEGORY(DynamicPoiManagerLog)
 
 class DynamicPoiManager : public QGCTool
 {
@@ -21,18 +24,32 @@ public:
 
     Q_PROPERTY(QList<PoiLayer*>          poiLayers       READ poiLayers      NOTIFY poiLayersChanged)
 
-    QList<PoiLayer*> poiLayers(void) const { return _layers; }
+    QList<PoiLayer*> poiLayers(void) const {
+        return _layers;
+    }
+//    QmlObjectListModel *poiLayers(void) { return &_poiLayers; }
 
 public slots:
     void addLayer(PoiLayer *layer);
+    void addLayers(QList<PoiLayer *>layers);
     void removeLayer(PoiLayer *layer);
+    void removeLayerById(QString id);
 
 signals:
     void poiLayersChanged();
+    void poiLayerRemoved(const PoiLayer *layer);
 
 private:
-    QList<PoiLayer*> _layers;
+    /**
+     * Deletes a POI layer by its ID
+     *
+     * @param id
+     */
+    void deletePoiLayerById(QString id);
+    void addLayer(PoiLayer *pLayer, bool emitSignal);
 
+    QList<PoiLayer*> _layers;
+//    QmlObjectListModel _poiLayers;
     QGCToolbox* _toolbox;
 
 

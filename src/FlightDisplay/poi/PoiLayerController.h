@@ -18,11 +18,14 @@
 
 #include <QImage>
 #include <QObject>
-#include <qgeocoordinate.h>
 
-#include "QGCLoggingCategory.h"
-#include "QmlObjectListModel.h"
+#include "DynamicPoiManager.h"
 #include "PoiLayer.h"
+#include "QGCApplication.h"
+#include "QGCLoggingCategory.h"
+#include "QGCToolbox.h"
+#include "QmlObjectListModel.h"
+#include "qgeocoordinate.h"
 
 Q_DECLARE_LOGGING_CATEGORY(PoiLayerControllerLog)
 
@@ -31,27 +34,30 @@ class PoiLayerController : public QObject
     Q_OBJECT
 
 public:
-    PoiLayerController(QObject* parent = nullptr);
+    explicit PoiLayerController(QObject *parent = nullptr);
+
     virtual ~PoiLayerController() {}
 
     Q_PROPERTY(QmlObjectListModel* poiLayers READ poiLayers NOTIFY poiLayersChanged)
 
-    /// Should be called immediately upon Component.onCompleted.
     Q_INVOKABLE void start();
-    Q_INVOKABLE void deletePoiLayer(QString id);
 
 signals:
     void poiLayersChanged();
+    void addPoiLayer(PoiLayer *pLayer);
+    void deletePoiLayer(PoiLayer *pLayer);
+    void deletePoiLayerById(QString id);
 
 public slots:
-    void loadGeoJsonFile(const QString &geoJsonFile);
-    void removeGeoJsonFile(const QString &geoJsonFile);
+    void poiLayerRemoved(const PoiLayer *layer);
+
 
 private:
-    QmlObjectListModel *poiLayers() { return &_poiLayers; }
-    void addPoiLayer(PoiLayer *pLayer);
+    QmlObjectListModel *poiLayers();
+
+    const QGCToolbox *_toolbox;
+    DynamicPoiManager *_dynamicPoiManager;
 
     QmlObjectListModel _poiLayers;
-    QMap<QString, QString> _file_to_layer;
 };
 
