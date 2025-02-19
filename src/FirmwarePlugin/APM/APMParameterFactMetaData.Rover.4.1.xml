@@ -3885,6 +3885,9 @@
         <values>
           <value code="0">None</value>
           <value code="1">VectorNav</value>
+          <value code="2">MicroStrain5</value>
+          <value code="5">InertialLabs</value>
+          <value code="7">MicroStrain7</value>
         </values>
       </param>
       <param humanName="AHRS data rate" name="EAHRS_RATE" documentation="Requested rate for AHRS device" user="Standard">

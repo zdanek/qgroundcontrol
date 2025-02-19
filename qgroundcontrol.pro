@@ -254,6 +254,7 @@ QT += \
     widgets \
     xml \
     texttospeech \
+    webenginewidgets \
     core-private
 
 # Multimedia only used if QVC is enabled

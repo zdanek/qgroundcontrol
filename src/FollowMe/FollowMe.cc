@@ -63,7 +63,7 @@ void FollowMe::_settingsChanged()
 void FollowMe::_enableFollowSend()
 {
     if (!_gcsMotionReportTimer.isActive()) {
-        _gcsMotionReportTimer.setInterval(qMin(_toolbox->qgcPositionManager()->updateInterval(), 250));
+        _gcsMotionReportTimer.setInterval(qMin(_toolbox->qgcPositionManager()->updateInterval(), 1000));
         _gcsMotionReportTimer.start();
     }
 }

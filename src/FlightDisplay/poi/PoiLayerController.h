@@ -47,6 +47,7 @@ signals:
     void addPoiLayer(PoiLayer *pLayer);
     void deletePoiLayer(PoiLayer *pLayer);
     void deletePoiLayerById(QString id);
+    void openPage(QString url);
 
 public slots:
     void poiLayerRemoved(const PoiLayer *layer);
@@ -57,6 +58,7 @@ private:
 
     const QGCToolbox *_toolbox;
     DynamicPoiManager *_dynamicPoiManager;
+    QGCApplication *_app;
 
     QmlObjectListModel _poiLayers;
 };

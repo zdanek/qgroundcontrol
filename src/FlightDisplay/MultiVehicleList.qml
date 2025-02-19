@@ -113,7 +113,7 @@ Item {
                     QGCLabel {
                         Layout.alignment:   Qt.AlignTop
                         text:               _vehicle ? _vehicle.id : ""
-                        color:              _textColor
+                        color:              "blue"
                         font.pointSize:     ScreenTools.largeFontPointSize
                     }
 

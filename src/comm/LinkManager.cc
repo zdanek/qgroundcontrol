@@ -596,7 +596,7 @@ void LinkManager::_updateAutoConnectLinks(void)
                     // We don't connect to the port the first time we see it. The ability to correctly detect whether we
                     // are in the bootloader is flaky from a cross-platform standpoint. So by putting it on a wait list
                     // and only connect on the second pass we leave enough time for the board to boot up.
-                    qCDebug(LinkManagerLog) << "Waiting for next autoconnect pass" << portInfo.systemLocation();
+                    // qCDebug(LinkManagerLog) << "Waiting for next autoconnect pass" << portInfo.systemLocation();
                     _autoconnectPortWaitList[portInfo.systemLocation()] = 1;
                 } else if (++_autoconnectPortWaitList[portInfo.systemLocation()] * _autoconnectUpdateTimerMSecs > _autoconnectConnectDelayMSecs) {
                     SerialConfiguration* pSerialConfig = nullptr;

@@ -22,6 +22,8 @@
 #include <QQuickWindow>
 #include <QQuickImageProvider>
 #include <QQuickStyle>
+#include <QtWebEngine/QtWebEngine>
+#include <QtWebEngineWidgets/QWebEngineView>
 
 #ifdef QGC_ENABLE_BLUETOOTH
 #include <QBluetoothLocalDevice>
@@ -133,7 +135,9 @@
 #endif
 
 #include "QGCMapEngine.h"
+#include <qmainwindow.h>
 
+class BrowserWindow;
 class FinishVideoInitialization : public QRunnable
 {
 public:
@@ -185,12 +189,12 @@ static QObject* shapeFileHelperSingletonFactory(QQmlEngine*, QJSEngine*)
     return new ShapeFileHelper;
 }
 
-static QObject* poilayerControllerFactory(QQmlEngine* engine, QJSEngine* scriptEngine)
-{
-    Q_UNUSED(engine)
-    Q_UNUSED(scriptEngine)
-    return new PoiLayerController(qgcApp()->toolbox());
-}
+// static QObject* poilayerControllerFactory(QQmlEngine* engine, QJSEngine* scriptEngine)
+// {
+//     Q_UNUSED(engine)
+//     Q_UNUSED(scriptEngine)
+//     return new PoiLayerController(qgcApp()->toolbox());
+// }
 
 QGCApplication::QGCApplication(int &argc, char* argv[], bool unitTesting)
     : QApplication          (argc, argv)
@@ -198,6 +202,9 @@ QGCApplication::QGCApplication(int &argc, char* argv[], bool unitTesting)
 {
     _app = this;
     _msecsElapsedTime.start();
+
+    qputenv("QTWEBENGINE_CHROMIUM_FLAGS", "--no-sandbox");
+    QtWebEngine::initialize();
 
 #ifdef Q_OS_LINUX
 #ifndef __mobile__
@@ -1048,4 +1055,25 @@ bool QGCApplication::event(QEvent *e)
         }
     }
     return QApplication::event(e);
+}
+
+class BrowserWindow : public QMainWindow
+{
+public:
+    BrowserWindow(const QUrl &url)
+    {
+        QWebEngineView *view = new QWebEngineView(this);
+        view->setUrl(url);
+        setCentralWidget(view);
+        resize(1024, 768);
+        setVisible(true);
+        show();
+    }
+};
+
+
+void QGCApplication::openWebPage(const QString &url)
+{
+    BrowserWindow *browser = new BrowserWindow(QUrl(url));
+    browser->show();
 }

@@ -183,6 +183,8 @@ target_link_libraries(qgc
 	PUBLIC
 		Qt5::QuickWidgets
 		Qt5::Widgets
+		Qt5::WebEngine
+		Qt5::WebEngineWidgets
 
 		ADSB
 		Airmap

@@ -197,6 +197,8 @@ find_package(Qt5 ${QT_VERSION}
 		Test
 		TextToSpeech
 		Widgets
+		WebEngine
+		WebEngineWidgets
 		Xml
 	REQUIRED
 	HINTS

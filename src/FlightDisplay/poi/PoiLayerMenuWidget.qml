@@ -33,6 +33,14 @@ Rectangle {
         console.log("remove layerId: ", layerId)
         layerController.deletePoiLayerById(layerId)
     }
+    // QGCButton {
+    //     text: "Open Page"
+    //     onClicked: {
+    //         console.log("Open Page button clicked")
+    //         layerController.openPage("https://onet.pl")
+    //     }
+    // }
+
     Row {
       id:                 topRowLayout
       anchors.margins:    _margin
@@ -51,7 +59,7 @@ Rectangle {
           mipmap:                 true
           smooth:                 true
           color:                  qgcPal.text
-          visible:                true
+          visible:                modelData.canBeDeleted
           source:                 "/res/TrashDelete.svg"
 
           QGCMouseArea {
@@ -63,6 +71,7 @@ Rectangle {
       QGCCheckBox {
           id:         layerVisibleCheckbox
           text:       modelData.name
+          textFontPointSize:  ScreenTools.defaultFontPointSize * 0.75
           checked:    modelData.visible
           onClicked:  modelData.visible = checked
       }

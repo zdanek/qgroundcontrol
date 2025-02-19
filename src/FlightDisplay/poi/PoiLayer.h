@@ -35,6 +35,7 @@ public:
 
     Q_PROPERTY(QString name READ name NOTIFY nameChanged)
     Q_PROPERTY(QString id READ id)
+    Q_PROPERTY(bool canBeDeleted READ canBeDeleted NOTIFY canBeDeletedChanged)
     Q_PROPERTY(bool visible READ visible WRITE setVisible NOTIFY visibleChanged)
     Q_PROPERTY(QmlObjectListModel *elements READ elements NOTIFY elementsChanged)
 
@@ -43,6 +44,9 @@ public:
 
     QString name() const { return _name; }
     void setName(const QString& name);
+
+    bool canBeDeleted() const { return _canBeDeleted; }
+    void setCanBeDeleted(bool canBeDeleted);
 
     bool visible() const { return _visible; }
     void setVisible(bool visible);
@@ -53,6 +57,7 @@ public:
 signals:
     void nameChanged(const QString& name);
     void visibleChanged(bool visible);
+    void canBeDeletedChanged(bool canBeDeleted);
     void elementsChanged(const QmlObjectListModel &elements);
     void deleted();
     void syncpointChanged();
@@ -63,6 +68,7 @@ private:
     QmlObjectListModel _elements;
     QString _name;
     QString _id;
+    bool _canBeDeleted = false;
     bool _visible = false;
     int _syncpoint = -1;
 };

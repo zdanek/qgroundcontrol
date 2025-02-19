@@ -164,7 +164,7 @@ void UDPLink::_writeDataGram(const QByteArray data, const UDPCLient* target)
 {
     //qDebug() << "UDP Out" << target->address << target->port;
     if(_socket->writeDatagram(data, target->address, target->port) < 0) {
-        qWarning() << "Error writing to" << target->address << target->port;
+        // qWarning() << "Error writing to" << target->address << target->port;
     }
 }
 

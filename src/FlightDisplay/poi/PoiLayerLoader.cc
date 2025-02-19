@@ -37,6 +37,7 @@ PoiLayer *PoiLayerLoader::loadGeoJson(const QString &geoJsonFile, QObject *paren
     const QString &random = QString::number(rand());
     poiL->setName("Layer " + random);
     poiL->setId("layer_" + random);
+    // poiL->setCanBeDeleted(false);
 
     if (!doc["properties"].isUndefined()) {
         const QVariantMap &properties = doc["properties"].toObject().toVariantMap();
