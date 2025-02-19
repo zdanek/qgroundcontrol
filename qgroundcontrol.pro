@@ -45,7 +45,8 @@ MacBuild {
 }
 
 LinuxBuild {
-    CONFIG  += qesp_linux_udev
+    CONFIG += qesp_linux_udev
+    CONFIG += use_gold_linker
 }
 
 WindowsBuild {
@@ -587,8 +588,15 @@ HEADERS += \
     src/Compression/QGCZlib.h \
     src/FirmwarePlugin/PX4/px4_custom_mode.h \
     src/FollowMe/FollowMe.h \
+    src/FlightDisplay/poi/DynamicPoiManager.h \
+    src/FlightDisplay/poi/PoiGeom.h \
+    src/FlightDisplay/poi/PoiPolygon.h \
+    src/FlightDisplay/poi/PoiPoint.h \
+    src/FlightDisplay/poi/PoiPolyline.h \
     src/FlightDisplay/poi/PoiLayerController.h \
+    src/FlightDisplay/poi/PoiLayerLoader.h \
     src/FlightDisplay/poi/PoiLayer.h \
+    src/FlightDisplay/poi/PoiSvg.h \
     src/Joystick/Joystick.h \
     src/Joystick/JoystickManager.h \
     src/Joystick/JoystickMavCommand.h \
@@ -843,8 +851,15 @@ SOURCES += \
     src/Compression/QGCLZMA.cc \
     src/Compression/QGCZlib.cc \
     src/FollowMe/FollowMe.cc \
+    src/FlightDisplay/poi/DynamicPoiManager.cc \
+    src/FlightDisplay/poi/PoiGeom.cc \
+    src/FlightDisplay/poi/PoiPolygon.cc \
+    src/FlightDisplay/poi/PoiPoint.cc \
+    src/FlightDisplay/poi/PoiPolyline.cc \
     src/FlightDisplay/poi/PoiLayerController.cc \
+    src/FlightDisplay/poi/PoiLayerLoader.cc \
     src/FlightDisplay/poi/PoiLayer.cc \
+    src/FlightDisplay/poi/PoiSvg.cc \
     src/Joystick/Joystick.cc \
     src/Joystick/JoystickManager.cc \
     src/Joystick/JoystickMavCommand.cc \

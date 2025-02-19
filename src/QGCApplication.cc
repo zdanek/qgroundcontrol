@@ -204,7 +204,7 @@ QGCApplication::QGCApplication(int &argc, char* argv[], bool unitTesting)
     _msecsElapsedTime.start();
 
     qputenv("QTWEBENGINE_CHROMIUM_FLAGS", "--no-sandbox");
-    QtWebEngine::initialize();
+    // QtWebEngine::initialize();
 
 #ifdef Q_OS_LINUX
 #ifndef __mobile__

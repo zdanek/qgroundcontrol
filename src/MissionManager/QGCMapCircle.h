@@ -48,7 +48,7 @@ public:
     /// @return true: success, false: failure (errorString set)
     bool loadFromJson(const QJsonObject& json, QString& errorString);
 
-    QGCMapGeomType geomType() const override { return Circle; }
+    QGCMapGeomType geomType() const override { return GeomTypeCircle; }
 
     // Property methods
 

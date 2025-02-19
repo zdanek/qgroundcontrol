@@ -13,12 +13,12 @@
 #include <QObject>
 
 enum QGCMapGeomType {
-    Polygon,
-    Polyline,
-    Circle,
-    Point,
-    Svg,
-    Invalid
+    GeomTypePolygon,
+    GeomTypePolyline,
+    GeomTypeCircle,
+    GeomTypePoint,
+    GeomTypeSvg,
+    GeomTypeInvalid
 };
 
 class QGCMapGeom {

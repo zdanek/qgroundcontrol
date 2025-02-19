@@ -59,7 +59,7 @@ const QGCMapPolyline &QGCMapPolyline::operator=(const QGCMapPolyline &other)
 
 QGCMapGeomType QGCMapPolyline::geomType() const
 {
-    return Polyline;
+    return GeomTypePolyline;
 }
 
 void QGCMapPolyline::_init(void)

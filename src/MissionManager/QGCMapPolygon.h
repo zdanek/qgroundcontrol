@@ -83,7 +83,7 @@ public:
     Q_INVOKABLE void beginReset (void);
     Q_INVOKABLE void endReset   (void);
 
-    QGCMapGeomType geomType() const override { return Polygon; }
+    QGCMapGeomType geomType() const override { return GeomTypePolygon; }
 
     /// Saves the polygon to the json object.
     ///     @param json Json object to save to
