@@ -295,11 +295,11 @@ void MultiVehicleManager::_setActiveVehiclePhase2(void)
 
     // set active vehicle mode to guided, just before switching
     if (_activeVehicle) {
-        // if flight mode not in ("Smart RTL", "RTL", "Land", "Guided") set guided
+        // if flight mode not in ("Smart RTL", "RTL", "Land", "Auto") set guided
         if (_activeVehicle->flightMode() != _activeVehicle->smartRTLFlightMode() &&
             _activeVehicle->flightMode() != activeVehicle()->rtlFlightMode() &&
             _activeVehicle->flightMode() != activeVehicle()->landFlightMode() &&
-            _activeVehicle->guidedMode()) {
+            _activeVehicle->flightMode() != activeVehicle()->missionFlightMode()) {
             qCDebug(MultiVehicleManagerLog) << "set active vehicle mode to guided";
             _activeVehicle->setGuidedMode(true);
         } else {
