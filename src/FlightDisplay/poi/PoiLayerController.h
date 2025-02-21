@@ -47,7 +47,6 @@ signals:
     void addPoiLayer(PoiLayer *pLayer);
     void deletePoiLayer(PoiLayer *pLayer);
     void deletePoiLayerById(QString id);
-    void openPage(QString url);
 
 public slots:
     void poiLayerRemoved(const PoiLayer *layer);

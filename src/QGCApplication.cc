@@ -104,6 +104,7 @@
 #include "QGCMAVLink.h"
 #include "VehicleLinkManager.h"
 #include "Autotune.h"
+#include "OrdersController.h"
 #include "PoiLayerController.h"
 #include "PoiLayer.h"
 
@@ -204,7 +205,6 @@ QGCApplication::QGCApplication(int &argc, char* argv[], bool unitTesting)
     _msecsElapsedTime.start();
 
     qputenv("QTWEBENGINE_CHROMIUM_FLAGS", "--no-sandbox");
-    // QtWebEngine::initialize();
 
 #ifdef Q_OS_LINUX
 #ifndef __mobile__
@@ -528,7 +528,8 @@ void QGCApplication::_initCommon()
     qmlRegisterType<SyslinkComponentController>     (kQGCControllers,                       1, 0, "SyslinkComponentController");
     qmlRegisterType<EditPositionDialogController>   (kQGCControllers,                       1, 0, "EditPositionDialogController");
     qmlRegisterType<RCToParamDialogController>      (kQGCControllers,                       1, 0, "RCToParamDialogController");
-    qmlRegisterType<PoiLayerController>      (kQGCControllers,                       1, 0, "PoiLayerController");
+    qmlRegisterType<PoiLayerController>             (kQGCControllers,                       1, 0, "PoiLayerController");
+    qmlRegisterType<OrdersController>               (kQGCControllers,                       1, 0, "OrdersController");
 
     qmlRegisterType<TerrainProfile>                 ("QGroundControl.Controls",             1, 0, "TerrainProfile");
     qmlRegisterType<ToolStripAction>                ("QGroundControl.Controls",             1, 0, "ToolStripAction");

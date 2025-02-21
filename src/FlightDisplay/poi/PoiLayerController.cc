@@ -45,7 +45,7 @@ PoiLayerController::PoiLayerController( QObject *parent)
     connect(_dynamicPoiManager, &DynamicPoiManager::poiLayersChanged, this, &PoiLayerController::poiLayersChanged, Qt::QueuedConnection);
     connect(this, &PoiLayerController::deletePoiLayerById, _dynamicPoiManager, &DynamicPoiManager::removeLayerById);
     connect(_dynamicPoiManager, &DynamicPoiManager::poiLayerRemoved, this, &PoiLayerController::poiLayerRemoved);
-    connect(this, &PoiLayerController::openPage, qgcApp(), &QGCApplication::openWebPage);
+    // connect(this, &PoiLayerController::openPage, qgcApp(), &QGCApplication::openWebPage);
 //    connect(_dynamicPoiManager, &DynamicPoiManager::addLayer, this, &PoiLayerController::addPoiLayer);
 //    connect(_dynamicPoiManager, &DynamicPoiManager::removeLayer, this, &PoiLayerController::deletePoiLayer);
 }

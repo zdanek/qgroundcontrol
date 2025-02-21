@@ -33,25 +33,16 @@ Rectangle {
         console.log("remove layerId: ", layerId)
         layerController.deletePoiLayerById(layerId)
     }
-    // QGCButton {
-    //     text: "Open Page"
-    //     onClicked: {
-    //         console.log("Open Page button clicked")
-    //         layerController.openPage("https://onet.pl")
-    //     }
-    // }
 
     Row {
       id:                 topRowLayout
       anchors.margins:    _margin
       anchors.left:       parent.left
-    //        anchors.top:        parent.top
       spacing:            _margin
 
 
       QGCColoredImage {
           id:                     deleteButton
-          //anchors.verticalCenter: parent.verticalCenter
           height:                 _trashSize
           width:                  height
           sourceSize.height:      height

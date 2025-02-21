@@ -40,6 +40,7 @@ Item {
     property int    borderWidth: 0
     property color  borderColor: "black"
     property var    poiLayerControler: _poiLayerController
+
     property var    poiLayers: poiLayerControler.poiLayers
 
     readonly property real  _margin: ScreenTools.defaultFontPixelWidth / 2
@@ -48,18 +49,7 @@ Item {
 
     PoiLayerController {
         id: _poiLayerController
-
-        // //        Component.onCompleted: start()
     }
-
-
-    //    Connections{
-    //        target: poiLayerControler
-    //        function onPoiLayerAdded(poiLayer) {
-    //            console.log("layer added " + poiLayer.id + " " + poiLayer.name);
-    //            addLayer(poiLayer);
-    //        }
-    //    }
 
     function addLayer(poiLayer) {
         console.log("addLayer " + poiLayer.name);
@@ -83,14 +73,15 @@ Item {
 
         color: "black"
         opacity: 0
-        anchors.top: parent.top
+        //anchors.top: parent.top
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         width: _rightPanelWidth + 2 * _margin
-        // height:         parent.height 0.5
+        height: parent.height
 
     }
 
+    // orders pane
     Rectangle {
         id: ordersAppPane
         width: ordersAppRow.width + _margin * 2
@@ -121,7 +112,7 @@ Item {
                 QGCMouseArea {
                     fillItem: parent
                     onClicked: {
-                        poiLayerControler.openPage("https://onet.pl");
+                        ordersControler.openOrdersPage();
                     }
                 }
             }
@@ -159,13 +150,12 @@ Item {
             // Add more QGCColoredImage elements here in the future
         }
     }
+
     Item {
         id: slidingContainer
         width: layersListBackPane.width
         height: parent.height
         visible: true
-
-
 
         Rectangle {
             id: layersListHeader
@@ -214,7 +204,8 @@ Item {
         Rectangle {
             id: layersListPane
             width: layersListBackPane.width
-            height: Math.min(childrenRect.height + 2 * _margin, parent.height * 0.5)
+            // height: Math.min(childrenRect.height + 2 * _margin, parent.height * 0.5)
+            height: childrenRect.height + 2 * _margin
             anchors.bottom: parent.bottom
             anchors.left: layersListHeader.left
             opacity: 1
@@ -259,7 +250,7 @@ Item {
             property: "x"
             from: slidingContainer.x
             to: slidingContainer.x === 0 ? -slidingContainer.width + toggleButton.width / 2 : 0
-            duration: 300
+            duration: 500
             easing.type: Easing.InOutQuad
         }
     }

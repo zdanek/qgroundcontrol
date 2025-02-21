@@ -202,6 +202,7 @@ target_link_libraries(qgc
 		gps
 		Joystick
 		MissionManager
+		Orders
 		PoiLayers
 		PositionManager
 		QmlControls

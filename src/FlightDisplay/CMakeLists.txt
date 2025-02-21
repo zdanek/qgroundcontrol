@@ -1,4 +1,5 @@
 add_subdirectory(poi)
+add_subdirectory(orders)
 
 add_custom_target(FlightDisplayQml
 	SOURCES
