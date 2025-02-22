@@ -396,6 +396,7 @@ INCLUDEPATH += \
     src/AutoPilotPlugins \
     src/FlightDisplay \
     src/FlightDisplay/poi \
+    src/FlightDisplay/orders \
     src/FlightMap \
     src/FlightMap/Widgets \
     src/FollowMe \

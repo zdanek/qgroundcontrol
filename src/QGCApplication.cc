@@ -193,13 +193,6 @@ static QObject* shapeFileHelperSingletonFactory(QQmlEngine*, QJSEngine*)
     return new ShapeFileHelper;
 }
 
-// static QObject* poilayerControllerFactory(QQmlEngine* engine, QJSEngine* scriptEngine)
-// {
-//     Q_UNUSED(engine)
-//     Q_UNUSED(scriptEngine)
-//     return new PoiLayerController(qgcApp()->toolbox());
-// }
-
 QGCApplication::QGCApplication(int &argc, char* argv[], bool unitTesting)
     : QApplication          (argc, argv)
     , _runningUnitTests     (unitTesting)

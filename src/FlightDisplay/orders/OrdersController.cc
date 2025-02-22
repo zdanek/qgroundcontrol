@@ -5,18 +5,15 @@
 #include "OrdersController.h"
 
 #include <QObject>
+#include <QSettings>
 
-#include "MewaMed.h"
 #include "OrdersChecker.h"
 
-class QWebEngineView;
 QGC_LOGGING_CATEGORY(OrdersControllerLog, "OrdersControllerLog")
 
 OrdersController::OrdersController(QObject *parent)
     : QObject(parent)
 {
-    // connect(this, &OrdersController::showWebPage, this, &OrdersController::showWebPage);
-
     _loadConfig();
     _saveConfig();
 
@@ -26,8 +23,8 @@ OrdersController::OrdersController(QObject *parent)
 
 OrdersController::~OrdersController()
 {
-//     _orders_checker->shutdown();
-//     _orders_checker->deleteLater();
+     _orders_checker->shutdown();
+     _orders_checker->deleteLater();
 }
 
 void OrdersController::hideOrdersPanel()

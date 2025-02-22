@@ -7,10 +7,7 @@
 
 #include <QObject>
 
-#include "QGCApplication.h"
-
-#include <BrowserWindow.h>
-#include <OrdersChecker.h>
+#include "OrdersChecker.h"
 
 Q_DECLARE_LOGGING_CATEGORY(OrdersControllerLog)
 

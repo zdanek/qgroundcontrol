@@ -27,7 +27,6 @@ public:
     QList<PoiLayer*> poiLayers(void) const {
         return _layers;
     }
-//    QmlObjectListModel *poiLayers(void) { return &_poiLayers; }
 
 public slots:
     void addLayer(PoiLayer *layer);

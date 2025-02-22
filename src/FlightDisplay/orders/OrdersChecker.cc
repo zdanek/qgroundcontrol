@@ -4,6 +4,13 @@
 
 #include "OrdersChecker.h"
 
+#include <QEventLoop>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+
 OrdersChecker::OrdersChecker(OrdersController *parent, const QString orders_url) : QThread(parent), _orders_url(orders_url)
 {
     connect(this, &OrdersChecker::newOrdersAvailable, parent, &OrdersController::newOrdersAvailable);
