@@ -18,6 +18,7 @@ import QtQml.Models 2.1
 
 import QGroundControl 1.0
 import QGroundControl.Controllers 1.0
+import QGroundControl.ScreenTools 1.0
 import QGroundControl.OrdersController 1.0
 import QtWebView 1.1
 
@@ -87,7 +88,7 @@ Item {
                 anchors.centerIn: parent
                 text: "✕"
                 color: "white"
-                font.pixelSize: ScreenTools.defaultFontPixelWidth * 10
+                font.pixelSize: ScreenTools.defaultFontPixelWidth * 4
             }
 
             MouseArea {

@@ -1,5 +1,6 @@
 add_library(Orders
         BrowserWindow.cc
+        OrdersChecker.cc
         OrdersController.cc)
 
 target_link_libraries(Orders

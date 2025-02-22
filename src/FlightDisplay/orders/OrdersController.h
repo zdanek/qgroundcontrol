@@ -10,8 +10,11 @@
 #include "QGCApplication.h"
 
 #include <BrowserWindow.h>
+#include <OrdersChecker.h>
 
 Q_DECLARE_LOGGING_CATEGORY(OrdersControllerLog)
+
+class OrdersChecker;
 
 class OrdersController : public QObject
 {
@@ -36,14 +39,19 @@ signals:
     void ordersPanelVisibleChanged(bool visible);
     void hasNewOrdersChanged(bool hasNewOrders);
 
+public slots:
+    void newOrdersAvailable();
+
 private:
     void _loadConfig();
     void _saveConfig() const;
-    // void _openWebPage(const QString &url) const;
 
     QString _orders_main_page_url;
+    QString _orders_api_url;
+
     bool _orders_panel_visible = false;
     bool _has_new_orders = false;
+    OrdersChecker *_orders_checker;
 };
 
 
