@@ -98,8 +98,15 @@ Item {
     FlyViewPoiLayer {
         id:                 poiLayerOverlay
         anchors.fill:       widgetLayer
-        z:                  _fullItemZorder + 2
+        z:                  _fullItemZorder + 3
         mapControl:         _mapControl
+        visible:            !QGroundControl.videoManager.fullScreen
+    }
+
+    OrdersViewLayer {
+        id:                 ordersView
+        anchors.fill:       widgetLayer
+        z:                  _fullItemZorder + 4
         visible:            !QGroundControl.videoManager.fullScreen
     }
 

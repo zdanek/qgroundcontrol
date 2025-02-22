@@ -6,23 +6,35 @@
 
 #include <QObject>
 
-QGC_LOGGING_CATEGORY(OrdersControllerLog, "OrdersControllerLog")
+#include <MewaMed.h>
 
+class QWebEngineView;
+QGC_LOGGING_CATEGORY(OrdersControllerLog, "OrdersControllerLog")
 
 OrdersController::OrdersController(QObject *parent)
     : QObject(parent)
 {
-    connect(this, &OrdersController::openPage, qgcApp(), &QGCApplication::openWebPage);
+    // connect(this, &OrdersController::showWebPage, this, &OrdersController::showWebPage);
 
     _loadConfig();
     _saveConfig();
-
 }
 
-void OrdersController::openOrdersPage()
+OrdersController::~OrdersController() {}
+
+void OrdersController::hideOrdersPanel()
+{
+    _orders_panel_visible = false;
+    emit ordersPanelVisibleChanged(_orders_panel_visible);
+}
+
+void OrdersController::openOrdersPanel()
 {
     qCDebug(OrdersControllerLog) << "OrdersController::openOrdersPage:" << _orders_main_page_url;
-    emit openPage(_orders_main_page_url);
+    // emit showWebPage(_orders_main_page_url);
+    emit urlChanged(_orders_main_page_url);
+    _orders_panel_visible = true;
+    emit ordersPanelVisibleChanged(_orders_panel_visible);
 }
 
 void OrdersController::_loadConfig()

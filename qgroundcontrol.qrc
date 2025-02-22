@@ -210,6 +210,7 @@
         <file alias="QGroundControl/FlightDisplay/FlyView.qml">src/FlightDisplay/FlyView.qml</file>
         <file alias="QGroundControl/FlightDisplay/FlyViewCustomLayer.qml">src/FlightDisplay/FlyViewCustomLayer.qml</file>
         <file alias="QGroundControl/FlightDisplay/FlyViewPoiLayer.qml">src/FlightDisplay/FlyViewPoiLayer.qml</file>
+        <file alias="QGroundControl/FlightDisplay/OrdersViewLayer.qml">src/FlightDisplay/orders/OrdersViewLayer.qml</file>
         <file alias="QGroundControl/FlightDisplay/PoiLayerVisual.qml">src/FlightDisplay/poi/PoiLayerVisual.qml</file>
         <file alias="QGroundControl/FlightDisplay/PoiLayerMenuWidget.qml">src/FlightDisplay/poi/PoiLayerMenuWidget.qml</file>
         <file alias="QGroundControl/FlightDisplay/FlyViewInstrumentPanel.qml">src/FlightDisplay/FlyViewInstrumentPanel.qml</file>

@@ -40,7 +40,6 @@ Item {
     property int    borderWidth: 0
     property color  borderColor: "black"
     property var    poiLayerControler: _poiLayerController
-
     property var    poiLayers: poiLayerControler.poiLayers
 
     readonly property real  _margin: ScreenTools.defaultFontPixelWidth / 2
@@ -79,76 +78,6 @@ Item {
         width: _rightPanelWidth + 2 * _margin
         height: parent.height
 
-    }
-
-    // orders pane
-    Rectangle {
-        id: ordersAppPane
-        width: ordersAppRow.width + _margin * 2
-        height: openOrdersAppButton.height + 2 * _margin
-        anchors.top: slidingContainer.top
-        anchors.left: layersListBackPane.left
-        opacity: 0.8
-        color: "black"
-        radius: ScreenTools.defaultFontPixelWidth / 2
-
-        Row {
-            id: ordersAppRow
-            spacing: _margin * 2
-
-            Image {
-                id: openOrdersAppButton
-                //anchors.verticalCenter: parent.verticalCenter
-                height: ScreenTools.defaultFontPixelHeight * 1.5
-                width: height
-                sourceSize.height: height
-                fillMode: Image.PreserveAspectFit
-                mipmap: true
-                smooth: true
-                // color: qgcPal.text
-                // visible: modelData.canBeDeleted
-                source: "/qmlimages/Analyze.svg"
-
-                QGCMouseArea {
-                    fillItem: parent
-                    onClicked: {
-                        ordersControler.openOrdersPage();
-                    }
-                }
-            }
-
-            Image {
-                id: otherOrdersAppButton
-                //anchors.verticalCenter: parent.verticalCenter
-                height: ScreenTools.defaultFontPixelHeight * 1.5
-                width: height
-                sourceSize.height: height
-                fillMode: Image.PreserveAspectFit
-                mipmap: true
-                smooth: true
-                // color: qgcPal.text
-                opacity: 1
-                visible: false
-                SequentialAnimation {
-                    id: opacityAnimation
-                    loops: Animation.Infinite
-                    NumberAnimation {
-                        target: otherOrdersAppButton; property: "opacity";
-                        from: 0;
-                        to: 1; duration: 1000
-                    }
-                    NumberAnimation {
-                        target: otherOrdersAppButton; property: "opacity";
-                        from: 1;
-                        to: 0; duration: 1000
-                    }
-                }
-                // Component.onCompleted: opacityAnimation.start()
-
-                source: "/qmlimages/Yield.svg"
-            }
-            // Add more QGCColoredImage elements here in the future
-        }
     }
 
     Item {

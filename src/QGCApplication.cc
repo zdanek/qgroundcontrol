@@ -23,7 +23,6 @@
 #include <QQuickImageProvider>
 #include <QQuickStyle>
 #include <QtWebEngine/QtWebEngine>
-#include <QtWebEngineWidgets/QWebEngineView>
 
 #ifdef QGC_ENABLE_BLUETOOTH
 #include <QBluetoothLocalDevice>
@@ -138,7 +137,6 @@
 #include "QGCMapEngine.h"
 #include <qmainwindow.h>
 
-class BrowserWindow;
 class FinishVideoInitialization : public QRunnable
 {
 public:
@@ -174,6 +172,11 @@ static QObject* screenToolsControllerSingletonFactory(QQmlEngine*, QJSEngine*)
 static QObject* mavlinkSingletonFactory(QQmlEngine*, QJSEngine*)
 {
     return new QGCMAVLink();
+}
+
+static QObject* ordersControllerSingletonFactory(QQmlEngine*, QJSEngine*)
+{
+    return new OrdersController();
 }
 
 static QObject* qgroundcontrolQmlGlobalSingletonFactory(QQmlEngine*, QJSEngine*)
@@ -440,12 +443,15 @@ void QGCApplication::setLanguage()
     emit languageChanged(_locale);
 }
 
+
 void QGCApplication::_shutdown()
 {
     // Close out all Qml before we delete toolbox. This way we don't get all sorts of null reference complaints from Qml.
     delete _qmlAppEngine;
     delete _toolbox;
     delete _gpsRtkFactGroup;
+
+    emit applicationShutdown();
 }
 
 QGCApplication::~QGCApplication()
@@ -529,7 +535,6 @@ void QGCApplication::_initCommon()
     qmlRegisterType<EditPositionDialogController>   (kQGCControllers,                       1, 0, "EditPositionDialogController");
     qmlRegisterType<RCToParamDialogController>      (kQGCControllers,                       1, 0, "RCToParamDialogController");
     qmlRegisterType<PoiLayerController>             (kQGCControllers,                       1, 0, "PoiLayerController");
-    qmlRegisterType<OrdersController>               (kQGCControllers,                       1, 0, "OrdersController");
 
     qmlRegisterType<TerrainProfile>                 ("QGroundControl.Controls",             1, 0, "TerrainProfile");
     qmlRegisterType<ToolStripAction>                ("QGroundControl.Controls",             1, 0, "ToolStripAction");
@@ -551,6 +556,7 @@ void QGCApplication::_initCommon()
     qmlRegisterSingletonType<ScreenToolsController>     ("QGroundControl.ScreenToolsController",    1, 0, "ScreenToolsController",  screenToolsControllerSingletonFactory);
     qmlRegisterSingletonType<ShapeFileHelper>           ("QGroundControl.ShapeFileHelper",          1, 0, "ShapeFileHelper",        shapeFileHelperSingletonFactory);
     qmlRegisterSingletonType<ShapeFileHelper>           ("MAVLink",                                 1, 0, "MAVLink",                mavlinkSingletonFactory);
+    qmlRegisterSingletonType<OrdersController>          ("QGroundControl.OrdersController",         1, 0, "OrdersController", ordersControllerSingletonFactory);
 
 //    qmlRegisterSingletonInstance<PoiLayerController>    ("QGroundControl.PoiLayerController",     1,0, "PoiLayerController",  new PoiLayerController(qgcApp()->toolbox()));
 //    qmlRegisterSingletonType<PoiLayerController>        ("QGroundControl.PoiLayerController",                           1, 0, "PoiLayerController",     poilayerControllerFactory);
@@ -782,7 +788,7 @@ void QGCApplication::showAppMessage(const QString& message, const QString& title
     }
 }
 
-void QGCApplication::showRebootAppMessage(const QString& message, const QString& title)
+void QGCApplication::showRebootAppMessage(const QString &message, const QString &title)
 {
     static QTime lastRebootMessage;
 
@@ -1037,8 +1043,11 @@ bool QGCApplication::compressEvent(QEvent*event, QObject* receiver, QPostEventLi
     return false;
 }
 
+
+
 bool QGCApplication::event(QEvent *e)
 {
+    qDebug() << "QGCApplication::event" << e->type();
     if (e->type() == QEvent::Quit) {
         // On OSX if the user selects Quit from the menu (or Command-Q) the ApplicationWindow does not signal closing. Instead you get a Quit even here only.
         // This in turn causes the standard QGC shutdown sequence to not run. So in this case we close the window ourselves such that the
@@ -1056,25 +1065,4 @@ bool QGCApplication::event(QEvent *e)
         }
     }
     return QApplication::event(e);
-}
-
-class BrowserWindow : public QMainWindow
-{
-public:
-    BrowserWindow(const QUrl &url)
-    {
-        QWebEngineView *view = new QWebEngineView(this);
-        view->setUrl(url);
-        setCentralWidget(view);
-        resize(1024, 768);
-        setVisible(true);
-        show();
-    }
-};
-
-
-void QGCApplication::openWebPage(const QString &url)
-{
-    BrowserWindow *browser = new BrowserWindow(QUrl(url));
-    browser->show();
 }

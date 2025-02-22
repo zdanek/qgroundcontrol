@@ -106,7 +106,9 @@ public:
     static QString cachedParameterMetaDataFile(void);
     static QString cachedAirframeMetaDataFile(void);
 
-    void openWebPage(const QString& url);
+
+
+
 
 public slots:
     /// You can connect to this slot to show an information message box from a different thread.
@@ -147,6 +149,8 @@ signals:
     void checkForLostLogFiles   ();
 
     void languageChanged        (const QLocale locale);
+
+    void applicationShutdown    (void);
 
 public:
     // Although public, these methods are internal and should only be called by UnitTest code

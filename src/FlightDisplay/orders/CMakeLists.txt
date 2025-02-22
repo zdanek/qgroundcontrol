@@ -1,4 +1,5 @@
 add_library(Orders
+        BrowserWindow.cc
         OrdersController.cc)
 
 target_link_libraries(Orders
@@ -10,3 +11,7 @@ target_include_directories(Orders
         PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
 )
+
+add_custom_target(OrdersQml
+        SOURCES
+        OrdersViewLayer.qml)
