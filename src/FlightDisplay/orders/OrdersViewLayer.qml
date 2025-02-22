@@ -26,20 +26,36 @@ import QtWebView 1.1
 
 Item {
     id: _root
-    property color  interiorColor: "transparent"
-    property color  altColor: "transparent"
-    property real   interiorOpacity: 1
-    property int    borderWidth: 0
-    property color  borderColor: "black"
-    // property var    ordersController: _ordersController
 
     readonly property real  _margin: ScreenTools.defaultFontPixelWidth / 2
     readonly property real  _rightPanelWidth: Math.min(parent.width / 3, ScreenTools.defaultFontPixelWidth * 30)
     readonly property real  _toolsMargin: ScreenTools.defaultFontPixelWidth * 0.75
 
-    // OrdersController {
-    //     id: _ordersController
-    // }
+    Rectangle {
+        id: newOrdersNotice
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
+        height: 50
+        color: "black"
+        opacity: 0.8
+        visible: OrdersController.hasNewOrders && !OrdersController.ordersPanelVisible
+
+        Label {
+            id: newOrdersLabel
+            anchors.fill: parent
+            text: "New MewaMed Event"
+            color: "red"
+            font.pixelSize: ScreenTools.defaultFontPixelWidth * 3
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: OrdersController.hideOrdersPanel()
+        }
+    }
 
     Rectangle {
         id: layersListBackPane
@@ -49,10 +65,9 @@ Item {
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         color: "black"
-        opacity: 0.8
-        border.color: "red"
+        opacity: 1
+        // border.color: "red"
         visible: OrdersController.ordersPanelVisible
-
 
         Rectangle {
             id: header
@@ -62,7 +77,6 @@ Item {
             height: 50
             color: "black"
             opacity: 1
-            border.color: "green"
 
             Label {
                 id: headerLabel

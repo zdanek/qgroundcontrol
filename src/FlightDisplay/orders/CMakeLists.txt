@@ -1,5 +1,4 @@
 add_library(Orders
-        BrowserWindow.cc
         OrdersChecker.cc
         OrdersController.cc)
 

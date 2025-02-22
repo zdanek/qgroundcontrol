@@ -32,6 +32,8 @@ OrdersController::~OrdersController()
 
 void OrdersController::hideOrdersPanel()
 {
+    _has_new_orders = false;
+    emit hasNewOrdersChanged(_has_new_orders);
     _orders_panel_visible = false;
     emit ordersPanelVisibleChanged(_orders_panel_visible);
 }

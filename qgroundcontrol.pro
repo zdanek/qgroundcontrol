@@ -588,6 +588,8 @@ HEADERS += \
     src/Compression/QGCZlib.h \
     src/FirmwarePlugin/PX4/px4_custom_mode.h \
     src/FollowMe/FollowMe.h \
+    src/FlightDisplay/orders/OrdersChecker.h \
+    src/FlightDisplay/orders/OrdersController.h \
     src/FlightDisplay/poi/DynamicPoiManager.h \
     src/FlightDisplay/poi/PoiGeom.h \
     src/FlightDisplay/poi/PoiPolygon.h \
@@ -851,6 +853,8 @@ SOURCES += \
     src/Compression/QGCLZMA.cc \
     src/Compression/QGCZlib.cc \
     src/FollowMe/FollowMe.cc \
+    src/FlightDisplay/orders/OrdersChecker.cc \
+    src/FlightDisplay/orders/OrdersController.cc \
     src/FlightDisplay/poi/DynamicPoiManager.cc \
     src/FlightDisplay/poi/PoiGeom.cc \
     src/FlightDisplay/poi/PoiPolygon.cc \

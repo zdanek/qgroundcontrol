@@ -85,6 +85,7 @@ Item {
         width: layersListBackPane.width
         height: parent.height
         visible: true
+        x: -slidingContainer.width + toggleButton.width / 2
 
         Rectangle {
             id: layersListHeader

@@ -1047,7 +1047,6 @@ bool QGCApplication::compressEvent(QEvent*event, QObject* receiver, QPostEventLi
 
 bool QGCApplication::event(QEvent *e)
 {
-    qDebug() << "QGCApplication::event" << e->type();
     if (e->type() == QEvent::Quit) {
         // On OSX if the user selects Quit from the menu (or Command-Q) the ApplicationWindow does not signal closing. Instead you get a Quit even here only.
         // This in turn causes the standard QGC shutdown sequence to not run. So in this case we close the window ourselves such that the

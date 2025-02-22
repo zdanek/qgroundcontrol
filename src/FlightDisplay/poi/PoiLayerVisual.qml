@@ -22,9 +22,9 @@ Item {
     property var __items: []
 
     onLvisibleChanged: function (sth, visible) {
-        console.log("onVisibleChanged " + lvisible)
+        // console.log("onVisibleChanged " + lvisible)
         for (var i = 0; i < __items.length; i++) {
-            console.log("Setting item " + i + " visible to " + lvisible);
+            // console.log("Setting item " + i + " visible to " + lvisible);
             __items[i].visible = lvisible
         }
     }
@@ -42,7 +42,6 @@ Item {
     }
 
     function _addMapElement(element){
-        console.log("Adding element " + element.id)
         __items.push(element)
         mapControl.addMapItem(element)
     }
