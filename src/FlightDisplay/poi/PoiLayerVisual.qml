@@ -21,6 +21,8 @@ Item {
     property var lvisible: poiLayer.visible
     property var __items: []
 
+    property  var svgZoomValue: Math.max(mapControl.zoomLevel + 1, 15);
+
     onLvisibleChanged: function (sth, visible) {
         // console.log("onVisibleChanged " + lvisible)
         for (var i = 0; i < __items.length; i++) {
@@ -76,6 +78,10 @@ Item {
         if (mapControl) {
             console.log('Creating POI polygons for layer "' + poiLayer.name + '"')
 
+            mapControl.zoomLevelChanged.connect(function() {
+                svgZoomValue = Math.max(mapControl.zoomLevel + 1, 15);
+            });
+
             var poiElements = poiLayer.elements
             var poiLength = poiLayer.elements.count
 
@@ -122,9 +128,18 @@ Item {
                         break;
                     case 4:
                     case "svgWithLabel":
-                        var point = Qt.createQmlObject('import QtLocation 5.5; import QtQuick 2.4; MapQuickItem{ smooth:true; antialiasing:true; anchorPoint.x: p_icon.width / 2; anchorPoint.y: p_icon.height; zoomLevel: 15; sourceItem:Image { id:p_icon; } }', mapControl, "mapQuickItem")
+                        var point = Qt.createQmlObject('import QtLocation 5.5; import QtQuick 2.4; MapQuickItem{ \
+                                smooth:true; \
+                                antialiasing:true; \
+                                anchorPoint.x: p_icon.width / 2; \
+                                anchorPoint.y: p_icon.height; \
+                                sourceItem:Image { id:p_icon; smooth:true;} \
+                                }', mapControl, "mapQuickItem")
+
+                        point.zoomLevel = Qt.binding(function() { return svgZoomValue; });
                         point.sourceItem.source = element.src;
                         point.coordinate = element.center
+
                         _addMapElement(point)
 
                         break;
